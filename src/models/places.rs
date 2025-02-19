@@ -498,13 +498,12 @@ impl Module {
         return 1;
     }
     pub fn delete(id: String) -> i16 {
-        let _module = schema::modules::table
-            .filter(schema::modules::id.eq(id.to_owned()))
-            .first::<Module>(&_connection)
-            .expect("E");
-        //diesel::delete(_module)
-        //    .execute(&_connection)
-        //    .expect("E");
+        diesel::delete (
+            modules
+                .filter(schema::modules::id.eq(id))
+        )
+        .execute(&_connection)
+        .expect("E");
         return 1;
     }
 }
