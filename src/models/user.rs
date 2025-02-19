@@ -84,7 +84,7 @@ impl User {
     pub fn get_orders(&self) -> Json<Vec<RespOrderJson>> {
         let _connection = establish_connection();
         let list = schema::orders::table
-            .filter(schema::orders::user_id.eq(self.id))
+            .filter(schema::orders::user_id.eq(self.id.clone()))
             .load::<Order>(&_connection)
             .expect("E");
         let mut stack = Vec::new();
@@ -288,7 +288,7 @@ impl User {
         }
         else {
             return Json(schema::places::table
-                .filter(schema::places::user_id.eq(self.id))
+                .filter(schema::places::user_id.eq(self.id.clone()))
                 .filter(schema::places::types.eq(1))
                 .load::<crate::models::Place>(&_connection)
                 .expect("E"));
@@ -390,10 +390,10 @@ pub struct EditPartnerJson {
 }
 
 impl Partner {
-    pub fn get_owner(id: String) -> UserJson {
+    pub fn get_owner(&self, id: String) -> UserJson {
         let _connection = establish_connection();
         return Json(schema::users::table
-            .filter(schema::users::id.eq(id))
+            .filter(schema::users::id.eq(self.user_id))
             .select((
                 schema::users::id,
                 schema::users::first_name,
@@ -417,7 +417,7 @@ impl Partner {
             inn:     item.inn.clone(),
             types:   item.types,
             created: item.created,
-            user:    item.get_owner(i.item.clone()),
+            user:    Partner::get_owner(i.user_id.clone()),
         });
     }
     pub fn all() -> Vec<RespPartnerJson> {
@@ -432,7 +432,7 @@ impl Partner {
             inn:     item.inn.clone(),
             types:   item.types,
             created: item.created,
-            user:    item.get_owner(i.item.clone()),
+            user:    item.get_owner(item.user_id.clone()),
         });
     }
     pub fn create(form: Json<PartnerJson>) -> i16 {

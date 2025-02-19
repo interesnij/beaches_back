@@ -85,9 +85,10 @@ pub struct OrderJson {
 }
 
 impl Order {
-    pub fn get_client(id: String) -> UserJson {
+    pub fn get_client(&self, id: String) -> UserJson {
         let _connection = establish_connection();
         return Json(schema::users::table
+            .filter(schema::place_id::id.eq(self.id))
             .filter(schema::users::id.eq(id))
             .select((
                 schema::users::id,

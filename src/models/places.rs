@@ -88,6 +88,8 @@ impl PlaceType {
 pub struct ModuleType {
     pub id:    String,
     pub title: String,
+    pub types: i16,
+    pub image: String,
 }
 #[derive(Deserialize)]
 pub struct ModuleTypeJson {
@@ -208,7 +210,7 @@ impl Place {
                 time_end:   i.time_end.clone(),
             });
         }
-        return stack;
+        return Json(stack);
     }
     
     pub fn get_all() -> Json<Vec<Place>> {
@@ -302,7 +304,7 @@ impl Place {
     pub fn get_managers(&self) -> Json<Vec<crate::views::UserJson>> {
         let _connection = establish_connection();
         let users_ids = schema::place_managers::table
-            .filter(schema::place_managers::place_id.eq(self.id))
+            .filter(schema::place_managers::place_id.eq(self.id.clone()))
             .select(schema::place_managers::user_id)
             .load::<String>(&_connection)
             .expect("E");
@@ -452,8 +454,7 @@ impl Module {
         let new_module = Module {
             id:         uuid::Uuid::new_v4().to_string(),
             title:      form.title.clone(),
-            types:      1,
-            created:    chrono::Local::now().naive_utc(),
+            types:      1, 
             place_id:   form.place_id.clone(),
             type_id:    form.type_id.clone(),
             price:      form.price,
