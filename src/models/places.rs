@@ -19,6 +19,7 @@ use crate::utils::establish_connection;
 use crate::errors::Error;
 use actix_web::web::Json;
 use crate::models::Order;
+use crate::models::RespOrderJson;
 
 
 #[derive(Debug, Queryable, Deserialize, Serialize, Identifiable, Insertable)]

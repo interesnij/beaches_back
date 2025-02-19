@@ -29,20 +29,16 @@ pub fn places_routes(config: &mut web::ServiceConfig) {
 
     config.route("/create_place/", web::post().to(create_place));
     config.route("/edit_place/", web::post().to(edit_place));
-    config.route("/close_place/", web::post().to(close_place));
-    config.route("/hide_place/", web::post().to(hide_place));
+    //config.route("/close_place/", web::post().to(close_place));
+    //config.route("/hide_place/", web::post().to(hide_place));
 }
 
-pub async fn get_places(req: HttpRequest) -> Json<Place> {
+pub async fn get_places(req: HttpRequest) -> Json<Vec<Place>> {
     return Json(Place::get_all());
 }
 
-#[derive(Deserialize, Serialize)]
-pub struct PlaceJson {
-    pub place: Place,
-}
 pub async fn get_place(req: HttpRequest, id: web::Path<String>) -> Json<Place> {
-    return Json(PlaceJson {
+    return Json(crate::models::Place {
         place: Place.get(id.clone()),
     });
 }
@@ -96,7 +92,7 @@ pub async fn get_closed_places(req: HttpRequest) -> Json<Vec<Place>> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         if _request_user.is_superuser() {
-            return Json(Place::get_closed_places());
+            return Json(Place::get_closed());
         }
         else {
             return Json(Vec::new());

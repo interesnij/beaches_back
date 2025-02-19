@@ -147,7 +147,7 @@ impl User {
         
         return 1;
     }
-    pub fn create_superuser(user_id: i32) -> Result<(), Error> {
+    pub fn create_superuser(user_id: String) -> Result<(), Error> {
         let _connection = establish_connection();
         _connection.transaction(|| Ok({
             let _u = diesel::update(users::table.filter(users::id.eq(user_id)))
@@ -166,7 +166,7 @@ impl User {
             .expect("E");
         return 1;
     }
-    pub fn delete_superuser(user_id: i32) -> Result<(), Error> {
+    pub fn delete_superuser(user_id: String) -> Result<(), Error> {
         let _connection = establish_connection();
         _connection.transaction(|| Ok({
             let _u = diesel::update(users::table.filter(users::id.eq(user_id)))
@@ -182,7 +182,7 @@ impl User {
             .first::<User>(&_connection)?);
     }
 
-    pub fn create_user_block(user_id: i32) -> Result<(), Error> {
+    pub fn create_user_block(user_id: String) -> Result<(), Error> {
         let _connection = establish_connection();
         _connection.transaction(|| Ok({
             let _u = diesel::update(users::table.filter(users::id.eq(user_id)))
@@ -190,7 +190,7 @@ impl User {
                 .execute(&_connection);
         }))
     }
-    pub fn delete_user_block(user_id: i32) -> Result<(), Error> {
+    pub fn delete_user_block(user_id: String) -> Result<(), Error> {
         let _connection = establish_connection();
         _connection.transaction(|| Ok({
             let _u = diesel::update(users::table.filter(users::id.eq(user_id)))
