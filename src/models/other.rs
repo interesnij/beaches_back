@@ -110,10 +110,10 @@ impl Order {
     pub fn create(form: OrderJson) -> i16 {
         let _connection = establish_connection();
 
-        let time_start: String;
-        let time_end: String;
-        let format_start = chrono::DateTime::parse_from_str(&form.time_start, "%Y-%m-%d %H:%M:%S %z").unwrap();
-        let _new_time = chrono::DateTime::parse_from_str(&form.time_end, "%Y-%m-%d %H:%M:%S %z").unwrap();
+        let time_start: chrono::NaiveDateTime;
+        let time_end: chrono::NaiveDateTime;
+        let format_start = chrono::NaiveDateTime::parse_from_str(&form.time_start, "%Y-%m-%d %H:%M:%S").unwrap();
+        let _new_time = chrono::NaiveDateTime::parse_from_str(&form.time_end, "%Y-%m-%d %H:%M:%S").unwrap();
 
         if crate::times::table
             .filter(schema::times::time.eq(form.time_start.clone()))
@@ -248,7 +248,7 @@ pub struct TimeJson {
 }
 
 impl Time {
-    pub fn get_all() -> Json<Vec<String>> {
+    pub fn get_all() -> Json<Vec<chrono::NaiveDateTime>> {
         let _connection = establish_connection();
         return Json(schema::times::table
             .order(schema::times::time.asc())
