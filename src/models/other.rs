@@ -110,21 +110,17 @@ impl Order {
     pub fn create(form: OrderJson) -> i16 {
         let _connection = establish_connection();
 
-        let time_start: chrono::NaiveDateTime;
-        let time_end: chrono::NaiveDateTime;
+        let time_start: String;
+        let time_end: String;
         let format_start = chrono::NaiveDateTime::parse_from_str(&form.time_start, "%Y-%m-%d %H:%M:%S").unwrap();
         let _new_time = chrono::NaiveDateTime::parse_from_str(&form.time_end, "%Y-%m-%d %H:%M:%S").unwrap();
 
         if crate::times::table
-            .filter(schema::times::time.eq(form.time_start.clone()))
+            .filter(schema::times::time.eq(format_start))
             .select(schema::times::id)
             .first::<i32>(&_connection)
             .is_ok() {
-                time_start = crate::times::table
-                    .filter(schema::times::time.eq(format_start))
-                    .select(schema::times::time)
-                    .first::<String>(&_connection)
-                    .expect();
+                time_start = form.time_start.clone();
         }
         else {
             let new = Time {
@@ -135,7 +131,7 @@ impl Order {
                 .values(&new)
                 .execute(&_connection)
                 .expect("E.");
-            time_start = format_start;
+            time_start = form.time_start.clone();
         }
 
         if crate::times::table
@@ -143,11 +139,7 @@ impl Order {
             .select(schema::times::id)
             .first::<i32>(&_connection)
             .is_ok() {
-                time_end = crate::times::table
-                    .filter(schema::times::time.eq(format_end))
-                    .select(schema::times::time)
-                    .first::<String>(&_connection)
-                    .expect();
+                time_end = form.time_end.clone();
         }
         else {
             let new = Time {
@@ -158,7 +150,7 @@ impl Order {
                 .values(&new)
                 .execute(&_connection)
                 .expect("E.");
-            time_start = format_end;
+            time_end = form.time_end.clone();
         }
 
         let new_order = Order {
@@ -171,7 +163,7 @@ impl Order {
             user_id:    form.user_id.clone(),
             price:      form.price,
             time_start: time_start,
-            time_end:   time_end,
+            time_end:   time_end, 
         }; 
         let _new_order = diesel::insert_into(schema::orders::table)
             .values(&new_order)
