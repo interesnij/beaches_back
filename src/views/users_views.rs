@@ -94,10 +94,10 @@ pub async fn get_partners(req: HttpRequest) -> Json<Vec<crate::models::RespPartn
 }
 
 pub async fn get_moderators(req: HttpRequest) -> Json<Vec<crate::views::UserJson>> {
-    if is_signed_in(&req) {
+    if is_signed_in(&req) { 
         let _request_user = get_current_user(&req);
         if _request_user.is_superuser() {
-            return crate::models::User::get_moderators();
+            return _request_user.get_admins();
         }
         else {
             return Json(Vec::new());
@@ -137,7 +137,7 @@ pub async fn block_user(req: HttpRequest, data: Json<ItemId>) -> impl Responder 
 pub async fn unblock_user(req: HttpRequest, data: Json<ItemId>) -> impl Responder {
     let _request_user = get_current_user(&req);
     if _request_user.perm == 10 {
-        _request_user.delete_user_block(data.id);
+        User::delete_user_block(data.id);
     }
     HttpResponse::Ok()
 }

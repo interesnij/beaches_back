@@ -116,7 +116,7 @@ impl Order {
         let format_start = chrono::NaiveDateTime::parse_from_str(&form.time_start, "%Y-%m-%d %H:%M:%S").unwrap();
         let _new_time = chrono::NaiveDateTime::parse_from_str(&form.time_end, "%Y-%m-%d %H:%M:%S").unwrap();
 
-        if crate::times::table
+        if schema::times::table
             .filter(schema::times::time.eq(format_start))
             .select(schema::times::id)
             .first::<i32>(&_connection)
@@ -135,7 +135,7 @@ impl Order {
             time_start = form.time_start.clone();
         }
 
-        if crate::times::table
+        if schema::times::table
             .filter(schema::times::time.eq(format_end))
             .select(schema::times::id)
             .first::<i32>(&_connection)
@@ -174,6 +174,7 @@ impl Order {
     }
 
     pub fn delete(id: String) -> i16 {
+        let _connection = establish_connection();
         diesel::delete (
             orders
                 .filter(schema::orders::id.eq(&id))
@@ -251,7 +252,7 @@ impl Time {
     }
     pub fn create(form: Json<TimeJson>) -> i16 {
         let _connection = establish_connection();
-        if crate::times::table
+        if schema::times::table
             .filter(schema::times::time.eq(form.time.clone()))
             .select(schema::times::id)
             .first::<i32>(&_connection)

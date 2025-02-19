@@ -19,6 +19,7 @@ use crate::utils::establish_connection;
 use crate::errors::Error;
 use actix_web::web::Json;
 use crate::models::Order;
+use crate::models::UserJson;
 
 
 #[derive(Debug, Queryable, Deserialize, Serialize, Identifiable, Insertable)]
@@ -72,8 +73,9 @@ impl PlaceType {
         return 1;
     }
     pub fn delete(id: String) -> i16 {
+        let _connection = establish_connection();
         diesel::delete (
-            orders
+            place_types
                 .filter(schema::place_types::id.eq(&id))
         )
         .execute(&_connection)
@@ -139,8 +141,9 @@ impl ModuleType {
         return 1;
     }
     pub fn delete(id: String) -> i16 {
+        let _connection = establish_connection();
         diesel::delete (
-            orders
+            module_types
                 .filter(schema::module_types::id.eq(&id))
         )
         .execute(&_connection)
@@ -277,6 +280,7 @@ impl Place {
         return 1;
     }
     pub fn edit(id: String, form: PlaceJson) -> i16 {
+        let _connection = establish_connection();
         let _place = schema::places::table
             .filter(schema::places::id.eq(id))
             .first::<Place>(&_connection)
@@ -293,8 +297,9 @@ impl Place {
         return 1;
     }
     pub fn delete(id: String) -> i16 {
+        let _connection = establish_connection();
         diesel::delete (
-            orders
+            places
                 .filter(schema::places::id.eq(&id))
         )
         .execute(&_connection)
@@ -355,6 +360,7 @@ impl PlaceManager {
         return 1;
     }
     pub fn delete(id: String) -> i16 {
+        let _connection = establish_connection();
         diesel::delete (
             place_managers
                 .filter(schema::place_managers::id.eq(&id))
@@ -476,6 +482,7 @@ impl Module {
     }
 
     pub fn edit(id: String, form: ModuleJson) -> i16 {
+        let _connection = establish_connection();
         let _module = schema::modules::table
             .filter(schema::modules::id.eq(id))
             .first::<Module>(&_connection)
@@ -499,6 +506,7 @@ impl Module {
         return 1;
     }
     pub fn delete(id: String) -> i16 {
+        let _connection = establish_connection();
         diesel::delete (
             modules
                 .filter(schema::modules::id.eq(&id))

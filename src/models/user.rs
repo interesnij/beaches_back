@@ -198,7 +198,9 @@ impl User {
                 .execute(&_connection);
         }))
     }
-
+    pub fn get_uuid(&self) -> User {
+        hex::decode(self.uuid).expect("E.")
+    }
     pub fn create(form: Json<NewUserJson>) -> User {
         let _connection = establish_connection();
         let form_user = User {
@@ -240,7 +242,8 @@ impl User {
                 .execute(&_connection)
                 .expect("E");
         return 1;
-    } 
+    }
+    
     pub fn get_admins(&self) -> Json<Vec<UserJson>> {
         let _connection = establish_connection(); 
         if self.is_superuser() {

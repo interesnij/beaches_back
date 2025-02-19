@@ -82,7 +82,7 @@ pub async fn login(req: HttpRequest, data: Json<LoginUser2>) -> Json<AuthResp2> 
                 email:      _new_user.email.clone(),
                 perm:       _new_user.perm,
                 image:      _new_user.image.clone(),
-                uuid:       _new_user.uuid.clone(),
+                uuid:       _new_user.get_uuid(),
             });   
         },
         Err(err) => {
@@ -115,6 +115,6 @@ pub async fn process_signup(data: Json<NewUserJson>) -> Json<AuthResp2> {
             email:      _new_user.email.clone(),
             perm:       _new_user.perm,
             image:      _new_user.image.clone(),
-            uuid:       _new_user.uuid.clone(),
+            uuid:       _new_user.get_uuid(),
         })
 }
