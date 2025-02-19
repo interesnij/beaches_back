@@ -498,9 +498,10 @@ impl Module {
         return 1;
     }
     pub fn delete(id: String) -> i16 {
+        let my_int = id.parse::<i32>().unwrap();
         diesel::delete (
             modules
-                .filter(schema::modules::id.eq(id))
+                .filter(schema::modules::id.eq(my_int))
         )
         .execute(&_connection)
         .expect("E");
