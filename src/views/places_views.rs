@@ -34,11 +34,11 @@ pub fn places_routes(config: &mut web::ServiceConfig) {
 }
 
 pub async fn get_places(req: HttpRequest) -> Json<Vec<Place>> {
-    return Json(Place::get_all());
+    return Place::get_all();
 }
 
 pub async fn get_place(req: HttpRequest, id: web::Path<String>) -> Json<Place> {
-    return Json(crate::models::Place.get(id.clone()));
+    return crate::models::Place.get(id.clone());
 }
 
 pub async fn get_place_managers(req: HttpRequest, id: web::Path<String>) -> Json<Vec<crate::views::AuthResp>> {
@@ -56,7 +56,7 @@ pub async fn get_place_managers(req: HttpRequest, id: web::Path<String>) -> Json
         Json(Vec::new())
     }
 }
-pub async fn get_place_orders(req: HttpRequest, id: web::Path<String>) -> Json<Vec<RespOrderJson>> {
+pub async fn get_place_orders(req: HttpRequest, id: web::Path<String>) -> Json<Vec<crate::models::RespOrderJson>> {
     if is_signed_in(&req) { 
         let _request_user = get_current_user(&req);
         let _place = Place::get_place(id.clone());
@@ -104,14 +104,14 @@ pub async fn get_closed_places(req: HttpRequest) -> Json<Vec<Place>> {
 pub async fn create_place(req: HttpRequest, data: Json<PlaceJson>) -> Json<i16> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
-        Place::create(data);
+        return Place::create(data);
     }
-    HttpResponse::Ok()
+    0
 }
 pub async fn edit_place(req: HttpRequest, data: Json<PlaceJson>, id: web::Path<String>) -> Json<i16> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
-        Place::edit(id.to_string(), data);
+        return Place::edit(id.to_string(), data);
     }
-    HttpResponse::Ok()
+    0
 }

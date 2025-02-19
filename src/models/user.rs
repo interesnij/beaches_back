@@ -69,7 +69,7 @@ pub struct PlaceListJson {
 }
 
 #[derive(Serialize)]
-pub struct RespOrderJson {
+pub struct RespOrderJson2 {
     pub order:  OrderListJson,
     pub place:  PlaceListJson,
 }
@@ -81,7 +81,7 @@ impl User {
     pub fn is_partner(&self) -> bool {
         return self.perm == 4;
     }
-    pub fn get_orders(&self) -> Json<Vec<crate::models::RespOrderJson>> {
+    pub fn get_orders(&self) -> Json<Vec<RespOrderJson2>> {
         let _connection = establish_connection();
         let list = schema::orders::table
             .filter(schema::orders::user_id.eq(self.id.clone()))
@@ -102,7 +102,7 @@ impl User {
                 time_end:   i.time_end,
             };
 
-            stack.push(crate::models::RespOrderJson {
+            stack.push(crate::models::RespOrderJson2 {
                 order:  _order_item,
                 place:  _place_item,
             });
@@ -155,7 +155,7 @@ impl User {
                 .execute(&_connection);
         }))
     }
-    pub fn edit_owner_partner(form: crate::models::EditOwnerPartnerJson) -> i16 {
+    pub fn edit_owner_partner(form: Json<crate::models::EditOwnerPartnerJson>) -> i16 {
         let _partner = schema::partners::table
             .filter(schema::partners::id.eq(form.id.clone()))
             .first::<Partner>(&_connection)
