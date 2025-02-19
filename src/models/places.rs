@@ -499,7 +499,7 @@ impl Module {
     }
     pub fn delete(id: String) -> i16 {
         let _module = schema::modules::table
-            .filter(schema::modules::id.eq(id))
+            .filter(schema::modules::id.eq(id.to_string()))
             .first::<Module>(&_connection)
             .expect("E");
         //diesel::delete(_module)
