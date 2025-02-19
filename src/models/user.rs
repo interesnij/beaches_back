@@ -41,7 +41,7 @@ pub struct UserJson {
     pub email:      String,
     pub level:      i16,
     pub image:      Option<String>,
-} 
+}  
 #[derive(Deserialize)]
 pub struct EditUserJson {
     pub first_name: String,
@@ -100,7 +100,7 @@ impl User {
                 price:      i.price,
                 time_start: i.time_start,
                 time_end:   i.time_end,
-            }
+            };
 
             stack.push(RespOrderJson {
                 order:  _order_item,
@@ -258,7 +258,7 @@ impl User {
                 .expect("E"));
         }
         else {
-            return Vec::new();
+            return Json(Vec::new());
         }
     }
     pub fn get_partners(&self) -> Json<Vec<UserJson>> {
@@ -278,7 +278,7 @@ impl User {
                 .expect("E"));
         }
         else {
-            return Vec::new();
+            return Json(Vec::new());
         }
     }
     pub fn get_partner_objects(&self) -> Json<Vec<crate::models::Place>> {
@@ -312,7 +312,7 @@ impl User {
                 .expect("E"));
         }
         else {
-            return Vec::new();
+            return Json(Vec::new());
         }
     }
     pub fn get_banned_users(&self) -> Json<Vec<UserJson>> {
@@ -332,7 +332,7 @@ impl User {
                 .expect("E"));
         }
         else {
-            return Vec::new();
+            return Json(Vec::new());
         }
     }
 }
@@ -390,7 +390,7 @@ pub struct EditPartnerJson {
 }
 
 impl Partner {
-    pub fn get_owner(&self, id: String) -> UserJson {
+    pub fn get_owner(&self) -> UserJson {
         let _connection = establish_connection();
         return Json(schema::users::table
             .filter(schema::users::id.eq(self.user_id))
@@ -401,8 +401,8 @@ impl Partner {
                 schema::users::email,
                 schema::users::level,
                 schema::users::image,
-            ))
-            .load::<UserJson>(&_connection)
+            )) 
+            .first::<UserJson>(&_connection)
             .expect("E"));
     }
     pub fn get(id: String) -> Json<RespPartnerJson> {
@@ -417,7 +417,7 @@ impl Partner {
             inn:     item.inn.clone(),
             types:   item.types,
             created: item.created,
-            user:    Partner::get_owner(item.user_id.clone()),
+            user:    item.get_owner(),
         });
     }
     pub fn all() -> Json<Vec<RespPartnerJson>> {
@@ -433,7 +433,7 @@ impl Partner {
                 inn:     i.inn.clone(),
                 types:   i.types,
                 created: i.created,
-                user:    i.get_owner(i.user_id.clone()),
+                user:    i.get_owner(),
             }); 
         }
         return Json(stack);
