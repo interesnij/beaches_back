@@ -144,7 +144,7 @@ impl User {
             )
             .execute(&_connection)
             .expect("E");
-        }
+        
         return 1;
     }
     pub fn create_superuser(user_id: i32) -> Result<(), Error> {
