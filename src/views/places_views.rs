@@ -101,17 +101,17 @@ pub async fn get_closed_places(req: HttpRequest) -> Json<Vec<Place>> {
     }
 }
 
-pub async fn create_place(req: HttpRequest, data: Json<PlaceJson>) -> Json<i16> {
+pub async fn create_place(req: HttpRequest, data: Json<PlaceJson>) -> impl Responder {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
-        return Json(Place::create(data));
+        Place::create(data);
     }
-    Json(0)
+    HttpResponse::Ok()
 }
-pub async fn edit_place(req: HttpRequest, data: Json<PlaceJson>, id: web::Path<String>) -> Json<i16> {
+pub async fn edit_place(req: HttpRequest, data: Json<PlaceJson>, id: web::Path<String>) -> impl Responder {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
-        return Json(Place::edit(id.to_string(), data));
+        Place::edit(id.to_string(), data);
     }
-    Json(0)
+    HttpResponse::Ok()
 }
