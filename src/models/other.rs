@@ -112,6 +112,8 @@ impl Order {
 
         let time_start: String;
         let time_end: String;
+        let format_start = chrono::DateTime::parse_from_str(&form.time_start, "%Y-%m-%d %H:%M:%S %z").unwrap();
+        let _new_time = chrono::DateTime::parse_from_str(&form.time_end, "%Y-%m-%d %H:%M:%S %z").unwrap();
 
         if crate::times::table
             .filter(schema::times::time.eq(form.time_start.clone()))
@@ -119,7 +121,7 @@ impl Order {
             .first::<i32>(&_connection)
             .is_ok() {
                 time_start = crate::times::table
-                    .filter(schema::times::time.eq(form.time_start.clone()))
+                    .filter(schema::times::time.eq(format_start))
                     .select(schema::times::time)
                     .first::<String>(&_connection)
                     .expect();
@@ -127,22 +129,22 @@ impl Order {
         else {
             let new = Time {
                 id:   uuid::Uuid::new_v4().to_string(),
-                time: form.time_start.clone(),
+                time: format_start,
             }; 
             let _new_time = diesel::insert_into(schema::times::table)
                 .values(&new)
                 .execute(&_connection)
                 .expect("E.");
-            time_start = form.time_start.clone();
+            time_start = format_start;
         }
 
         if crate::times::table
-            .filter(schema::times::time.eq(form.time_end.clone()))
+            .filter(schema::times::time.eq(format_end))
             .select(schema::times::id)
             .first::<i32>(&_connection)
             .is_ok() {
                 time_end = crate::times::table
-                    .filter(schema::times::time.eq(form.time_end.clone()))
+                    .filter(schema::times::time.eq(format_end))
                     .select(schema::times::time)
                     .first::<String>(&_connection)
                     .expect();
@@ -150,13 +152,13 @@ impl Order {
         else {
             let new = Time {
                 id:   uuid::Uuid::new_v4().to_string(),
-                time: form.time_end.clone(),
+                time: format_end,
             }; 
             let _new_time = diesel::insert_into(schema::times::table)
                 .values(&new)
                 .execute(&_connection)
                 .expect("E.");
-            time_start = form.time_end.clone();
+            time_start = format_end;
         }
 
         let new_order = Order {
@@ -185,7 +187,9 @@ impl Order {
         )
         .execute(&_connection)
         .expect("E");
+        return 1;
     }
+
 }
 
 #[derive(Debug, Queryable, Deserialize, Serialize, Identifiable, Insertable)]
@@ -249,7 +253,7 @@ impl Time {
         return Json(schema::times::table
             .order(schema::times::time.asc())
             .select(schema::times::time)
-            .load::<String>(&_connection)
+            .load::<chrono::NaiveDateTime>(&_connection)
             .expect("E"));
     }
     pub fn create(form: Json<TimeJson>) -> i16 {

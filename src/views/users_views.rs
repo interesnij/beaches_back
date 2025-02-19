@@ -30,7 +30,7 @@ pub fn user_routes(config: &mut web::ServiceConfig) {
     config.route("/unblock_user/", web::post().to(unblock_user));
     config.route("/create_manager/", web::post().to(create_manager));
     config.route("/delete_manager/", web::post().to(delete_manager));
-    config.route("/edit/", web::post().to(edit_user));
+    //config.route("/edit/", web::post().to(edit_user));
     config.route("/create_partner/", web::post().to(create_partner));
     config.route("/delete_partner/", web::post().to(delete_partner));
     config.route("/change_owner_partner/", web::post().to(change_owner_partner));
@@ -174,13 +174,13 @@ pub async fn delete_partner(req: HttpRequest, data: Json<ItemId>) -> impl Respon
     HttpResponse::Ok()
 }
 
-pub async fn edit_user(req: HttpRequest, data: Json<EditUserJson>) -> impl Responder {
-    if is_signed_in(&req) {
-        let _request_user = get_current_user(&req);
-        User::edit(data);
-    }
-    HttpResponse::Ok()
-}
+//pub async fn edit_user(req: HttpRequest, data: Json<EditUserJson>) -> impl Responder {
+//    if is_signed_in(&req) {
+//        let _request_user = get_current_user(&req);
+//        User::edit(data);
+//    }
+//    HttpResponse::Ok()
+//}
 
 
 pub async fn change_owner_partner(req: HttpRequest, data: Json<crate::models::EditOwnerPartnerJson>) -> impl Responder {

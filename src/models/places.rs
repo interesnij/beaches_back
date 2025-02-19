@@ -78,6 +78,7 @@ impl PlaceType {
         )
         .execute(&_connection)
         .expect("E");
+        return 1;
     }
 }
 
@@ -142,6 +143,7 @@ impl ModuleType {
         )
         .execute(&_connection)
         .expect("E");
+        return 1;
     }
 }
 
@@ -295,6 +297,7 @@ impl Place {
         )
         .execute(&_connection)
         .expect("E");
+        return 1;
     }
     pub fn get_managers(&self) -> Json<Vec<crate::views::UserJson>> {
         let _connection = establish_connection();
@@ -356,6 +359,7 @@ impl PlaceManager {
         )
         .execute(&_connection)
         .expect("E");
+        return 1;
     }
 }
 ///
@@ -386,11 +390,11 @@ pub struct ModuleJson {
     pub place_id:   String,
     pub type_id:    String,
     pub price:      i32,
-    pub _width:     i16,
-    pub _height:    i16,
-    pub _left:      f64,
-    pub _top:       f64,
-    pub _angle:     f64,
+    pub width:      i16,
+    pub height:     i16,
+    pub left:       f64,
+    pub top:        f64,
+    pub angle:      f64,
     pub font_color: String,
     pub font_size:  String,
     pub back_color: String,
@@ -400,11 +404,11 @@ pub struct ModuleJson {
 pub struct EditModuleJson {
     pub title:      String,
     pub price:      i32,
-    pub _width:     i16,
-    pub _height:    i16,
-    pub _left:      f64,
-    pub _top:       f64,
-    pub _angle:     f64,
+    pub width:      i16,
+    pub height:     i16,
+    pub left:       f64,
+    pub top:        f64,
+    pub angle:      f64,
     pub font_color: String,
     pub font_size:  String,
     pub back_color: String,
@@ -500,5 +504,6 @@ impl Module {
         )
         .execute(&_connection)
         .expect("E");
+        return 1;
     }
 }

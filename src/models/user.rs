@@ -368,7 +368,7 @@ pub struct Partner {
     pub created: chrono::NaiveDateTime,
     pub user_id: String,
 }
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct RespPartnerJson {
     pub title:   String,
     pub inn:     String,
@@ -377,13 +377,13 @@ pub struct RespPartnerJson {
     pub user:    UserJson,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct PartnerJson {
     pub title:   String,
     pub inn:     String,
     pub user_id: String,
 }
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct EditPartnerJson {
     pub title: String,
     pub inn:   String,
@@ -474,5 +474,6 @@ impl Partner {
         )
         .execute(&_connection)
         .expect("E");
+        return 1;
     }
 }
