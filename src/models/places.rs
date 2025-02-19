@@ -281,8 +281,8 @@ impl Place {
         let _place = schema::places::table
             .filter(schema::places::id.eq(id))
             .first::<Place>(&_connection)
-            .expect("E.");
-        diesel::update(&_place)
+            .expect("E."); 
+        diesel::update(&_place) 
             .set((
                 schema::places::title.eq(&form.title),
                 schema::places::type_id.eq(&form.type_id),

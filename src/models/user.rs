@@ -33,7 +33,7 @@ pub struct User {
     pub uuid:       Vec<u8>,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Queryable, Serialize)]
 pub struct UserJson {
     pub id:         String,
     pub first_name: String,
@@ -113,7 +113,7 @@ impl User {
         let _connection = establish_connection();
         let place_id = form.place_id.clone();
         let user_id = form.user_id.clone();
-        let _place = crate::models::Place::get_place(place_id);
+        let _place = crate::models::Place::get_place(place_id.clone());
         if &self.id != user_id {
             return 0;
         }
@@ -133,14 +133,14 @@ impl User {
         let _connection = establish_connection();
         let place_id = form.place_id.clone();
         let user_id = form.user_id.clone();
-        let _place = crate::models::Place::get_place(place_id);
+        let _place = crate::models::Place::get_place(place_id.clone());
         if self.id != user_id {
             return 0;
         }
         diesel::delete (
             schema::place_managers::table
                 .filter(schema::place_managers::user_id.eq(user_id))
-                .filter(schema::place_managers::place_id.eq(place_id))
+                .filter(schema::place_managers::place_id.eq(place_id.clone()))
             )
             .execute(&_connection)
             .expect("E");
@@ -392,7 +392,7 @@ pub struct EditPartnerJson {
 impl Partner {
     pub fn get_owner(&self) -> UserJson {
         let _connection = establish_connection();
-        return Json(schema::users::table
+        return schema::users::table
             .filter(schema::users::id.eq(self.user_id))
             .select((
                 schema::users::id,
@@ -403,7 +403,7 @@ impl Partner {
                 schema::users::image,
             )) 
             .first::<UserJson>(&_connection)
-            .expect("E"));
+            .expect("E");
     }
     pub fn get(id: String) -> Json<RespPartnerJson> {
         let _connection = establish_connection();
