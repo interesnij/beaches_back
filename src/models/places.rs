@@ -502,9 +502,9 @@ impl Module {
             .filter(schema::modules::id.eq(id))
             .first::<Module>(&_connection)
             .expect("E");
-        diesel::delete(_module)
-            .execute(&_connection)
-            .expect("E");
+        //diesel::delete(_module)
+        //    .execute(&_connection)
+        //    .expect("E");
         return 1;
     }
 }
