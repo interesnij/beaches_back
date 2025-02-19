@@ -46,7 +46,7 @@ impl PlaceType {
         if schema::place_types::table
             .filter(schema::place_types::title.eq(form.title.clone()))
             .select(schema::place_types::id)
-            .first::<i32>(&_connection)
+            .first::<String>(&_connection)
             .is_ok() {
                 return 0;
         }
@@ -61,7 +61,7 @@ impl PlaceType {
             .expect("E.");
         return 1;
     }
-    pub fn edit(id: String, form: PlaceTypeJson) -> i16 {
+    pub fn edit(id: String, form: Json<PlaceTypeJson>) -> i16 {
         let _type = schema::place_types::table
             .filter(schema::place_types::id.eq(id))
             .first::<PlaceType>(&_connection)
@@ -445,14 +445,14 @@ impl Module {
         if schema::module_types::table
             .filter(schema::module_types::id.eq(form.type_id.clone()))
             .select(schema::module_types::id)
-            .first::<i32>(&_connection)
+            .first::<String>(&_connection)
             .is_err() {
                 return 0;
         }
         if schema::places::table
             .filter(schema::places::id.eq(form.place_id.clone()))
             .select(schema::places::id)
-            .first::<i32>(&_connection)
+            .first::<String>(&_connection)
             .is_err() {
                 return 0;
         }

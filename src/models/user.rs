@@ -85,7 +85,7 @@ impl User {
         let _connection = establish_connection();
         let list = schema::orders::table
             .filter(schema::orders::user_id.eq(self.id.clone()))
-            .load::<Order>(&_connection)
+            .load::<crate::models::Order>(&_connection)
             .expect("E");
         let mut stack = Vec::new();
         for i in list {
@@ -118,7 +118,7 @@ impl User {
             return 0;
         }
         
-        let new_place_manager = PlaceManager {
+        let new_place_manager = crate::models::PlaceManager {
             id:       uuid::Uuid::new_v4().to_string(),
             user_id:  user_id,
             place_id: place_id,
@@ -156,6 +156,7 @@ impl User {
         }))
     }
     pub fn edit_owner_partner(form: Json<crate::models::EditOwnerPartnerJson>) -> i16 {
+        let _connection = establish_connection();
         let _partner = schema::partners::table
             .filter(schema::partners::id.eq(form.id.clone()))
             .first::<Partner>(&_connection)
@@ -199,7 +200,7 @@ impl User {
         }))
     }
     pub fn get_uuid(&self) -> String {
-        hex::encode(self.uuid).expect("E.")
+        hex::encode(self.uuid)
     }
     pub fn create(form: Json<NewUserJson>) -> User {
         let _connection = establish_connection();
@@ -229,6 +230,7 @@ impl User {
         return _new_user;
     }
     pub fn edit(id: String, form: Json<EditUserJson>) -> i16 {
+        let _connection = establish_connection();
         let _user = schema::users::table
             .filter(schema::users::id.eq(id))
             .first::<User>(&_connection)
@@ -460,6 +462,7 @@ impl Partner {
     }
 
     pub fn edit(id: String, form: EditPartnerJson) -> i16 {
+        let _connection = establish_connection();
         let _partner = schema::partners::table
             .filter(schema::partners::id.eq(id))
             .first::<Partner>(&_connection)
@@ -474,6 +477,7 @@ impl Partner {
         return 1;
     }
     pub fn delete(id: String) -> i16 {
+        let _connection = establish_connection();
         diesel::delete (
             orders
                 .filter(schema::partners::id.eq(&id))

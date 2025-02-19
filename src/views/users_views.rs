@@ -6,7 +6,7 @@ use actix_web::{
     web::Json,
 };
 use crate::models::{
-    User, SmallUsers, Partner,
+    User, Partner,
 };
 use serde::{Deserialize, Serialize};
 
@@ -155,11 +155,12 @@ pub async fn delete_manager(req: HttpRequest, data: Json<crate::models::PlaceMan
     }
     HttpResponse::Ok()
 } 
+
 pub async fn create_partner(req: HttpRequest, data: Json<crate::models::PartnerJson>) -> impl Responder {
     if is_signed_in(&req) { 
         let _request_user = get_current_user(&req);
         if _request_user.perm == 10 {
-            Partner::create_partner(data);
+            Partner::create(data);
         }
     }
     HttpResponse::Ok()
@@ -168,7 +169,7 @@ pub async fn delete_partner(req: HttpRequest, data: Json<ItemId>) -> impl Respon
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         if _request_user.perm == 10 { 
-            Partner::delete_partner(data);
+            Partner::delete(data);
         }
     }
     HttpResponse::Ok()
