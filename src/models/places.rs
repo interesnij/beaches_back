@@ -89,12 +89,12 @@ pub struct ModuleType {
     pub id:    String,
     pub title: String,
     pub types: i16,
-    pub image: String,
-}
+    pub image: Option<String>,
+} 
 #[derive(Deserialize)]
 pub struct ModuleTypeJson {
     pub title: String,
-    pub image: String,
+    pub image: Option<String>,
 }
 
 impl ModuleType {

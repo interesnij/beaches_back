@@ -41,7 +41,7 @@ pub struct UserJson {
     pub email:      String,
     pub level:      i16,
     pub image:      Option<String>,
-}
+} 
 #[derive(Deserialize)]
 pub struct EditUserJson {
     pub first_name: String,
@@ -417,23 +417,26 @@ impl Partner {
             inn:     item.inn.clone(),
             types:   item.types,
             created: item.created,
-            user:    Partner::get_owner(i.user_id.clone()),
+            user:    Partner::get_owner(item.user_id.clone()),
         });
     }
-    pub fn all() -> Vec<RespPartnerJson> {
+    pub fn all() -> Json<Vec<RespPartnerJson>> {
         let _connection = establish_connection();
-        let item = schema::partners::table
+        let mut stack = Vec::new();
+        let items = schema::partners::table
             .filter(schema::partners::types.eq(1))
             .load::<Partner>(&_connection)
             .expect("E"); 
-        
-        return Json(RespPartnerJson {
-            title:   item.title.clone(),
-            inn:     item.inn.clone(),
-            types:   item.types,
-            created: item.created,
-            user:    item.get_owner(item.user_id.clone()),
-        });
+        for i in items {
+            stack.push (RespPartnerJson {
+                title:   i.title.clone(),
+                inn:     i.inn.clone(),
+                types:   i.types,
+                created: i.created,
+                user:    i.get_owner(i.user_id.clone()),
+            }); 
+        }
+        return Json(stack);
     }
     pub fn create(form: Json<PartnerJson>) -> i16 {
         let _connection = establish_connection();
