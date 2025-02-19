@@ -10,7 +10,7 @@ perm - статус пользователя
 21 заблокированный
 */
 CREATE TABLE users (
-    id         VARCHAR(50) PRIMARY KEY,
+    id         TEXT PRIMARY KEY,
     first_name VARCHAR(100) NOT NULL,
     last_name  VARCHAR(100) NOT NULL,
     email      VARCHAR(100) NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE partners (
-    id       VARCHAR(100) PRIMARY KEY,
+    id       TEXT PRIMARY KEY,
     title    VARCHAR(100) NOT NULL,
     inn      VARCHAR(100) NOT NULL,
     types    SMALLINT NOT NULL,
@@ -33,7 +33,7 @@ CREATE TABLE partners (
 
 -- обратная связь
 CREATE TABLE feedbacks (
-    id       VARCHAR(50) PRIMARY KEY,
+    id       TEXT PRIMARY KEY,
     username VARCHAR(100) NOT NULL,
     email    VARCHAR(200) NOT NULL,
     message  VARCHAR(1000) NOT NULL
@@ -41,7 +41,7 @@ CREATE TABLE feedbacks (
 
 -- типы объекта с модулями
 CREATE TABLE place_types (
-    id    VARCHAR(100) PRIMARY KEY,
+    id    TEXT PRIMARY KEY,
     title VARCHAR(100) NOT NULL
 );
 
@@ -54,7 +54,7 @@ types
 3 закрыто
 */
 CREATE TABLE places (
-    id       VARCHAR(100) PRIMARY KEY,
+    id       TEXT PRIMARY KEY,
     title    VARCHAR(100) NOT NULL,
     types    SMALLINT NOT NULL,
     created  TIMESTAMP NOT NULL,
@@ -66,7 +66,7 @@ CREATE TABLE places (
 
 /* */
 CREATE TABLE place_managers (
-    id        VARCHAR(100) PRIMARY KEY,
+    id        TEXT PRIMARY KEY,
     user_id   VARCHAR(50) NOT NULL,
     place_id  VARCHAR(50) NOT NULL
 ); 
@@ -80,7 +80,7 @@ types
 3 закрыто
 */
 CREATE TABLE module_types (
-    id       VARCHAR(100) PRIMARY KEY,
+    id       TEXT PRIMARY KEY,
     title    VARCHAR(100) NOT NULL,
     types    SMALLINT NOT NULL,     -- 1 открыто, 2 редактирование, 3 закрыто
     image    VARCHAR(500)
@@ -88,13 +88,13 @@ CREATE TABLE module_types (
 
 -- временная метка
 CREATE TABLE times (
-    id   VARCHAR(100) PRIMARY KEY,
+    id   TEXT PRIMARY KEY,
     time TIMESTAMP NOT NULL
 );
 
 -- модули для конструктора
 CREATE TABLE modules (
-    id          SERIAL PRIMARY KEY,
+    id          TEXT PRIMARY KEY,
     title       VARCHAR(100) NOT NULL,
     types       SMALLINT NOT NULL,
     place_id    VARCHAR(50) NOT NULL,
@@ -113,7 +113,7 @@ CREATE TABLE modules (
 
 -- заказы / бронирование
 CREATE TABLE orders (
-    id         VARCHAR(50) PRIMARY KEY,
+    id         TEXT PRIMARY KEY,
     title      VARCHAR(100) NOT NULL,
     types      SMALLINT NOT NULL,    -- 1 услуга, 2 товар, 3 работа
     place_id   VARCHAR(50) NOT NULL,
@@ -127,7 +127,7 @@ CREATE TABLE orders (
 
 -- логи
 CREATE TABLE logs (
-    id        VARCHAR(100) PRIMARY KEY,
+    id        TEXT PRIMARY KEY,
     user_id   VARCHAR(50) NOT NULL,
     text      VARCHAR(100) NOT NULL,
     order_id  VARCHAR(50) NOT NULL,
