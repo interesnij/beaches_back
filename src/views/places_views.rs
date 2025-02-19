@@ -121,16 +121,3 @@ pub async fn edit_place(req: HttpRequest, data: Json<PlaceJson>) -> impl Respond
     }
     HttpResponse::Ok()
 }
-
-#[derive(Deserialize, Serialize)]
-pub struct PlaceId {
-    pub id:  i32,
-}
-
-pub async fn deletereq: HttpRequest, data: Json<ItemId>) -> impl Responder {
-    if is_signed_in(&req) {
-        let _request_user = get_current_user(&req);
-        _request_user.create_user_block(data.id);
-    }
-    HttpResponse::Ok()
-}
