@@ -119,7 +119,7 @@ impl User {
         }
         
         let new_place_manager = PlaceManager {
-            id:       uuid::Uuid::new_v4(),
+            id:       uuid::Uuid::new_v4().to_string(),
             user_id:  form.user_id.clone(),
             place_id: form.place_id.clone(),
         }; 
@@ -202,7 +202,7 @@ impl User {
     pub fn create(form: Json<NewUserJson>) -> User {
         let _connection = establish_connection();
         let form_user = User {
-            id:         uuid::Uuid::new_v4(),
+            id:         uuid::Uuid::new_v4().to_string(),
             first_name: form.first_name.clone(),
             last_name:  form.last_name.clone(),
             email:      form.email.clone(),
@@ -439,7 +439,7 @@ impl Partner {
         let _connection = establish_connection();
         
         let new = Partner {
-            id:      uuid::Uuid::new_v4(),
+            id:      uuid::Uuid::new_v4().to_string(),
             title:   form.title.clone(),
             inn:     form.inn.clone(),
             types:   1,

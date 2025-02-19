@@ -141,21 +141,21 @@ pub async fn unblock_user(req: HttpRequest, data: Json<ItemId>) -> impl Responde
     }
     HttpResponse::Ok()
 }
-pub async fn create_manager(req: HttpRequest, data: crate::models::PlaceManagerJson) -> impl Responder {
+pub async fn create_manager(req: HttpRequest, data: Json<crate::models::PlaceManagerJson>) -> impl Responder {
     if is_signed_in(&req) { 
         let _request_user = get_current_user(&req);
         _request_user.create_manager(data);
     }
     HttpResponse::Ok()
 }
-pub async fn delete_manager(req: HttpRequest, data: crate::models::PlaceManagerJson) -> impl Responder {
+pub async fn delete_manager(req: HttpRequest, data: Json<crate::models::PlaceManagerJson>) -> impl Responder {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         _request_user.delete_manager(data);
     }
     HttpResponse::Ok()
 } 
-pub async fn create_partner(req: HttpRequest, data: crate::models::PartnerJson) -> impl Responder {
+pub async fn create_partner(req: HttpRequest, data: Json<crate::models::PartnerJson>) -> impl Responder {
     if is_signed_in(&req) { 
         let _request_user = get_current_user(&req);
         if _request_user.perm == 10 {

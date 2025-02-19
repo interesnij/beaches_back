@@ -46,7 +46,7 @@ impl Feedback {
     pub fn create(form: Json<FeedbackJson>) -> i16 {
         let _connection = establish_connection();
         let new_feedback = Feedback {
-            id:       uuid::Uuid::new_v4(),
+            id:       uuid::Uuid::new_v4().to_string(),
             username: form.username.clone(),
             email:    form.email.clone(),
             message:  form.message
@@ -126,7 +126,7 @@ impl Order {
         }
         else {
             let new = Time {
-                id:   uuid::Uuid::new_v4(),
+                id:   uuid::Uuid::new_v4().to_string(),
                 time: form.time_start.clone(),
             }; 
             let _new_time = diesel::insert_into(schema::times::table)
@@ -149,7 +149,7 @@ impl Order {
         }
         else {
             let new = Time {
-                id:   uuid::Uuid::new_v4(),
+                id:   uuid::Uuid::new_v4().to_string(),
                 time: form.time_end.clone(),
             }; 
             let _new_time = diesel::insert_into(schema::times::table)
@@ -160,7 +160,7 @@ impl Order {
         }
 
         let new_order = Order {
-            id:         uuid::Uuid::new_v4(),
+            id:         uuid::Uuid::new_v4().to_string(),
             title:      form.title.clone(),
             types:      1,
             place_id:   form.place_id.clone(),
@@ -216,7 +216,7 @@ impl Log {
     pub fn create(form: Json<LogJson>) -> i16 {
         let _connection = establish_connection();
         let new_log = Log {
-            id:       uuid::Uuid::new_v4(),
+            id:       uuid::Uuid::new_v4().to_string(),
             user_id:  form.user_id.clone(),
             text:     form.text.clone(),
             order_id: form.order_id.clone(),
@@ -263,7 +263,7 @@ impl Time {
         }
 
         let new_time = Time {
-            id:   uuid::Uuid::new_v4(),
+            id:   uuid::Uuid::new_v4().to_string(),
             time: form.time.clone(),
         }; 
         let _new_time = diesel::insert_into(schema::times::table)

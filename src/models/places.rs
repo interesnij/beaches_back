@@ -51,7 +51,7 @@ impl PlaceType {
         }
 
         let new_place_type = PlaceType {
-            id:    uuid::Uuid::new_v4(),
+            id:    uuid::Uuid::new_v4().to_string(),
             title: form.title.clone(),
         }; 
         let _place_type = diesel::insert_into(schema::place_types::table)
@@ -113,7 +113,7 @@ impl ModuleType {
         }
 
         let new_place_type = ModuleType {
-            id:    uuid::Uuid::new_v4(),
+            id:    uuid::Uuid::new_v4().to_string(),
             title: form.title.clone(),
             types: 1,
             image: form.image.clone(),
@@ -257,7 +257,7 @@ impl Place {
         let _connection = establish_connection();
         
         let new_place = Place {
-            id:      uuid::Uuid::new_v4(),
+            id:      uuid::Uuid::new_v4().to_string(),
             title:   form.title.clone(),
             types:   1,
             created: chrono::Local::now().naive_utc(),
@@ -339,7 +339,7 @@ impl PlaceManager {
         let _connection = establish_connection();
         
         let new_place_manager = PlaceManager {
-            id:       uuid::Uuid::new_v4(),
+            id:       uuid::Uuid::new_v4().to_string(),
             user_id:  form.user_id.clone(),
             place_id: form.place_id.clone(),
         }; 
@@ -446,7 +446,7 @@ impl Module {
         }
         
         let new_module = Module {
-            id:         uuid::Uuid::new_v4(),
+            id:         uuid::Uuid::new_v4().to_string(),
             title:      form.title.clone(),
             types:      1,
             created:    chrono::Local::now().naive_utc(),
