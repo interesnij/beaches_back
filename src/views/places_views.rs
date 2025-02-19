@@ -28,7 +28,7 @@ pub fn places_routes(config: &mut web::ServiceConfig) {
     config.route("/closed_places/", web::get().to(get_closed_places));
 
     config.route("/create_place/", web::post().to(create_place));
-    config.route("/edit_place/", web::post().to(edit_place));
+    config.route("/edit_place/{id}", web::post().to(edit_place));
     //config.route("/close_place/", web::post().to(close_place));
     //config.route("/hide_place/", web::post().to(hide_place));
 }
@@ -48,7 +48,7 @@ pub async fn get_place_managers(req: HttpRequest, id: web::Path<String>) -> Json
         let _request_user = get_current_user(&req);
         let _place = Place::get(id.clone());
         if _place.user_id.clone() == _request_user.id {
-            return Json(Place::get_managers(id.clone()));
+            return Place::get_managers(id.clone());
         }
         else {
             return Json(Vec::new());
@@ -63,7 +63,7 @@ pub async fn get_place_orders(req: HttpRequest, id: web::Path<String>) -> Json<V
         let _request_user = get_current_user(&req);
         let _place = Place::get_place(id.clone());
         if _place.user_id.clone() == _request_user.id {
-            return Json(Place::get_orders(_place.id));
+            return Place::get_orders(_place.id);
         }
         else {
             return Json(Vec::new());
@@ -78,7 +78,7 @@ pub async fn get_suggest_places(req: HttpRequest) -> Json<Vec<Place>> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         if _request_user.is_superuser() {
-            return Json(Place::get_suggest());
+            return Place::get_suggest();
         }
         else {
             return Json(Vec::new());
@@ -92,7 +92,7 @@ pub async fn get_closed_places(req: HttpRequest) -> Json<Vec<Place>> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         if _request_user.is_superuser() {
-            return Json(Place::get_closed());
+            return Place::get_closed();
         }
         else {
             return Json(Vec::new());
@@ -110,10 +110,10 @@ pub async fn create_place(req: HttpRequest, data: Json<PlaceJson>) -> impl Respo
     }
     HttpResponse::Ok()
 }
-pub async fn edit_place(req: HttpRequest, data: Json<PlaceJson>) -> impl Responder {
+pub async fn edit_place(req: HttpRequest, data: Json<PlaceJson>, id: web::Path<String>) -> impl Responder {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
-        Place::edit(data);
+        Place::edit(id.to_string(), data);
     }
     HttpResponse::Ok()
 }

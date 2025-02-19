@@ -107,12 +107,12 @@ impl User {
                 place:  _place_item,
             });
         }
-        return stack;
+        return Json(stack);
     }
     pub fn create_manager(&self, form: Json<crate::models::PlaceManagerJson>) -> i16 {
         let _connection = establish_connection();
-        let place_id = &form.place_id;
-        let user_id = &form.user_id;
+        let place_id = form.place_id.clone();
+        let user_id = form.user_id.clone();
         let _place = crate::models::Place::get_place(place_id);
         if &self.id != user_id {
             return 0;
@@ -120,8 +120,8 @@ impl User {
         
         let new_place_manager = PlaceManager {
             id:       uuid::Uuid::new_v4().to_string(),
-            user_id:  form.user_id.clone(),
-            place_id: form.place_id.clone(),
+            user_id:  user_id,
+            place_id: place_id,
         }; 
         let _place_manager = diesel::insert_into(schema::place_managers::table)
             .values(&new_place_manager)
@@ -131,10 +131,10 @@ impl User {
     }
     pub fn delete_manager(&self, form: Json<crate::models::PlaceManagerJson>) -> i16 {
         let _connection = establish_connection();
-        let place_id = &form.place_id;
-        let user_id = &form.user_id;
+        let place_id = form.place_id.clone();
+        let user_id = form.user_id.clone();
         let _place = crate::models::Place::get_place(place_id);
-        if &self.id != user_id {
+        if self.id != user_id {
             return 0;
         }
         diesel::delete (
