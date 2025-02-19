@@ -109,7 +109,7 @@ pub async fn process_signup(data: Json<NewUserJson>) -> Json<AuthResp2> {
 
         println!("Yes!");
         return Json(AuthResp2 {
-            id:         _new_user.id,
+            id:         _new_user.id.clone(),
             first_name: _new_user.first_name.clone(),
             last_name:  _new_user.last_name.clone(),
             email:      _new_user.email.clone(),

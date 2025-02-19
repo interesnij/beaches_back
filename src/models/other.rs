@@ -87,7 +87,7 @@ pub struct OrderJson {
 impl Order {
     pub fn get_client(&self) -> UserJson {
         let _connection = establish_connection();
-        return Json(schema::users::table
+        return schema::users::table
             .filter(schema::users::id.eq(self.id))
             .select((
                 schema::users::id,
@@ -98,7 +98,7 @@ impl Order {
                 schema::users::image,
             ))
             .load::<UserJson>(&_connection)
-            .expect("E"));
+            .expect("E");
     }
     pub fn get_for_place(id: String) -> Json<Vec<Order>> {
         let _connection = establish_connection();
@@ -113,7 +113,7 @@ impl Order {
         let time_start: String;
         let time_end: String;
         let format_start = chrono::NaiveDateTime::parse_from_str(&form.time_start, "%Y-%m-%d %H:%M:%S").unwrap();
-        let _new_time = chrono::NaiveDateTime::parse_from_str(&form.time_end, "%Y-%m-%d %H:%M:%S").unwrap();
+        let format_end = chrono::NaiveDateTime::parse_from_str(&form.time_end, "%Y-%m-%d %H:%M:%S").unwrap();
 
         if schema::times::table
             .filter(schema::times::time.eq(format_start))

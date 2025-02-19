@@ -65,7 +65,7 @@ pub struct OrderListJson {
 pub struct PlaceListJson {
     pub title: String,
     pub image: Option<String>,
-    pub cord:  String,
+    pub cord:  Option<String>,
 }
 
 #[derive(Serialize)]

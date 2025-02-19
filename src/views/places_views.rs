@@ -38,7 +38,7 @@ pub async fn get_places(req: HttpRequest) -> Json<Vec<Place>> {
 }
 
 pub async fn get_place(req: HttpRequest, id: web::Path<String>) -> Json<Place> {
-    return crate::models::Place.get(id.clone());
+    return Place.get(id.clone());
 }
 
 pub async fn get_place_managers(req: HttpRequest, id: web::Path<String>) -> Json<Vec<crate::views::AuthResp>> {
