@@ -226,7 +226,7 @@ impl User {
         }
         return _new_user;
     }
-    pub fn edit(id: String, form: EditUserJson) -> i16 {
+    pub fn edit(id: String, form: Json<EditUserJson>) -> i16 {
         let _user = schema::users::table
             .filter(schema::users::id.eq(id))
             .first::<User>(&_connection)

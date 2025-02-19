@@ -82,7 +82,7 @@ pub async fn get_partners(req: HttpRequest) -> Json<Vec<crate::models::RespPartn
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         if _request_user.is_superuser() {
-            return Json(crate::models::Partner::all());
+            return crate::models::Partner::all();
         } 
         else {
             return Json(Vec::new());

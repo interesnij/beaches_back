@@ -49,7 +49,7 @@ impl Feedback {
             id:       uuid::Uuid::new_v4().to_string(),
             username: form.username.clone(),
             email:    form.email.clone(),
-            message:  form.message
+            message:  form.message.clone()
         }; 
         let _new_feedback = diesel::insert_into(schema::feedbacks::table)
             .values(&new_feedback)
@@ -240,7 +240,7 @@ pub struct Time {
 }
 #[derive(Deserialize)]
 pub struct TimeJson {
-    pub time: String,
+    pub time: chrono::NaiveDateTime,
 }
 
 impl Time {
