@@ -97,7 +97,7 @@ impl Order {
                 schema::users::level,
                 schema::users::image,
             ))
-            .load::<UserJson>(&_connection)
+            .first::<UserJson>(&_connection)
             .expect("E");
     }
     pub fn get_for_place(id: String) -> Json<Vec<Order>> {
@@ -137,7 +137,7 @@ impl Order {
         if schema::times::table
             .filter(schema::times::time.eq(format_end))
             .select(schema::times::id)
-            .first::<i32>(&_connection)
+            .first::<String>(&_connection)
             .is_ok() {
                 time_end = form.time_end.clone();
         }
@@ -231,7 +231,7 @@ impl Log {
 
 #[derive(Debug, Queryable, Deserialize, Serialize, Identifiable, Insertable)]
 #[table_name="times"]
-pub struct Time {
+pub struct Time as OtherTime {
     pub id:   String,
     pub time: chrono::NaiveDateTime,
 }
@@ -240,7 +240,7 @@ pub struct TimeJson {
     pub time: chrono::NaiveDateTime,
 }
 
-impl Time {
+impl OtherTime {
     pub fn get_all() -> Json<Vec<chrono::NaiveDateTime>> {
         let _connection = establish_connection();
         return Json(schema::times::table
@@ -259,7 +259,7 @@ impl Time {
                 return 0;
         }
 
-        let new_time = Time {
+        let new_time = OtherTime {
             id:   uuid::Uuid::new_v4().to_string(),
             time: form.time.clone(),
         }; 

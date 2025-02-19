@@ -6,6 +6,7 @@ pub mod schema;
 pub mod models;
 pub mod routes;
 mod errors;
+mod api_error;
 mod vars;
  
 use actix_web::{

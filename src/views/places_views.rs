@@ -38,10 +38,10 @@ pub async fn get_places(req: HttpRequest) -> Json<Vec<Place>> {
 }
 
 pub async fn get_place(req: HttpRequest, id: web::Path<String>) -> Json<Place> {
-    return Place.get(id.clone());
+    return Place::get(id.clone());
 }
 
-pub async fn get_place_managers(req: HttpRequest, id: web::Path<String>) -> Json<Vec<crate::views::AuthResp>> {
+pub async fn get_place_managers(req: HttpRequest, id: web::Path<String>) -> Json<Vec<crate::models::UserJson>> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         let _place = Place::get(id.clone());

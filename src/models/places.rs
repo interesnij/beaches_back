@@ -56,12 +56,13 @@ impl PlaceType {
             title: form.title.clone(),
         }; 
         let _place_type = diesel::insert_into(schema::place_types::table)
-            .values(&place_type)
+            .values(&new_place_type)
             .execute(&_connection)
             .expect("E.");
         return 1;
     }
     pub fn edit(id: String, form: Json<PlaceTypeJson>) -> i16 {
+        let _connection = establish_connection();
         let _type = schema::place_types::table
             .filter(schema::place_types::id.eq(id))
             .first::<PlaceType>(&_connection)
@@ -109,7 +110,7 @@ impl ModuleType {
     pub fn create(form: Json<ModuleTypeJson>) -> i16 {
         let _connection = establish_connection();
 
-        if crate::module_types::table
+        if schema::module_types::table
             .filter(schema::module_types::title.eq(form.title.clone()))
             .select(schema::module_types::id)
             .first::<i32>(&_connection)
@@ -124,12 +125,13 @@ impl ModuleType {
             image: form.image.clone(),
         }; 
         let _place_type = diesel::insert_into(schema::module_types::table)
-            .values(&place_type)
+            .values(&new_place_type)
             .execute(&_connection)
             .expect("E.");
         return 1;
     }
     pub fn edit(id: String, form: ModuleTypeJson) -> i16 {
+        let _connection = establish_connection();
         let _type = schema::module_types::table
             .filter(schema::module_types::id.eq(id))
             .first::<ModuleType>(&_connection)
