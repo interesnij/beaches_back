@@ -180,7 +180,7 @@ pub struct EditPlaceJson {
     pub cord:    Option<String>,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize)]
 pub struct RespOrderJson {
     pub title:      String,
     pub place_id:   String,

@@ -41,7 +41,7 @@ pub fn user_routes(config: &mut web::ServiceConfig) {
 pub async fn get_orders(req: HttpRequest) -> Json<Vec<crate::models::RespOrderJson>> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
-        return Json(_request_user.get_orders());
+        return _request_user.get_orders();
     }
     else {
         Json(Vec::new())
@@ -52,7 +52,7 @@ pub async fn get_admins(req: HttpRequest) -> Json<Vec<crate::views::AuthResp>> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         if _request_user.is_superuser() {
-            return Json(_request_user.get_admins());
+            return _request_user.get_admins();
         }
         else {
             return Json(Vec::new());
@@ -67,8 +67,8 @@ pub async fn get_users(req: HttpRequest) -> Json<Vec<crate::views::AuthResp>> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         if _request_user.perm == 10 || _request_user.perm == 5 {
-            return Json(_request_user.get_users());
-        }
+            return _request_user.get_users();
+        } 
         else {
             return Json(Vec::new());
         }
@@ -97,7 +97,7 @@ pub async fn get_moderators(req: HttpRequest) -> Json<Vec<crate::views::AuthResp
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         if _request_user.is_superuser() {
-            return Json(crate::models::User::get_moderators());
+            return crate::models::User::get_moderators();
         }
         else {
             return Json(Vec::new());
@@ -112,7 +112,7 @@ pub async fn get_banned_users(req: HttpRequest) -> Json<Vec<crate::views::AuthRe
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         if _request_user.is_superuser() {
-            return Json(_request_user.get_banned_users());
+            return _request_user.get_banned_users();
         }
         else {
             return Json(Vec::new());

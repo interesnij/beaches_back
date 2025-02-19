@@ -104,14 +104,14 @@ pub async fn get_closed_places(req: HttpRequest) -> Json<Vec<Place>> {
 pub async fn create_place(req: HttpRequest, data: Json<PlaceJson>) -> Json<i16> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
-        return Place::create(data);
+        return Json(Place::create(data));
     }
-    0
+    Json(0)
 }
 pub async fn edit_place(req: HttpRequest, data: Json<PlaceJson>, id: web::Path<String>) -> Json<i16> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
-        return Place::edit(id.to_string(), data);
+        return Json(Place::edit(id.to_string(), data));
     }
-    0
+    Json(0)
 }
