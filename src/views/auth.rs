@@ -76,7 +76,7 @@ pub async fn login(req: HttpRequest, data: Json<LoginUser2>) -> Json<AuthResp2> 
     match result {
         Ok(_new_user) => {
             return Json(AuthResp2 { 
-                id:         _new_user.id,
+                id:         _new_user.id.clone(),
                 first_name: _new_user.first_name.clone(),
                 last_name:  _new_user.last_name.clone(),
                 email:      _new_user.email.clone(),
@@ -87,7 +87,7 @@ pub async fn login(req: HttpRequest, data: Json<LoginUser2>) -> Json<AuthResp2> 
         },
         Err(err) => {
             return Json(AuthResp2 {
-                id:         0,
+                id:         "".to_string(),
                 first_name: "".to_string(),
                 last_name:  "".to_string(),
                 email:      "".to_string(),

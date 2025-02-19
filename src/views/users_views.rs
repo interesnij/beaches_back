@@ -6,7 +6,7 @@ use actix_web::{
     web::Json,
 };
 use crate::models::{
-    User, SmallUsers,
+    User, SmallUsers, Partner,
 };
 use serde::{Deserialize, Serialize};
 

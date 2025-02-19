@@ -6,7 +6,7 @@ use actix_web::{
     web::Json,
 };
 use crate::models::{
-    User, Place,
+    User, Place, PlaceJson
 };
 use serde::{Deserialize, Serialize};
 
@@ -104,7 +104,7 @@ pub async fn get_closed_places(req: HttpRequest) -> Json<Vec<Place>> {
 pub async fn create_place(req: HttpRequest, data: Json<PlaceJson>) -> impl Responder {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
-        Place::create(data);
+        Place::create(data); 
     }
     HttpResponse::Ok()
 }

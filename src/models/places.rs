@@ -43,7 +43,7 @@ impl PlaceType {
     pub fn create(form: Json<PlaceTypeJson>) -> i16 {
         let _connection = establish_connection();
 
-        if crate::place_types::table
+        if schema::place_types::table
             .filter(schema::place_types::title.eq(form.title.clone()))
             .select(schema::place_types::id)
             .first::<i32>(&_connection)
@@ -207,7 +207,7 @@ impl Place {
                 title:      i.title.clone(),
                 place_id:   i.place_id.clone(),
                 object_id:  i.object_id.clone(),
-                user:       i.get_client(i.user_id.clone()),
+                user:       i.get_client(),
                 price:      i.price,
                 time_start: i.time_start.clone(),
                 time_end:   i.time_end.clone(),
@@ -442,14 +442,14 @@ impl Module {
     pub fn create(form: Json<ModuleJson>) -> i16 {
         let _connection = establish_connection();
 
-        if crate::module_types::table
+        if schema::module_types::table
             .filter(schema::module_types::id.eq(form.type_id.clone()))
             .select(schema::module_types::id)
             .first::<i32>(&_connection)
             .is_err() {
                 return 0;
         }
-        if crate::places::table
+        if schema::places::table
             .filter(schema::places::id.eq(form.place_id.clone()))
             .select(schema::places::id)
             .first::<i32>(&_connection)
@@ -508,7 +508,7 @@ impl Module {
     pub fn delete(id: String) -> i16 {
         let _connection = establish_connection();
         diesel::delete (
-            modules
+            schema::modules::table
                 .filter(schema::modules::id.eq(&id))
         )
         .execute(&_connection)

@@ -199,7 +199,7 @@ impl User {
         }))
     }
     pub fn get_uuid(&self) -> String {
-        hex::decode(self.uuid).expect("E.")
+        hex::encode(self.uuid).expect("E.")
     }
     pub fn create(form: Json<NewUserJson>) -> User {
         let _connection = establish_connection();
@@ -356,7 +356,7 @@ pub struct UserChange {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SessionUser {
-    pub id:    i32,
+    pub id:    String,
     pub email: String,
 }
 
