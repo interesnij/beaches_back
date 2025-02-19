@@ -91,10 +91,10 @@ impl User {
         for i in list {
             let _place = crate::models::Place::get_place(i.place_id.clone());
             let _place_item = PlaceListJson {
-                title: i.title.clone(),
-                image: i.image.clone(),
-                cord:  i.cord.clone(),
-            };
+                title: _place.title.clone(),
+                image: _place.image.clone(),
+                cord:  _place.cord.clone(),
+            }; 
             let _order_item = OrderListJson {
                 object_id:  i.title.clone(),
                 price:      i.price,
@@ -200,7 +200,7 @@ impl User {
         }))
     }
     pub fn get_uuid(&self) -> String {
-        hex::encode(self.uuid)
+        hex::encode(self.uuid.clone())
     }
     pub fn create(form: Json<NewUserJson>) -> User {
         let _connection = establish_connection();
@@ -479,7 +479,7 @@ impl Partner {
     pub fn delete(id: String) -> i16 {
         let _connection = establish_connection();
         diesel::delete (
-            orders
+            schema::partners::table
                 .filter(schema::partners::id.eq(&id))
         )
         .execute(&_connection)

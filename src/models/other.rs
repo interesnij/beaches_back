@@ -18,7 +18,7 @@ use crate::utils::establish_connection;
 use crate::errors::Error;
 use actix_web::web::Json;
 use crate::models::Time;
-use crate::views::UserJson;
+use crate::models::UserJson;
 
 
 #[derive(Debug, Queryable, Deserialize, Serialize, Identifiable, Insertable)]
@@ -175,7 +175,7 @@ impl Order {
     pub fn delete(id: String) -> i16 {
         let _connection = establish_connection();
         diesel::delete (
-            orders
+            schema::orders::table
                 .filter(schema::orders::id.eq(&id))
         )
         .execute(&_connection)

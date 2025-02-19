@@ -75,7 +75,7 @@ impl PlaceType {
     pub fn delete(id: String) -> i16 {
         let _connection = establish_connection();
         diesel::delete (
-            place_types
+            schema::place_types::table
                 .filter(schema::place_types::id.eq(&id))
         )
         .execute(&_connection)
@@ -143,7 +143,7 @@ impl ModuleType {
     pub fn delete(id: String) -> i16 {
         let _connection = establish_connection();
         diesel::delete (
-            module_types
+            schema::module_types::table
                 .filter(schema::module_types::id.eq(&id))
         )
         .execute(&_connection)
@@ -279,7 +279,7 @@ impl Place {
             .expect("E.");
         return 1;
     }
-    pub fn edit(id: String, form: PlaceJson) -> i16 {
+    pub fn edit(id: String, form: Json<PlaceJson>) -> i16 { 
         let _connection = establish_connection();
         let _place = schema::places::table
             .filter(schema::places::id.eq(id))
@@ -299,14 +299,14 @@ impl Place {
     pub fn delete(id: String) -> i16 {
         let _connection = establish_connection();
         diesel::delete (
-            places
+            schema::places::table
                 .filter(schema::places::id.eq(&id))
         )
         .execute(&_connection)
         .expect("E");
         return 1;
     }
-    pub fn get_managers(&self) -> Json<Vec<crate::views::UserJson>> {
+    pub fn get_managers(&self) -> Json<Vec<crate::models::UserJson>> {
         let _connection = establish_connection();
         let users_ids = schema::place_managers::table
             .filter(schema::place_managers::place_id.eq(self.id.clone()))
@@ -324,7 +324,7 @@ impl Place {
                 schema::users::level,
                 schema::users::image,
             ))
-            .load::<crate::views::UserJson>(&_connection)
+            .load::<crate::models::UserJson>(&_connection)
             .expect("E"));
     }
 }
@@ -362,7 +362,7 @@ impl PlaceManager {
     pub fn delete(id: String) -> i16 {
         let _connection = establish_connection();
         diesel::delete (
-            place_managers
+            schema::place_managers::table
                 .filter(schema::place_managers::id.eq(&id))
         )
         .execute(&_connection)

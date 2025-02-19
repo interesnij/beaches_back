@@ -48,7 +48,7 @@ pub async fn get_orders(req: HttpRequest) -> Json<Vec<crate::models::RespOrderJs
     }
 }
 
-pub async fn get_admins(req: HttpRequest) -> Json<Vec<crate::views::UserJson>> {
+pub async fn get_admins(req: HttpRequest) -> Json<Vec<crate::models::UserJson>> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         if _request_user.is_superuser() {
@@ -63,7 +63,7 @@ pub async fn get_admins(req: HttpRequest) -> Json<Vec<crate::views::UserJson>> {
     }
 }
 
-pub async fn get_users(req: HttpRequest) -> Json<Vec<crate::views::UserJson>> {
+pub async fn get_users(req: HttpRequest) -> Json<Vec<crate::models::UserJson>> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         if _request_user.perm == 10 || _request_user.perm == 5 {
@@ -93,7 +93,7 @@ pub async fn get_partners(req: HttpRequest) -> Json<Vec<crate::models::RespPartn
     }
 }
 
-pub async fn get_moderators(req: HttpRequest) -> Json<Vec<crate::views::UserJson>> {
+pub async fn get_moderators(req: HttpRequest) -> Json<Vec<crate::models::UserJson>> {
     if is_signed_in(&req) { 
         let _request_user = get_current_user(&req);
         if _request_user.is_superuser() {
@@ -108,7 +108,7 @@ pub async fn get_moderators(req: HttpRequest) -> Json<Vec<crate::views::UserJson
     }
 }
 
-pub async fn get_banned_users(req: HttpRequest) -> Json<Vec<crate::views::UserJson>> {
+pub async fn get_banned_users(req: HttpRequest) -> Json<Vec<crate::models::UserJson>> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         if _request_user.is_superuser() {
@@ -169,7 +169,7 @@ pub async fn delete_partner(req: HttpRequest, data: Json<ItemId>) -> impl Respon
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         if _request_user.perm == 10 { 
-            Partner::delete(data);
+            Partner::delete(data.id.clone());
         }
     }
     HttpResponse::Ok()
