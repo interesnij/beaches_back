@@ -72,10 +72,9 @@ impl PlaceType {
         return 1;
     }
     pub fn delete(id: String) -> i16 {
-        let my_int = id.parse::<i32>().unwrap();
         diesel::delete (
             orders
-                .filter(schema::place_types::id.eq(my_int))
+                .filter(schema::place_types::id.eq(&id))
         )
         .execute(&_connection)
         .expect("E");
@@ -138,10 +137,9 @@ impl ModuleType {
         return 1;
     }
     pub fn delete(id: String) -> i16 {
-        let my_int = id.parse::<i32>().unwrap();
         diesel::delete (
             orders
-                .filter(schema::module_types::id.eq(my_int))
+                .filter(schema::module_types::id.eq(&id))
         )
         .execute(&_connection)
         .expect("E");
@@ -293,10 +291,9 @@ impl Place {
         return 1;
     }
     pub fn delete(id: String) -> i16 {
-        let my_int = id.parse::<i32>().unwrap();
         diesel::delete (
             orders
-                .filter(schema::places::id.eq(my_int))
+                .filter(schema::places::id.eq(&id))
         )
         .execute(&_connection)
         .expect("E");
@@ -356,10 +353,9 @@ impl PlaceManager {
         return 1;
     }
     pub fn delete(id: String) -> i16 {
-        let my_int = id.parse::<i32>().unwrap();
         diesel::delete (
             place_managers
-                .filter(schema::place_managers::id.eq(my_int))
+                .filter(schema::place_managers::id.eq(&id))
         )
         .execute(&_connection)
         .expect("E");
@@ -502,10 +498,9 @@ impl Module {
         return 1;
     }
     pub fn delete(id: String) -> i16 {
-        let my_int = id.parse::<i32>().unwrap();
         diesel::delete (
             modules
-                .filter(schema::modules::id.eq(my_int))
+                .filter(schema::modules::id.eq(&id))
         )
         .execute(&_connection)
         .expect("E");
