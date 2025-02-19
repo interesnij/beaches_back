@@ -38,9 +38,7 @@ pub async fn get_places(req: HttpRequest) -> Json<Vec<Place>> {
 }
 
 pub async fn get_place(req: HttpRequest, id: web::Path<String>) -> Json<Place> {
-    return Json(crate::models::Place {
-        place: Place.get(id.clone()),
-    });
+    return Json(crate::models::Place.get(id.clone()));
 }
 
 pub async fn get_place_managers(req: HttpRequest, id: web::Path<String>) -> Json<Vec<crate::views::AuthResp>> {
@@ -48,8 +46,8 @@ pub async fn get_place_managers(req: HttpRequest, id: web::Path<String>) -> Json
         let _request_user = get_current_user(&req);
         let _place = Place::get(id.clone());
         if _place.user_id.clone() == _request_user.id {
-            return Place::get_managers(id.clone());
-        }
+            return _place.get_managers();
+        } 
         else {
             return Json(Vec::new());
         }
@@ -103,14 +101,14 @@ pub async fn get_closed_places(req: HttpRequest) -> Json<Vec<Place>> {
     }
 }
 
-pub async fn create_place(req: HttpRequest, data: Json<PlaceJson>) -> impl Responder {
+pub async fn create_place(req: HttpRequest, data: Json<PlaceJson>) -> Json<i16> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         Place::create(data);
     }
     HttpResponse::Ok()
 }
-pub async fn edit_place(req: HttpRequest, data: Json<PlaceJson>, id: web::Path<String>) -> impl Responder {
+pub async fn edit_place(req: HttpRequest, data: Json<PlaceJson>, id: web::Path<String>) -> Json<i16> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         Place::edit(id.to_string(), data);

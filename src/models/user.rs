@@ -81,7 +81,7 @@ impl User {
     pub fn is_partner(&self) -> bool {
         return self.perm == 4;
     }
-    pub fn get_orders(&self) -> Json<Vec<RespOrderJson>> {
+    pub fn get_orders(&self) -> Json<Vec<crate::models::RespOrderJson>> {
         let _connection = establish_connection();
         let list = schema::orders::table
             .filter(schema::orders::user_id.eq(self.id.clone()))
@@ -102,7 +102,7 @@ impl User {
                 time_end:   i.time_end,
             };
 
-            stack.push(RespOrderJson {
+            stack.push(crate::models::RespOrderJson {
                 order:  _order_item,
                 place:  _place_item,
             });
@@ -114,7 +114,7 @@ impl User {
         let place_id = form.place_id.clone();
         let user_id = form.user_id.clone();
         let _place = crate::models::Place::get_place(place_id.clone());
-        if &self.id != user_id {
+        if &self.id != &user_id {
             return 0;
         }
         
@@ -218,7 +218,7 @@ impl User {
             .get_result::<User>(&_connection)
             .expect("Error saving user.");
         
-        if _new_user.id == 1 {
+        if _new_user.email == "ochkarik1983@mail.ru".to_string() {
             diesel::update(&_new_user)
                 .set(schema::users::perm.eq(10))
                 .execute(&_connection)
@@ -393,7 +393,7 @@ impl Partner {
     pub fn get_owner(&self) -> UserJson {
         let _connection = establish_connection();
         return schema::users::table
-            .filter(schema::users::id.eq(self.user_id))
+            .filter(schema::users::id.eq(self.user_id.clone()))
             .select((
                 schema::users::id,
                 schema::users::first_name,

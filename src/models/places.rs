@@ -19,7 +19,6 @@ use crate::utils::establish_connection;
 use crate::errors::Error;
 use actix_web::web::Json;
 use crate::models::Order;
-use crate::models::RespOrderJson;
 
 
 #[derive(Debug, Queryable, Deserialize, Serialize, Identifiable, Insertable)]
@@ -221,7 +220,7 @@ impl Place {
             .load::<Place>(&_connection)
             .expect("E"));
     }
-    pub fn get(id: String) -> Json<Place> {
+    pub fn get(id: String) -> Json<Place> { 
         let _connection = establish_connection();
         return Json(schema::places::table
             .filter(schema::places::id.eq(id))

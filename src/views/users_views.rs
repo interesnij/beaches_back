@@ -187,7 +187,7 @@ pub async fn change_owner_partner(req: HttpRequest, data: Json<crate::models::Ed
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         if _request_user.perm == 10 { 
-            _request_user.edit_owner_partner(data);
+            User::edit_owner_partner(data);
         }
     }
     HttpResponse::Ok()
