@@ -173,9 +173,10 @@ impl Order {
     }
 
     pub fn delete(id: String) -> i16 {
+        let my_int = id.parse::<i32>().unwrap();
         diesel::delete (
             orders
-                .filter(schema::orders::id.eq(id))
+                .filter(schema::orders::id.eq(my_int))
         )
         .execute(&_connection)
         .expect("E");
