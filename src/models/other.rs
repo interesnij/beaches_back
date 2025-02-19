@@ -231,7 +231,7 @@ impl Log {
 
 #[derive(Debug, Queryable, Deserialize, Serialize, Identifiable, Insertable)]
 #[table_name="times"]
-pub struct Time as OtherTime {
+pub struct Time {
     pub id:   String,
     pub time: chrono::NaiveDateTime,
 }
@@ -240,7 +240,7 @@ pub struct TimeJson {
     pub time: chrono::NaiveDateTime,
 }
 
-impl OtherTime {
+impl Time {
     pub fn get_all() -> Json<Vec<chrono::NaiveDateTime>> {
         let _connection = establish_connection();
         return Json(schema::times::table
@@ -259,7 +259,7 @@ impl OtherTime {
                 return 0;
         }
 
-        let new_time = OtherTime {
+        let new_time = Time {
             id:   uuid::Uuid::new_v4().to_string(),
             time: form.time.clone(),
         }; 

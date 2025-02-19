@@ -113,7 +113,7 @@ impl ModuleType {
         if schema::module_types::table
             .filter(schema::module_types::title.eq(form.title.clone()))
             .select(schema::module_types::id)
-            .first::<i32>(&_connection)
+            .first::<String>(&_connection)
             .is_ok() {
                 return 0;
         }
