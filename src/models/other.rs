@@ -17,7 +17,6 @@ use serde::{Serialize, Deserialize};
 use crate::utils::establish_connection;
 use crate::errors::Error;
 use actix_web::web::Json;
-use crate::models::Time;
 use crate::models::UserJson;
 
 
@@ -88,7 +87,7 @@ impl Order {
     pub fn get_client(&self) -> UserJson {
         let _connection = establish_connection();
         return schema::users::table
-            .filter(schema::users::id.eq(self.id))
+            .filter(schema::users::id.eq(self.id.clone()))
             .select((
                 schema::users::id,
                 schema::users::first_name,
