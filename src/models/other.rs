@@ -119,7 +119,7 @@ impl Order {
         if schema::times::table
             .filter(schema::times::time.eq(format_start))
             .select(schema::times::id)
-            .first::<i32>(&_connection)
+            .first::<String>(&_connection)
             .is_ok() {
                 time_start = form.time_start.clone();
         }
@@ -255,7 +255,7 @@ impl Time {
         if schema::times::table
             .filter(schema::times::time.eq(form.time.clone()))
             .select(schema::times::id)
-            .first::<i32>(&_connection)
+            .first::<String>(&_connection)
             .is_ok() {
                 return 0;
         }

@@ -130,14 +130,14 @@ pub struct ItemId {
 pub async fn block_user(req: HttpRequest, data: Json<ItemId>) -> impl Responder {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
-        _request_user.create_user_block(data.id);
+        User::create_user_block(data.id.clone());
     }
     HttpResponse::Ok()
 }
 pub async fn unblock_user(req: HttpRequest, data: Json<ItemId>) -> impl Responder {
     let _request_user = get_current_user(&req);
     if _request_user.perm == 10 {
-        User::delete_user_block(data.id);
+        User::delete_user_block(data.id.clone());
     }
     HttpResponse::Ok()
 }

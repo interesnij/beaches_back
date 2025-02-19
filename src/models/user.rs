@@ -198,7 +198,7 @@ impl User {
                 .execute(&_connection);
         }))
     }
-    pub fn get_uuid(&self) -> User {
+    pub fn get_uuid(&self) -> String {
         hex::decode(self.uuid).expect("E.")
     }
     pub fn create(form: Json<NewUserJson>) -> User {

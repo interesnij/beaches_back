@@ -39,7 +39,7 @@ pub struct NewUserJson {
 
 #[derive(Deserialize, Serialize, Debug, Queryable)]
 pub struct AuthResp {
-    pub id:         i32,
+    pub id:         String,
     pub first_name: String,
     pub last_name:  String,
     pub email:      String,
@@ -49,7 +49,7 @@ pub struct AuthResp {
 
 #[derive(Deserialize, Serialize, Debug, Queryable)]
 pub struct AuthResp2 {
-    pub id:         i32,
+    pub id:         String,
     pub first_name: String,
     pub last_name:  String,
     pub email:      String,
