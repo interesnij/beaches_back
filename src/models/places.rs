@@ -152,13 +152,13 @@ impl ModuleType {
 #[table_name="places"]
 pub struct Place {
     pub id:      String,
-    pub title:   String,
+    pub title:   String, 
     pub types:   i16,
     pub created: chrono::NaiveDateTime,
     pub user_id: String,
     pub type_id: String,
     pub image:   Option<String>,
-    pub cord:    String,
+    pub cord:    Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -168,14 +168,14 @@ pub struct PlaceJson {
     pub user_id: String,
     pub type_id: String,
     pub image:   Option<String>,
-    pub cord:    String,
+    pub cord:    Option<String>,
 }
 #[derive(Deserialize)]
 pub struct EditPlaceJson {
     pub title:   String,
     pub type_id: String,
     pub image:   Option<String>,
-    pub cord:    String,
+    pub cord:    Option<String>,
 }
 
 #[derive(Deserialize)]
