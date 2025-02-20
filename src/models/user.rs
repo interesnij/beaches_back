@@ -205,7 +205,7 @@ impl User {
         }))
     }
     pub fn get_uuid(&self) -> String {
-        hex::encode(self.uuid.clone())
+        hex::decode(self.uuid.clone()).expect("failed decode");;
     }
     pub fn create(form: Json<NewUserJson>) -> User {
         let _connection = establish_connection();
