@@ -18,7 +18,7 @@ CREATE TABLE users (
     perm       SMALLINT NOT NULL,
     level      SMALLINT NOT NULL,
     image      VARCHAR(500),
-    uuid       VARCHAR(100) NOT NULL default "",
+    uuid       BYTEA NOT NULL,
     UNIQUE(email)
 );
 
@@ -140,4 +140,4 @@ CREATE TABLE email_verification_token (
     email      TEXT UNIQUE NOT NULL,
     expires_at TIMESTAMP NOT NULL,
     created_at TIMESTAMP NOT NULL
-); 
+);
