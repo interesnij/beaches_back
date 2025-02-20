@@ -209,7 +209,7 @@ impl User {
     }
     pub fn create(form: Json<NewUserJson>) -> User {
         let _connection = establish_connection();
-        let form_user = User {
+        let form_user = User { 
             id:         uuid::Uuid::new_v4().to_string(),
             first_name: form.first_name.clone(),
             last_name:  form.last_name.clone(),
@@ -218,7 +218,7 @@ impl User {
             perm:       1,
             level:      100,
             image:      None,
-            uuid:       uuid::Uuid::new_v4().to_string(),
+            uuid:       rand::thread_rng().gen::<[u8; 32]>().to_vec(),
         };
 
         let _new_user = diesel::insert_into(schema::users::table)
