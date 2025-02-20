@@ -6,7 +6,7 @@ use actix_web::{
     web::Json,
 };
 use crate::models::{
-    User, Place, PlaceJson
+    User, Place, PlaceJson, UserJson,
 };
 use serde::{Deserialize, Serialize};
 
@@ -14,7 +14,6 @@ use crate::utils::{
     is_signed_in,
     get_current_user,
     establish_connection,
-    UserJson,
 }; 
 use crate::views::{AuthResp2, AuthResp, ItemId};
 use crate::schema;
