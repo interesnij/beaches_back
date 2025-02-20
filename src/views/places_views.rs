@@ -14,23 +14,25 @@ use crate::utils::{
     is_signed_in,
     get_current_user,
     establish_connection,
+    UserJson,
 }; 
-use crate::views::AuthResp;
+use crate::views::{AuthResp2, AuthResp, ItemId};
 use crate::schema;
 
 
 pub fn places_routes(config: &mut web::ServiceConfig) {
     config.route("/places/", web::get().to(get_places));
-    config.route("/place/{id}", web::get().to(get_place));
-    config.route("/place/{id}/managers", web::get().to(get_place_managers));
-    config.route("/place/{id}/orders", web::get().to(get_place_orders));
+    config.route("/place/{id}/", web::get().to(get_place));
+    config.route("/place/{id}/managers/", web::get().to(get_place_managers));
+    config.route("/place/{id}/orders/", web::get().to(get_place_orders));
     config.route("/suggest_places/", web::get().to(get_suggest_places));
     config.route("/closed_places/", web::get().to(get_closed_places));
 
     config.route("/create_place/", web::post().to(create_place));
-    config.route("/edit_place/{id}", web::post().to(edit_place));
-    //config.route("/close_place/", web::post().to(close_place));
-    //config.route("/hide_place/", web::post().to(hide_place));
+    config.route("/edit_place/{id}/", web::post().to(edit_place));
+    //config.route("/close_place/{id}/", web::post().to(close_place));
+    //config.route("/hide_place/{id}/", web::post().to(hide_place));
+    //config.route("/publish_place/{id}/", web::post().to(publish_place));
 }
 
 pub async fn get_places(req: HttpRequest) -> Json<Vec<Place>> {
@@ -104,6 +106,7 @@ pub async fn get_closed_places(req: HttpRequest) -> Json<Vec<Place>> {
 pub async fn create_place(req: HttpRequest, data: Json<PlaceJson>) -> impl Responder {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
+
         Place::create(data); 
     }
     HttpResponse::Ok()
@@ -111,7 +114,11 @@ pub async fn create_place(req: HttpRequest, data: Json<PlaceJson>) -> impl Respo
 pub async fn edit_place(req: HttpRequest, data: Json<PlaceJson>, id: web::Path<String>) -> impl Responder {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
+        if _request_user.perm == 4 {
+
+        }
         Place::edit(id.to_string(), data);
     }
     HttpResponse::Ok()
 }
+

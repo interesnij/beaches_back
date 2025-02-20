@@ -67,7 +67,6 @@ pub struct PlaceListJson {
     pub image: Option<String>,
     pub cord:  Option<String>,
 }
-
 #[derive(Serialize)]
 pub struct RespOrderJson2 {
     pub order:  OrderListJson,
@@ -78,8 +77,14 @@ impl User {
     pub fn is_superuser(&self) -> bool {
         return self.perm == 10;
     }
+    pub fn is_await_partner(&self) -> bool {
+        return self.perm == 3;
+    }
     pub fn is_partner(&self) -> bool {
         return self.perm == 4;
+    }
+    pub fn is_manager(&self) -> bool {
+        return self.perm == 2;
     }
     pub fn get_orders(&self) -> Json<Vec<RespOrderJson2>> {
         let _connection = establish_connection();
