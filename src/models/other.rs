@@ -63,10 +63,10 @@ impl Feedback {
 pub struct Order {
     pub id:         String,
     pub title:      String,
-    pub types:      i16,
-    pub created:    chrono::NaiveDateTime,
+    pub types:      i16, 
     pub place_id:   String,
     pub object_id:  String,
+    pub created:    chrono::NaiveDateTime,
     pub user_id:    String,
     pub price:      i32,
     pub time_start: String,
