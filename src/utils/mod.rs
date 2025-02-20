@@ -46,10 +46,9 @@ pub fn is_signed_in(req: &HttpRequest) -> bool {
 
 pub fn get_current_user(req: &HttpRequest) -> User {
     let secret = get_secret(&req).unwrap();
-    let uuid = hex::decode(secret).expect("E.");
     let _connection = establish_connection();
     return schema::users::table
-        .filter(schema::users::uuid.eq(uuid))
+        .filter(schema::users::uuid.eq(secret))
         .first::<User>(&_connection)
         .expect("Error.");
 } 

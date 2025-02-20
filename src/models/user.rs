@@ -218,7 +218,7 @@ impl User {
             perm:       1,
             level:      100,
             image:      None,
-            uuid:       rand::thread_rng().gen::<[u8; 32]>().to_vec(),
+            uuid:       uuid::Uuid::new_v4().to_string(),
         };
 
         let _new_user = diesel::insert_into(schema::users::table)

@@ -18,7 +18,7 @@ CREATE TABLE users (
     perm       SMALLINT NOT NULL,
     level      SMALLINT NOT NULL,
     image      VARCHAR(500),
-    uuid       BYTEA NOT NULL,
+    uuid       VARCHAR(100) NOT NULL default "",
     UNIQUE(email)
 );
 
@@ -28,7 +28,7 @@ CREATE TABLE partners (
     inn      VARCHAR(100) NOT NULL,
     types    SMALLINT NOT NULL,
     created  TIMESTAMP NOT NULL,
-    user_id  VARCHAR(50) NOT NULL
+    user_id  VARCHAR(100) NOT NULL
 );
 
 -- обратная связь
@@ -58,8 +58,8 @@ CREATE TABLE places (
     title    VARCHAR(100) NOT NULL,
     types    SMALLINT NOT NULL,
     created  TIMESTAMP NOT NULL,
-    user_id  VARCHAR(50) NOT NULL,
-    type_id  VARCHAR(50) NOT NULL,
+    user_id  VARCHAR(100) NOT NULL,
+    type_id  VARCHAR(100) NOT NULL,
     image    VARCHAR(500),
     cord     VARCHAR(100)
 );
@@ -67,8 +67,8 @@ CREATE TABLE places (
 /* */
 CREATE TABLE place_managers (
     id        TEXT PRIMARY KEY,
-    user_id   VARCHAR(50) NOT NULL,
-    place_id  VARCHAR(50) NOT NULL
+    user_id   VARCHAR(100) NOT NULL,
+    place_id  VARCHAR(100) NOT NULL
 ); 
 
 
@@ -97,8 +97,8 @@ CREATE TABLE modules (
     id          TEXT PRIMARY KEY,
     title       VARCHAR(100) NOT NULL,
     types       SMALLINT NOT NULL,
-    place_id    VARCHAR(50) NOT NULL,
-    type_id     VARCHAR(50) NOT NULL,
+    place_id    VARCHAR(100) NOT NULL,
+    type_id     VARCHAR(100) NOT NULL,
     price       INT NOT NULL,
     _width      SMALLINT NOT NULL,
     _height     SMALLINT NOT NULL,
@@ -116,22 +116,22 @@ CREATE TABLE orders (
     id         TEXT PRIMARY KEY,
     title      VARCHAR(100) NOT NULL,
     types      SMALLINT NOT NULL,    -- 1 услуга, 2 товар, 3 работа
-    place_id   VARCHAR(50) NOT NULL,
-    object_id  VARCHAR(50) NOT NULL,
+    place_id   VARCHAR(100) NOT NULL,
+    object_id  VARCHAR(100) NOT NULL,
     created    TIMESTAMP NOT NULL,
-    user_id    VARCHAR(50) NOT NULL,
+    user_id    VARCHAR(100) NOT NULL,
     price      INT NOT NULL,
-    time_start VARCHAR(50) NOT NULL, -- связь на times
-    time_end   VARCHAR(50) NOT NULL  -- связь на times
+    time_start VARCHAR(100) NOT NULL, -- связь на times
+    time_end   VARCHAR(100) NOT NULL  -- связь на times
 );
 
 -- логи
 CREATE TABLE logs (
     id        TEXT PRIMARY KEY,
-    user_id   VARCHAR(50) NOT NULL,
+    user_id   VARCHAR(100) NOT NULL,
     text      VARCHAR(100) NOT NULL,
-    order_id  VARCHAR(50) NOT NULL,
-    place_id  VARCHAR(50) NOT NULL,
+    order_id  VARCHAR(100) NOT NULL,
+    place_id  VARCHAR(100) NOT NULL,
     created   TIMESTAMP NOT NULL
 );
 
