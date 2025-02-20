@@ -64,9 +64,9 @@ pub struct Order {
     pub id:         String,
     pub title:      String,
     pub types:      i16,
+    pub created:    chrono::NaiveDateTime,
     pub place_id:   String,
     pub object_id:  String,
-    pub created:    chrono::NaiveDateTime,
     pub user_id:    String,
     pub price:      i32,
     pub time_start: String,
@@ -80,7 +80,7 @@ pub struct OrderJson {
     pub user_id:    String,
     pub price:      i32,
     pub time_start: String,
-    pub time_end:   String,
+    pub time_end:   String, 
 }
 
 impl Order {

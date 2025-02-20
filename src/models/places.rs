@@ -171,7 +171,6 @@ pub struct Place {
 #[derive(Deserialize)]
 pub struct PlaceJson {
     pub title:   String,
-    pub created: chrono::NaiveDateTime,
     pub user_id: String,
     pub type_id: String,
     pub image:   Option<String>,
@@ -272,7 +271,7 @@ impl Place {
             created: chrono::Local::now().naive_utc(),
             user_id: form.user_id.clone(),
             type_id: form.type_id.clone(),
-            image:   form.image.clone(),
+            image:   form.image.clone(), 
             cord:   form.cord.clone(),
         };
         let _place = diesel::insert_into(schema::places::table)
