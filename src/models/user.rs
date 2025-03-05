@@ -33,7 +33,7 @@ pub struct User {
     pub uuid:       Vec<u8>,
 }
 
-#[derive(Deserialize, Queryable, Serialize)]
+#[derive(Deserialize, Queryable, Serialize, Debug)]
 pub struct UserJson {
     pub id:         String,
     pub first_name: String,

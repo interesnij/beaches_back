@@ -400,7 +400,7 @@ pub struct Module {
     pub image:      Option<String>,
 
 }
-#[derive(Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct ModuleJson { 
     pub id:         String,
     pub title:      String,
@@ -417,7 +417,7 @@ pub struct ModuleJson {
     pub image:      Option<String>,
 }
 
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize)]
 pub struct CreateModuleJson {
     place_id: String,
     modules:  Vec<ModuleJson>,

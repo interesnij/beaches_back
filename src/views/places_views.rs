@@ -56,7 +56,7 @@ pub async fn get_place(req: HttpRequest, id: web::Path<String>) -> Json<PlaceDat
     };
 }
 
-pub async fn get_place_managers(req: HttpRequest, id: web::Path<String>) -> Json<Vec<PlaceDataJson>> {
+pub async fn get_place_managers(req: HttpRequest, id: web::Path<String>) -> Json<Vec<UserJson>> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         let _place = Place::get(id.clone());
@@ -76,7 +76,7 @@ pub async fn get_place_orders(req: HttpRequest, id: web::Path<String>) -> Json<V
         let _request_user = get_current_user(&req);
         let _place = Place::get_place(id.clone());
         if _place.user_id.clone() == _request_user.id {
-            return Place::get_orders(_place.id);
+            return Json(Place::get_orders(_place.id));
         }
         else {
             return Json(Vec::new());
