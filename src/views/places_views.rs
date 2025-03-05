@@ -44,16 +44,16 @@ pub async fn get_places(req: HttpRequest) -> Json<Vec<Place>> {
 pub struct PlaceDataJson { 
     pub modules: Vec<ModuleJson>,
     pub orders:  Vec<RespOrderJson>,
-    pub place:   PlaceJson,
+    pub place:   Place,
 }
 
 pub async fn get_place(req: HttpRequest, id: web::Path<String>) -> Json<PlaceDataJson> {
     let place = Place::get_place(id.clone());
-    return PlaceDataJson {
+    return Json(PlaceDataJson {
         modules: place.get_modules(),
         orders:  place.get_orders(),
         place:   place,
-    };
+    });
 }
 
 pub async fn get_place_managers(req: HttpRequest, id: web::Path<String>) -> Json<Vec<UserJson>> {

@@ -196,10 +196,10 @@ pub struct RespOrderJson {
 }
 
 impl Place {
-    pub fn get_orders(id: String) -> Vec<RespOrderJson> {
+    pub fn get_orders(&self) -> Vec<RespOrderJson> {
         let _connection = establish_connection();
         let list = schema::orders::table
-            .filter(schema::orders::place_id.eq(id))
+            .filter(schema::orders::place_id.eq(self.id))
             .load::<Order>(&_connection)
             .expect("E");
         let mut stack = Vec::new();
@@ -216,10 +216,10 @@ impl Place {
         }
         return stack;
     }
-    pub fn get_modules(id: String) -> Vec<Module> {
+    pub fn get_modules(&self) -> Vec<Module> {
         let _connection = establish_connection();
         return schema::modules::table
-            .filter(schema::modules::place_id.eq(id))
+            .filter(schema::modules::place_id.eq(self.id))
             .load::<Module>(&_connection)
             .expect("E");
     }
