@@ -76,7 +76,7 @@ pub async fn get_place_orders(req: HttpRequest, id: web::Path<String>) -> Json<V
         let _request_user = get_current_user(&req);
         let _place = Place::get_place(id.clone());
         if _place.user_id.clone() == _request_user.id {
-            return Json(Place::get_orders(_place.id));
+            return Json(_place.get_orders());
         }
         else {
             return Json(Vec::new());
