@@ -42,7 +42,7 @@ pub async fn get_places(req: HttpRequest) -> Json<Vec<Place>> {
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct PlaceDataJson { 
-    pub modules: Vec<ModuleJson>,
+    pub modules: Vec<Module>,
     pub orders:  Vec<RespOrderJson>,
     pub place:   Place,
 }
@@ -52,7 +52,7 @@ pub async fn get_place(req: HttpRequest, id: web::Path<String>) -> Json<PlaceDat
     return Json(PlaceDataJson {
         modules: place.get_modules(),
         orders:  place.get_orders(),
-        place:   place,
+        place:   place, 
     });
 }
 

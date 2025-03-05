@@ -199,7 +199,7 @@ impl Place {
     pub fn get_orders(&self) -> Vec<RespOrderJson> {
         let _connection = establish_connection();
         let list = schema::orders::table
-            .filter(schema::orders::place_id.eq(self.id))
+            .filter(schema::orders::place_id.eq(self.id.clone()))
             .load::<Order>(&_connection)
             .expect("E");
         let mut stack = Vec::new();
@@ -219,7 +219,7 @@ impl Place {
     pub fn get_modules(&self) -> Vec<Module> {
         let _connection = establish_connection();
         return schema::modules::table
-            .filter(schema::modules::place_id.eq(self.id))
+            .filter(schema::modules::place_id.eq(self.id.clone()))
             .load::<Module>(&_connection)
             .expect("E");
     }
