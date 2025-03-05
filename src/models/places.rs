@@ -168,7 +168,7 @@ pub struct Place {
     pub cord:    Option<String>,
 }
 
-#[derive(Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct PlaceJson {
     pub title:   String,
     pub user_id: String,
@@ -184,7 +184,7 @@ pub struct EditPlaceJson {
     pub cord:    Option<String>,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct RespOrderJson {
     pub title:      String,
     pub place_id:   String,
@@ -400,7 +400,7 @@ pub struct Module {
     pub image:      Option<String>,
 
 }
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct ModuleJson { 
     pub id:         String,
     pub title:      String,

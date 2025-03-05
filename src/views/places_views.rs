@@ -47,12 +47,12 @@ pub struct PlaceDataJson {
     pub place:   PlaceJson,
 }
 
-pub async fn get_place(req: HttpRequest, id: web::Path<String>) -> Json<Place> {
+pub async fn get_place(req: HttpRequest, id: web::Path<String>) -> Json<PlaceDataJson> {
     let place = Place::get_place(id.clone());
     return PlaceDataJson {
-        modules: place.get_modules();
-        orders:  place.get_orders();
-        place:   place;
+        modules: place.get_modules(),
+        orders:  place.get_orders(),
+        place:   place,
     };
 }
 
