@@ -6,7 +6,8 @@ use actix_web::{
     web::Json,
 };
 use crate::models::{
-    User, Place, PlaceJson, UserJson,
+    User, Place, PlaceJson, UserJson, ModuleJson, 
+    RespOrderJson, CreateModuleJson, Module,
 };
 use serde::{Deserialize, Serialize};
 
@@ -29,20 +30,33 @@ pub fn places_routes(config: &mut web::ServiceConfig) {
 
     config.route("/create_place/", web::post().to(create_place));
     config.route("/edit_place/{id}/", web::post().to(edit_place));
+    config.route("/create_modules/", web::post().to(create_modules));
     //config.route("/close_place/{id}/", web::post().to(close_place));
     //config.route("/hide_place/{id}/", web::post().to(hide_place));
     //config.route("/publish_place/{id}/", web::post().to(publish_place));
-}
+}  
 
 pub async fn get_places(req: HttpRequest) -> Json<Vec<Place>> {
     return Place::get_all();
 }
 
-pub async fn get_place(req: HttpRequest, id: web::Path<String>) -> Json<Place> {
-    return Place::get(id.clone());
+#[derive(Deserialize, Serialize, Debug)]
+pub struct PlaceDataJson { 
+    pub modules: Vec<ModuleJson>,
+    pub orders:  Vec<RespOrderJson>,
+    pub place:   PlaceJson,
 }
 
-pub async fn get_place_managers(req: HttpRequest, id: web::Path<String>) -> Json<Vec<crate::models::UserJson>> {
+pub async fn get_place(req: HttpRequest, id: web::Path<String>) -> Json<Place> {
+    let place = Place::get_place(id.clone());
+    return PlaceDataJson {
+        modules: place.get_modules();
+        orders:  place.get_orders();
+        place:   place;
+    };
+}
+
+pub async fn get_place_managers(req: HttpRequest, id: web::Path<String>) -> Json<Vec<PlaceDataJson>> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         let _place = Place::get(id.clone());
@@ -121,3 +135,10 @@ pub async fn edit_place(req: HttpRequest, data: Json<PlaceJson>, id: web::Path<S
     HttpResponse::Ok()
 }
 
+pub async fn create_modules(req: HttpRequest, data: Json<CreateModuleJson>) -> impl Responder {
+    if is_signed_in(&req) {
+        let _request_user = get_current_user(&req);
+        Module::create(data); 
+    }
+    HttpResponse::Ok()
+}

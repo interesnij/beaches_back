@@ -196,7 +196,7 @@ pub struct RespOrderJson {
 }
 
 impl Place {
-    pub fn get_orders(id: String) -> Json<Vec<RespOrderJson>> {
+    pub fn get_orders(id: String) -> Vec<RespOrderJson> {
         let _connection = establish_connection();
         let list = schema::orders::table
             .filter(schema::orders::place_id.eq(id))
@@ -214,7 +214,14 @@ impl Place {
                 time_end:   i.time_end.clone(),
             });
         }
-        return Json(stack);
+        return stack;
+    }
+    pub fn get_modules(id: String) -> Vec<Module> {
+        let _connection = establish_connection();
+        return schema::modules::table
+            .filter(schema::modules::place_id.eq(id))
+            .load::<Module>(&_connection)
+            .expect("E");
     }
     
     pub fn get_all() -> Json<Vec<Place>> {
@@ -394,9 +401,9 @@ pub struct Module {
 
 }
 #[derive(Deserialize)]
-pub struct ModuleJson {
+pub struct ModuleJson { 
+    pub id:         String,
     pub title:      String,
-    pub place_id:   String,
     pub type_id:    String,
     pub price:      i32,
     pub width:      i16,
@@ -409,19 +416,11 @@ pub struct ModuleJson {
     pub back_color: String,
     pub image:      Option<String>,
 }
+
 #[derive(Deserialize)]
-pub struct EditModuleJson {
-    pub title:      String,
-    pub price:      i32,
-    pub width:      i16,
-    pub height:     i16,
-    pub left:       f64,
-    pub top:        f64,
-    pub angle:      f64,
-    pub font_color: String,
-    pub font_size:  String,
-    pub back_color: String,
-    pub image:      Option<String>,
+pub struct CreateModuleJson {
+    place_id: String,
+    modules:  Vec<ModuleJson>,
 }
 
 impl Module {
@@ -440,72 +439,43 @@ impl Module {
             .load::<Module>(&_connection)
             .expect("E"));
     }
-    pub fn create(form: Json<ModuleJson>) -> i16 {
-        let _connection = establish_connection();
+    pub fn create(data: Json<CreateModuleJson>) -> i16 {
 
-        if schema::module_types::table
-            .filter(schema::module_types::id.eq(form.type_id.clone()))
-            .select(schema::module_types::id)
-            .first::<String>(&_connection)
-            .is_err() {
-                return 0;
+        let place_id = data.place_id.clone();
+        let _connection = establish_connection();
+        diesel::delete (
+            schema::modules::table
+                .filter(schema::modules::place_id.eq(&place_id))
+        )
+        .execute(&_connection)
+        .expect("E");
+
+        for i in data.modules.iter() {
+            let new_module = Module {
+                id:         i.id.clone(),
+                title:      i.title.clone(),
+                types:      1, 
+                place_id:   place_id.clone(),
+                type_id:    i.type_id.clone(),
+                price:      i.price,
+                _width:     i.width,
+                _height:    i.height,
+                _left:      i.left,
+                _top:       i.top,
+                _angle:     i.angle,
+                font_color: i.font_color.clone(),
+                font_size:  i.font_size.clone(),
+                back_color: i.back_color.clone(),
+                image:      i.image.clone(),
+            };  
+            let _module = diesel::insert_into(schema::modules::table)
+                .values(&new_module)
+                .execute(&_connection)
+                .expect("E.");
         }
-        if schema::places::table
-            .filter(schema::places::id.eq(form.place_id.clone()))
-            .select(schema::places::id)
-            .first::<String>(&_connection)
-            .is_err() {
-                return 0;
-        }
-        
-        let new_module = Module {
-            id:         uuid::Uuid::new_v4().to_string(),
-            title:      form.title.clone(),
-            types:      1, 
-            place_id:   form.place_id.clone(),
-            type_id:    form.type_id.clone(),
-            price:      form.price,
-            _width:     form.width,
-            _height:    form.height,
-            _left:      form.left,
-            _top:       form.top,
-            _angle:     form.angle,
-            font_color: form.font_color.clone(),
-            font_size:  form.font_size.clone(),
-            back_color: form.back_color.clone(),
-            image:      form.image.clone(),
-        }; 
-        let _module = diesel::insert_into(schema::modules::table)
-            .values(&new_module)
-            .execute(&_connection)
-            .expect("E.");
         return 1;
     }
 
-    pub fn edit(id: String, form: ModuleJson) -> i16 {
-        let _connection = establish_connection();
-        let _module = schema::modules::table
-            .filter(schema::modules::id.eq(id))
-            .first::<Module>(&_connection)
-            .expect("E.");
-        diesel::update(&_module)
-            .set((
-                schema::modules::title.eq(&form.title.clone()),
-                schema::modules::price.eq(&form.price),
-                schema::modules::_width.eq(&form.width),
-                schema::modules::_height.eq(&form.height),
-                schema::modules::_left.eq(&form.left),
-                schema::modules::_top.eq(&form.top),
-                schema::modules::_angle.eq(&form.angle),
-                schema::modules::font_color.eq(&form.font_color.clone()),
-                schema::modules::font_size.eq(&form.font_size.clone()),
-                schema::modules::back_color.eq(&form.back_color.clone()),
-                schema::modules::image.eq(&form.image.clone()),
-            ))
-            .execute(&_connection)
-            .expect("E");
-        return 1;
-    }
     pub fn delete(id: String) -> i16 {
         let _connection = establish_connection();
         diesel::delete (
