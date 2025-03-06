@@ -220,6 +220,7 @@ impl Place {
         let _connection = establish_connection();
         return schema::modules::table
             .filter(schema::modules::place_id.eq(self.id.clone()))
+            .filter(schema::modules::types.eq(1))
             .load::<Module>(&_connection)
             .expect("E");
     }
@@ -421,7 +422,7 @@ pub struct ModuleJson {
 pub struct CreateModuleJson {
     place_id: String,
     modules:  Vec<ModuleJson>,
-}
+} 
 
 impl Module {
     pub fn get_all_for_place(place_id: String) -> Json<Vec<Module>> {
@@ -440,38 +441,80 @@ impl Module {
             .expect("E"));
     }
     pub fn create(data: Json<CreateModuleJson>) -> i16 {
-
         let place_id = data.place_id.clone();
         let _connection = establish_connection();
-        diesel::delete (
-            schema::modules::table
-                .filter(schema::modules::place_id.eq(&place_id))
-        )
-        .execute(&_connection)
-        .expect("E");
+
+        let mut modules_ids = schema::modules::table
+            .filter(schema::modules::place_id.eq(&data.place_id))
+            .filter(schema::modules::types.eq(1))
+            .select(schema::modules::id)
+            .load::<String>(&_connection)
+            .expect("E");
 
         for i in data.modules.iter() {
-            let new_module = Module {
-                id:         i.id.clone(),
-                title:      i.title.clone(),
-                types:      1, 
-                place_id:   place_id.clone(),
-                type_id:    i.type_id.clone(),
-                price:      i.price,
-                _width:     i.width,
-                _height:    i.height,
-                _left:      i.left,
-                _top:       i.top,
-                _angle:     i.angle,
-                font_color: i.font_color.clone(),
-                font_size:  i.font_size.clone(),
-                back_color: i.back_color.clone(),
-                image:      i.image.clone(),
-            };  
-            let _module = diesel::insert_into(schema::modules::table)
-                .values(&new_module)
+            if i.id.clone() in modules_ids {
+                let _module = schema::modules::table
+                    .filter(schema::modules::place_id.eq(&i.id))
+                    .first::<Module>(&_connection)
+                    .expect("E");
+                diesel::update(&_module) 
+                .set((
+                    schema::modules::title.eq(&i.title),
+                    schema::modules::type_id.eq(&i.type_id),
+                    schema::modules::price.eq(&i.price),
+                    schema::modules::_width.eq(&i._width),
+                    schema::modules::_height.eq(&i._height),
+                    schema::modules::_left.eq(&i._left),
+                    schema::modules::_top.eq(&i._top),
+                    schema::modules::_angle.eq(&i._angle),
+                    schema::modules::font_color.eq(&i.font_color),
+                    schema::modules::font_size.eq(&i.font_size),
+                    schema::modules::back_color.eq(&i.back_color),
+                    schema::modules::_width.eq(&i._width),
+                    schema::modules::_height.eq(&i._height),
+                    schema::modules::_left.eq(&i._left),
+                    schema::modules::_top.eq(&i._top),
+                    schema::modules::image.eq(&i.image),
+                ))
                 .execute(&_connection)
-                .expect("E.");
+                .expect("E");
+            }
+            else {
+                let new_module = Module {
+                    id:         i.id.clone(),
+                    title:      i.title.clone(),
+                    types:      1, 
+                    place_id:   place_id.clone(),
+                    type_id:    i.type_id.clone(),
+                    price:      i.price,
+                    _width:     i.width,
+                    _height:    i.height,
+                    _left:      i.left,
+                    _top:       i.top,
+                    _angle:     i.angle,
+                    font_color: i.font_color.clone(),
+                    font_size:  i.font_size.clone(),
+                    back_color: i.back_color.clone(),
+                    image:      i.image.clone(),
+                };  
+                let _module = diesel::insert_into(schema::modules::table)
+                    .values(&new_module)
+                    .execute(&_connection)
+                    .expect("E.");
+            }
+
+            modules_ids.retain(|&x| x != i.id.clone());
+        }
+        for i in modules_ids.iter() {
+            let _module = schema::modules::table
+                .filter(schema::modules::place_id.eq(i))
+                .first::<Module>(&_connection)
+                .expect("E");
+
+            diesel::update(&_module) 
+                .set(schema::modules::types.eq(2))
+                .execute(&_connection)
+                .expect("E");
         }
         return 1;
     }
