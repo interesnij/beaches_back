@@ -471,10 +471,6 @@ impl Module {
                     schema::modules::font_color.eq(&i.font_color),
                     schema::modules::font_size.eq(&i.font_size),
                     schema::modules::back_color.eq(&i.back_color),
-                    schema::modules::_width.eq(&i._width),
-                    schema::modules::_height.eq(&i._height),
-                    schema::modules::_left.eq(&i._left),
-                    schema::modules::_top.eq(&i._top),
                     schema::modules::image.eq(&i.image),
                 ))
                 .execute(&_connection)
