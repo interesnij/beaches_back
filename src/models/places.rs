@@ -452,7 +452,7 @@ impl Module {
             .expect("E");
 
         for i in data.modules.iter() {
-            if i.id.clone() in modules_ids {
+            if modules_ids.contains(&i.id) {
                 println!("update case");
                 let _module = schema::modules::table
                     .filter(schema::modules::place_id.eq(&i.id))
