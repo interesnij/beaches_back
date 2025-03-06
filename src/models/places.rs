@@ -453,6 +453,7 @@ impl Module {
 
         for i in data.modules.iter() {
             if i.id.clone() in modules_ids {
+                println!("update case");
                 let _module = schema::modules::table
                     .filter(schema::modules::place_id.eq(&i.id))
                     .first::<Module>(&_connection)
@@ -480,6 +481,7 @@ impl Module {
                 .expect("E");
             }
             else {
+                println!("create case");
                 let new_module = Module {
                     id:         i.id.clone(),
                     title:      i.title.clone(),
@@ -506,6 +508,7 @@ impl Module {
             modules_ids.retain(|&x| x != i.id.clone());
         }
         for i in modules_ids.iter() {
+            println!("delete case");
             let _module = schema::modules::table
                 .filter(schema::modules::place_id.eq(i))
                 .first::<Module>(&_connection)
