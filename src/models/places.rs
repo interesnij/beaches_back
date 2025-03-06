@@ -501,7 +501,7 @@ impl Module {
                     .expect("E.");
             }
 
-            modules_ids.retain(|&x| x != &i.id);
+            modules_ids.retain(|&x| x != i.id);
         }
         for i in modules_ids.iter() {
             println!("delete case");
