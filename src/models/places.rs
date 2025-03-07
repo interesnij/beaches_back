@@ -441,12 +441,12 @@ impl Module {
             .expect("E"));
     }
     pub fn create(data: Json<CreateModuleJson>) -> i16 {
-        let place_id = data.place_id.clone();
+        let place_id = data.place_id.clone(); 
         let _connection = establish_connection();
 
         let mut modules_ids = schema::modules::table
             .filter(schema::modules::place_id.eq(&data.place_id))
-            .filter(schema::modules::types.eq(1))
+            //.filter(schema::modules::types.eq(1))
             .select(schema::modules::id)
             .load::<String>(&_connection)
             .expect("E");
@@ -458,7 +458,7 @@ impl Module {
             if modules_ids.contains(&i.id) {
                 println!("update case");
                 let _module = schema::modules::table
-                    .filter(schema::modules::place_id.eq(&i.id))
+                    .filter(schema::modules::id.eq(&i.id))
                     .first::<Module>(&_connection)
                     .expect("E");
                 diesel::update(&_module) 
