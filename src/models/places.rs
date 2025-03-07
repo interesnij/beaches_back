@@ -509,6 +509,7 @@ impl Module {
 
         diesel::delete (
             schema::modules::table
+                .filter(schema::modules::place_id.eq(&data.place_id))
                 .filter(schema::modules::id.ne_any(new_modules_ids))
         )
         .execute(&_connection)
