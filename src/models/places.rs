@@ -450,8 +450,11 @@ impl Module {
             .select(schema::modules::id)
             .load::<String>(&_connection)
             .expect("E");
+        
+        let mut new_modules_ids = Vec::new();
 
         for i in data.modules.iter() {
+            new_modules_ids.push(&i.id);
             if modules_ids.contains(&i.id) {
                 println!("update case");
                 let _module = schema::modules::table
@@ -501,20 +504,15 @@ impl Module {
                     .expect("E.");
             }
 
-            modules_ids.retain(|x| *x != i.id);
+            //modules_ids.retain(|x| *x != i.id);
         }
-        for i in modules_ids.iter() {
-            println!("delete case");
-            let _module = schema::modules::table
-                .filter(schema::modules::place_id.eq(i))
-                .first::<Module>(&_connection)
-                .expect("E");
 
-            diesel::update(&_module) 
-                .set(schema::modules::types.eq(2))
-                .execute(&_connection)
-                .expect("E");
-        }
+        diesel::delete (
+            schema::modules::table
+                .filter(schema::modules::id.ne_any(new_modules_ids))
+        )
+        .execute(&_connection)
+        .expect("E");
         return 1;
     }
 
