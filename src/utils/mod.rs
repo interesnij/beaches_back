@@ -19,7 +19,7 @@ use crate::diesel::{
 };
 use crate::models::User;
 use std::fs::File;
-use std::io::Write;
+use std::io::{Write,BufWriter};
 
 
 #[derive(Deserialize)]
@@ -31,7 +31,9 @@ pub struct FileForm {
 pub fn save_file(data: String) -> String {
     let file_data: FileForm = serde_json::from_str(&data).unwrap();
     let path = "/beaches_front/media/".to_owned() + &file_data.name;
-    let mut f = File::create(&path).expect("Unable to create file");
+    let mut _f = File::create(&path).expect("Unable to create file");
+    let mut f = BufWriter::new(_f);
+
     println!("metadata: {:?}", f.metadata());
     while file_data.size > (f.metadata().expect(" no metadata").len()).try_into().unwrap() {
         //println!("len: {:?}", f.metadata().expect(" no metadata").len());
