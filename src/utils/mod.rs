@@ -25,8 +25,9 @@ use std::io::Write;
 pub fn save_file(data: String) -> String {
     let mut f = File::create("/tmp/foo").expect("Unable to create file");
     f.write_all(data.as_bytes()).expect("Unable to write data");
-    println!("Req: {:?}", f.path.clone());
-    return f.path.clone().replace("./","/");
+    println!("f: {:?}", f);
+    "".to_string()
+    //return f.path.clone().replace("./","/");
 }
 
 #[derive(Deserialize, Serialize)]
