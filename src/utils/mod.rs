@@ -58,11 +58,11 @@ impl UploadedFiles {
 }
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct FileForm {
+pub struct FileForm2 {
     pub files: Vec<String>,
 }
-pub async fn files_form(payload: &mut Multipart) -> FileForm {
-    let mut form: FileForm = FileForm {
+pub async fn files_form(payload: &mut Multipart) -> FileForm2 {
+    let mut form: FileForm2 = FileForm2 {
         files: Vec::new(),
     }; 
 

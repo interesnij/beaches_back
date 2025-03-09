@@ -31,7 +31,7 @@ pub fn places_routes(config: &mut web::ServiceConfig) {
     config.route("/closed_places/", web::get().to(get_closed_places));
 
     config.route("/create_place/", web::post().to(create_place));
-    config.route("/edit_place/{id}/", web::post().to(edit_place));
+    config.route("/edit_place/{id}/", web::post().to(edit_place)); 
     config.route("/edit_place/{id}/img/", web::get().to(edit_place_img));
     config.route("/create_modules/", web::post().to(create_modules));
     //config.route("/close_place/{id}/", web::post().to(close_place));
@@ -119,10 +119,9 @@ pub async fn get_closed_places(req: HttpRequest) -> Json<Vec<Place>> {
     }
 }
 
-pub async fn create_place(payload: &mut Multipart, req: HttpRequest, data: Json<PlaceJson>) -> impl Responder {
+pub async fn create_place(req: HttpRequest, data: Json<PlaceJson>) -> impl Responder {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
-
         Place::create(
             data.title.clone(),
             data.user_id.clone(),
@@ -135,9 +134,6 @@ pub async fn create_place(payload: &mut Multipart, req: HttpRequest, data: Json<
 pub async fn edit_place(req: HttpRequest, data: Json<PlaceJson>, id: web::Path<String>) -> impl Responder {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
-        if _request_user.perm == 4 {
-
-        }
         Place::edit(
             id.to_string(),
             data.title.clone(),
@@ -153,7 +149,7 @@ pub async fn edit_place_img(payload: &mut Multipart, req: HttpRequest, id: web::
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
 
-        let form = files_form(payload).await;
+        let form = files_form(payload.borrow_mut()).await;
         Place::edit_img(
             id.to_string(),
             form.files[0],
