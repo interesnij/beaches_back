@@ -70,7 +70,7 @@ pub async fn files_form(payload: &mut Multipart) -> FileForm2 {
     while let Some(item) = payload.next().await {
         let mut field: Field = item.expect("split_payload err");
 
-        if field.name() == "files" {
+        if field.name() == "files[]" {
             let _new_path = field.content_disposition().get_filename().unwrap();
             if _new_path != "" {
                 let file = UploadedFiles::new(_new_path.to_string());
