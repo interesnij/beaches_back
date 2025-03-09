@@ -34,10 +34,10 @@ pub fn save_file(data: String) -> String {
     let mut f = File::create(&path).expect("Unable to create file");
     println!("metadata: {:?}", f.metadata());
     while file_data.size > (f.metadata().expect(" no metadata").len()).try_into().unwrap() {
-        println!("len: {:?}", f.metadata().expect(" no metadata").len());
+        //println!("len: {:?}", f.metadata().expect(" no metadata").len());
         f.write_all(data.as_bytes()).expect("Unable to write data");
     }
-    f.write_all(data.as_bytes()).expect("Unable to write data");
+    //f.write_all(data.as_bytes()).expect("Unable to write data");
     println!("f: {:?}", f);
     println!("metadata: {:?}", f.metadata());
     return path.replace("/beaches_front", "");
