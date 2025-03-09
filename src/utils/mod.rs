@@ -4,6 +4,8 @@ mod reqwest;
 pub use self::{
     auth::*,
 };
+use actix_multipart::{Field, Multipart};
+use futures::StreamExt;
 use actix_web::{
     HttpRequest,
     web,
@@ -28,7 +30,7 @@ pub struct FileForm {
     pub size:  i32,
 }
 
-pub fn save_file(data: String) -> String {
+pub async fn save_file(data: String) -> String {
     let file_data: FileForm = serde_json::from_str(&data).unwrap();
     let path = "/beaches_front/media/".to_owned() + &file_data.name;
     let mut f = File::create(&path).expect("Unable to create file");
@@ -47,7 +49,7 @@ pub fn save_file(data: String) -> String {
     //f.set_len(file_data.size.try_into().unwrap());
     //println!("metadata: {:?}", f.metadata());
     return path.replace("/beaches_front", "");
-} 
+}
 
 #[derive(Deserialize, Serialize)]
 pub struct NewUserForm {

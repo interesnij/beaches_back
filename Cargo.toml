@@ -18,6 +18,8 @@ hex = "0.4"
 rand = "0.7"
 reqwest = { version = "0.11.10", features = ["json"] }
 argonautica = "0.2.0"
+actix-multipart = "0.4.0-beta.12" 
+futures = "0.3.5"
 
 [profile.release]
 opt-level = 3
