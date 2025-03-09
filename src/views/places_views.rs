@@ -126,7 +126,7 @@ pub async fn create_place(req: HttpRequest, data: Json<PlaceJson>) -> impl Respo
             data.title.clone(),
             data.user_id.clone(),
             data.type_id,
-            image.clone()            data.cord.clone(),
+            data.cord.clone(),
         ); 
     }
     HttpResponse::Ok()

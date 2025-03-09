@@ -22,6 +22,7 @@ use crate::diesel::{
 use crate::models::User;
 use std::fs::File;
 use std::io::{Write,BufWriter};
+use std::fs::create_dir_all;
 
 
 #[derive(Deserialize)]
@@ -41,7 +42,7 @@ impl UploadedFiles {
 
         let now = chrono::Local::now().naive_utc();
         let format_folder = format!(
-            "./media/{}/{}/{}/{}/",
+            "./media/{}/{}/{}/",
             now.year().to_string(),
             now.month().to_string(),
             now.day().to_string(),
