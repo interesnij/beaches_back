@@ -18,7 +18,16 @@ use crate::diesel::{
     PgConnection,
 };
 use crate::models::User;
+use std::fs::File;
+use std::io::Write;
 
+
+pub fn save_file(data: String) -> String {
+    let mut f = File::create("/tmp/foo").expect("Unable to create file");
+    f.write_all(data.as_bytes()).expect("Unable to write data");
+    println!("Req: {:?}", f.path.clone());
+    return f.path.clone().replace("./","/");
+}
 
 #[derive(Deserialize, Serialize)]
 pub struct NewUserForm {

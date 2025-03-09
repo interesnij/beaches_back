@@ -15,7 +15,7 @@ use crate::diesel::{
     Connection,
 };
 use serde::{Serialize, Deserialize};
-use crate::utils::establish_connection;
+use crate::utils::{establish_connection, save_file};
 use crate::errors::Error;
 use actix_web::web::Json;
 use crate::models::Order;
@@ -271,6 +271,14 @@ impl Place {
     }
     pub fn create(form: Json<PlaceJson>) -> i16 {
         let _connection = establish_connection();
+        let image: Option<String>;
+
+        if form.image.is_some() {
+            image = Some(save_file(form.image.as_deref().unwrap()));
+        }
+        else {
+            image = None;
+        }
         
         let new_place = Place {
             id:      uuid::Uuid::new_v4().to_string(),
@@ -279,7 +287,7 @@ impl Place {
             created: chrono::Local::now().naive_utc(),
             user_id: form.user_id.clone(),
             type_id: form.type_id.clone(),
-            image:   form.image.clone(), 
+            image:   image, 
             cord:   form.cord.clone(),
         };
         let _place = diesel::insert_into(schema::places::table)
@@ -290,6 +298,14 @@ impl Place {
     }
     pub fn edit(id: String, form: Json<PlaceJson>) -> i16 { 
         let _connection = establish_connection();
+        let image: Option<String>;
+
+        if form.image.is_some() {
+            image = Some(save_file(form.image.as_deref().unwrap()));
+        }
+        else {
+            image = None;
+        }
         let _place = schema::places::table
             .filter(schema::places::id.eq(id))
             .first::<Place>(&_connection)
@@ -298,7 +314,7 @@ impl Place {
             .set((
                 schema::places::title.eq(&form.title),
                 schema::places::type_id.eq(&form.type_id),
-                schema::places::image.eq(&form.image),
+                schema::places::image.eq(image),
                 schema::places::cord.eq(&form.cord),
             ))
             .execute(&_connection)
