@@ -48,7 +48,7 @@ impl UploadedFiles {
             now.day().to_string(),
         );
         let format_path = format_folder.clone() + &filename.to_string();
-        create_dir_all(create_path).unwrap();
+        create_dir_all(format_folder).unwrap();
 
         UploadedFiles {
             name: filename.to_string(),
