@@ -44,7 +44,7 @@ pub fn save_file(data: String) -> String {
     
     //println!("f: {:?}", f);
     //f.set_len(file_data.size.try_into().unwrap());
-    println!("metadata: {:?}", f.metadata());
+    //println!("metadata: {:?}", f.metadata());
     return path.replace("/beaches_front", "");
 } 
 
