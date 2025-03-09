@@ -15,7 +15,7 @@ use crate::diesel::{
     Connection,
 };
 use serde::{Serialize, Deserialize};
-use crate::utils::{establish_connection, save_file};
+use crate::utils::establish_connection;
 use crate::errors::Error;
 use actix_web::web::Json;
 use crate::models::Order;
@@ -269,26 +269,22 @@ impl Place {
             .load::<Place>(&_connection)
             .expect("E"));
     }
-    pub fn create(form: Json<PlaceJson>) -> i16 {
+    pub fn create(
+        title:   String,
+        user_id: String,
+        type_id: String,
+        cord:    Option<String>
+    ) -> i16 {
         let _connection = establish_connection();
-        let image: Option<String>;
-
-        if form.image.is_some() {
-            image = Some(save_file(form.image.as_deref().unwrap().to_string()));
-        }
-        else {
-            image = None;
-        }
-        
         let new_place = Place {
             id:      uuid::Uuid::new_v4().to_string(),
-            title:   form.title.clone(),
+            title:   title,
             types:   1,
             created: chrono::Local::now().naive_utc(),
-            user_id: form.user_id.clone(),
-            type_id: form.type_id.clone(),
-            image:   image, 
-            cord:   form.cord.clone(),
+            user_id: user_id,
+            type_id: type_id,
+            image:   None, 
+            cord:    cord,
         };
         let _place = diesel::insert_into(schema::places::table)
             .values(&new_place)
@@ -296,27 +292,38 @@ impl Place {
             .expect("E.");
         return 1;
     }
-    pub fn edit(id: String, form: Json<PlaceJson>) -> i16 { 
+    pub fn edit (
+        id:      String, 
+        title:   String,
+        type_id: String,
+        cord:    Option<String>
+    ) -> i16 { 
         let _connection = establish_connection();
-        let image: Option<String>;
-
-        if form.image.is_some() {
-            image = Some(save_file(form.image.as_deref().unwrap().to_string()));
-        }
-        else {
-            image = None;
-        }
         let _place = schema::places::table
             .filter(schema::places::id.eq(id))
             .first::<Place>(&_connection)
             .expect("E."); 
         diesel::update(&_place) 
             .set((
-                schema::places::title.eq(&form.title),
-                schema::places::type_id.eq(&form.type_id),
-                schema::places::image.eq(image),
-                schema::places::cord.eq(&form.cord),
+                schema::places::title.eq(title),
+                schema::places::type_id.eq(type_id),
+                schema::places::cord.eq(cord),
             ))
+            .execute(&_connection)
+            .expect("E");
+        return 1;
+    }
+    pub fn edit_img (
+        id:      String, 
+        image:   String,
+    ) -> i16 { 
+        let _connection = establish_connection();
+        let _place = schema::places::table
+            .filter(schema::places::id.eq(id))
+            .first::<Place>(&_connection)
+            .expect("E."); 
+        diesel::update(&_place) 
+            .set(schema::places::image.eq(image))
             .execute(&_connection)
             .expect("E");
         return 1;

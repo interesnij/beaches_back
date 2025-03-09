@@ -30,6 +30,67 @@ pub struct FileForm {
     pub size:  i32,
 }
 
+#[derive(Debug, Clone)]
+pub struct UploadedFiles {
+    pub name: String, 
+    pub path: String,
+}
+impl UploadedFiles {
+    fn new(filename: String) -> UploadedFiles {
+        use chrono::Datelike;
+
+        let now = chrono::Local::now().naive_utc();
+        let format_folder = format!(
+            "./media/{}/{}/{}/{}/",
+            now.year().to_string(),
+            now.month().to_string(),
+            now.day().to_string(),
+        );
+        let format_path = format_folder.clone() + &filename.to_string();
+        let create_path = format_folder.replace("./", "/beaches_front/media/");
+        create_dir_all(create_path).unwrap();
+
+        UploadedFiles {
+            name: filename.to_string(),
+            path: format_path.to_string(),
+        }
+    }
+}
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct FileForm {
+    pub files: Vec<String>,
+}
+pub async fn files_form(payload: &mut Multipart) -> FileForm {
+    let mut form: FileForm = FileForm {
+        files: Vec::new(),
+    }; 
+
+    while let Some(item) = payload.next().await {
+        let mut field: Field = item.expect("split_payload err");
+
+        if field.name() == "image" {
+            let _new_path = field.content_disposition().get_filename().unwrap();
+            if _new_path != "" {
+                let file = UploadedFiles::new(_new_path.to_string());
+                let file_path = file.path.clone();
+                let mut f = web::block(move || std::fs::File::create(&file_path).expect("E"))
+                    .await
+                    .unwrap(); 
+                while let Some(chunk) = field.next().await {
+                    let data = chunk.unwrap();
+                    f = web::block(move || f.write_all(&data).map(|_| f))
+                        .await
+                        .unwrap()
+                        .expect("E");
+                };
+                form.files.push(file.path.clone().replace("./beaches_front","/"));
+            }
+        }
+    }
+    form
+}
+
 pub async fn save_file(data: String) -> String {
     let file_data: FileForm = serde_json::from_str(&data).unwrap();
     let path = "/beaches_front/media/".to_owned() + &file_data.name;
