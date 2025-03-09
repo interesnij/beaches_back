@@ -32,7 +32,11 @@ pub fn save_file(data: String) -> String {
     let file_data: FileForm = serde_json::from_str(&data).unwrap();
     let path = "/beaches_front/media/".to_owned() + &file_data.name;
     let mut f = File::create(&path).expect("Unable to create file");
-    f.write_all(data.as_bytes()).expect("Unable to write data");
+    while let Some(chunk) = file_data.size > f.metadata().len.unwrap() {
+        let _data = chunk.unwrap();
+        f.write_all(_data.as_bytes()).expect("Unable to write data");
+    }
+    //f.write_all(data.as_bytes()).expect("Unable to write data");
     println!("f: {:?}", f);
     println!("metadata: {:?}", f.metadata());
     return path.replace("/beaches_front", "");
