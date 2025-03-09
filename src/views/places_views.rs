@@ -20,6 +20,7 @@ use crate::utils::{
 }; 
 use crate::views::{AuthResp2, AuthResp, ItemId};
 use crate::schema;
+use std::borrow::BorrowMut;
 
 
 pub fn places_routes(config: &mut web::ServiceConfig) {
@@ -125,7 +126,7 @@ pub async fn create_place(req: HttpRequest, data: Json<PlaceJson>) -> impl Respo
         Place::create(
             data.title.clone(),
             data.user_id.clone(),
-            data.type_id,
+            data.type_id.clone(),
             data.cord.clone(),
         ); 
     }
@@ -138,7 +139,6 @@ pub async fn edit_place(req: HttpRequest, data: Json<PlaceJson>, id: web::Path<S
             id.to_string(),
             data.title.clone(),
             data.type_id,
-            data.image.clone(),
             data.cord.clone(),
         );
     }
