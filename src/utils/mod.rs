@@ -38,7 +38,7 @@ pub fn save_file(data: String) -> String {
         //println!("len: {:?}", f.metadata().expect(" no metadata").len());
     //    f.write_all(data.as_bytes()).expect("Unable to write data");
     //}
-    f.write_all(data.bytes()).expect("Unable to write data");
+    f.write_all(data.as_bytes()).expect("Unable to write data");
     println!("f: {:?}", f);
     //f.set_len(file_data.size.try_into().unwrap());
     println!("metadata: {:?}", f.metadata());
