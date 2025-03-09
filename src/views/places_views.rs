@@ -140,12 +140,17 @@ pub async fn edit_place(req: HttpRequest, data: Json<PlaceJson>, id: web::Path<S
             data.title.clone(),
             data.type_id.clone(),
             data.cord.clone(),
-        );
+        ); 
     }
     HttpResponse::Ok()
 }
 
-pub async fn edit_place_img(payload: &mut Multipart, req: HttpRequest, id: web::Path<String>) -> impl Responder {
+#[derive(Deserialize, Serialize, Debug)]
+pub struct Info {
+    pub status: String,
+}
+
+pub async fn edit_place_img(payload: &mut Multipart, req: HttpRequest, id: web::Path<String>) -> Json<Info> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
 
@@ -154,8 +159,11 @@ pub async fn edit_place_img(payload: &mut Multipart, req: HttpRequest, id: web::
             id.to_string(),
             form.files[0].clone(),
         );
+
     }
-    HttpResponse::Ok()
+    Info {
+        status: "ok".to_string(),
+    }
 }
 
 pub async fn create_modules(req: HttpRequest, data: Json<CreateModuleJson>) -> impl Responder {
