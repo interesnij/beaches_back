@@ -22,12 +22,19 @@ use std::fs::File;
 use std::io::Write;
 
 
+#[derive(Deserialize)]
+pub struct FileForm {
+    pub name: String,
+    pub size:  i32,
+}
+
 pub fn save_file(data: String) -> String {
-    let mut f = File::create("/tmp/foo").expect("Unable to create file");
+    let file_data: FileForm = serde_json::from_str(&data).unwrap();
+    let path = "/beaches_front/media/" + &file_data.name;
+    let mut f = File::create(&path).expect("Unable to create file");
     f.write_all(data.as_bytes()).expect("Unable to write data");
     println!("f: {:?}", f);
-    "".to_string()
-    //return f.path.clone().replace("./","/");
+    return path;
 }
 
 #[derive(Deserialize, Serialize)]
