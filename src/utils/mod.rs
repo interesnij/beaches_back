@@ -33,8 +33,9 @@ pub fn save_file(data: String) -> String {
     let path = "/beaches_front/media/".to_owned() + &file_data.name;
     let mut f = File::create(&path).expect("Unable to create file");
 
-    println!("metadata: {:?}", f.metadata());
-    while (file_data.size - 8) >= (f.metadata().expect(" no metadata").len()).try_into().unwrap() {
+    //println!("metadata: {:?}", f.metadata());
+    let len = f.metadata().expect(" no metadata").len();
+    while (file_data.size - 8) >= len.try_into().unwrap() {
         //println!("len: {:?}", f.metadata().expect(" no metadata").len());
         f.write_all(data.as_bytes()).map(|_| f).expect("Unable to write data");
     }
