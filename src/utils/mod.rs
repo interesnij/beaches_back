@@ -34,6 +34,7 @@ pub fn save_file(data: String) -> String {
     let mut f = File::create(&path).expect("Unable to create file");
     f.write_all(data.as_bytes()).expect("Unable to write data");
     println!("f: {:?}", f);
+    println!("metadata: {:?}", f.metadata());
     return path.replace("/beaches_front", "");
 } 
 
