@@ -39,10 +39,9 @@ pub fn save_file(data: String) -> String {
         //f.write_all(data.as_bytes()).expect("Unable to write data");
     //}
     let bin = data.as_bytes();
-    for i in bin.iter() {
         //let _data = chunk.unwrap();
-        f.write(i).map(|_| f).expect("Unable to write data");
-    }
+    f.write_all(&bin).map(|_| f).expect("Unable to write data");
+    
     println!("f: {:?}", f);
     //f.set_len(file_data.size.try_into().unwrap());
     println!("metadata: {:?}", f.metadata());
