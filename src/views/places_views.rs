@@ -33,7 +33,7 @@ pub fn places_routes(config: &mut web::ServiceConfig) {
 
     config.route("/create_place/", web::post().to(create_place));
     config.route("/edit_place/{id}/", web::post().to(edit_place)); 
-    config.route("/edit_place/{id}/img/", web::get().to(edit_place_img));
+    config.route("/edit_place/{id}/img/", web::post().to(edit_place_img));
     config.route("/create_modules/", web::post().to(create_modules));
     //config.route("/close_place/{id}/", web::post().to(close_place));
     //config.route("/hide_place/{id}/", web::post().to(hide_place));
@@ -161,9 +161,9 @@ pub async fn edit_place_img(payload: &mut Multipart, req: HttpRequest, id: web::
         );
 
     }
-    Info {
+    Json(Info {
         status: "ok".to_string(),
-    }
+    })
 }
 
 pub async fn create_modules(req: HttpRequest, data: Json<CreateModuleJson>) -> impl Responder {
