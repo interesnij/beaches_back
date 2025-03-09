@@ -138,7 +138,7 @@ pub async fn edit_place(req: HttpRequest, data: Json<PlaceJson>, id: web::Path<S
         Place::edit(
             id.to_string(),
             data.title.clone(),
-            data.type_id,
+            data.type_id.clone(),
             data.cord.clone(),
         );
     }
@@ -152,7 +152,7 @@ pub async fn edit_place_img(payload: &mut Multipart, req: HttpRequest, id: web::
         let form = files_form(payload.borrow_mut()).await;
         Place::edit_img(
             id.to_string(),
-            form.files[0],
+            form.files[0].clone(),
         );
     }
     HttpResponse::Ok()
