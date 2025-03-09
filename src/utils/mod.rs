@@ -31,19 +31,17 @@ pub struct FileForm {
 pub fn save_file(data: String) -> String {
     let file_data: FileForm = serde_json::from_str(&data).unwrap();
     let path = "/beaches_front/media/".to_owned() + &file_data.name;
-    let mut _f = File::create(&path).expect("Unable to create file");
-    let mut f = BufWriter::new(_f);
+    let mut f = File::create(&path).expect("Unable to create file");
 
-    //println!("metadata: {:?}", f.metadata());
-    //while file_data.size > (f.metadata().expect(" no metadata").len()).try_into().unwrap() {
-        //println!("len: {:?}", f.metadata().expect(" no metadata").len());
+    println!("metadata: {:?}", f.metadata());
+    while file_data.size > (f.metadata().expect(" no metadata").len()).try_into().unwrap() {
+        println!("len: {:?}", f.metadata().expect(" no metadata").len());
         f.write_all(data.as_bytes()).expect("Unable to write data");
-    //}
+    }
     //f.write_all(data.as_bytes()).expect("Unable to write data");
-    //println!("f: {:?}", f);
-    //f.set_len(file_data.size.try_into().unwrap());
-    //f.sync_all();
-    //println!("metadata: {:?}", f.metadata());
+    println!("f: {:?}", f);
+    f.set_len(file_data.size.try_into().unwrap());
+    println!("metadata: {:?}", f.metadata());
     return path.replace("/beaches_front", "");
 } 
 
