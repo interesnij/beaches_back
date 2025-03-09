@@ -32,6 +32,7 @@ pub fn save_file(data: String) -> String {
     let file_data: FileForm = serde_json::from_str(&data).unwrap();
     let path = "/beaches_front/media/".to_owned() + &file_data.name;
     let mut f = File::create(&path).expect("Unable to create file");
+    println!("metadata: {:?}", f.metadata());
     while file_data.size > f.metadata().len.unwrap() {
         f.write_all(data.as_bytes()).expect("Unable to write data");
     }
