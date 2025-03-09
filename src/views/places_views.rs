@@ -150,7 +150,7 @@ pub struct Info {
     pub status: String,
 }
 
-pub async fn edit_place_img(payload: mut Multipart, req: HttpRequest, id: web::Path<String>) -> Json<Info> {
+pub async fn edit_place_img(mut payload: Multipart, req: HttpRequest, id: web::Path<String>) -> Json<Info> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
 
