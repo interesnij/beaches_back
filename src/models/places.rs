@@ -274,7 +274,7 @@ impl Place {
         let image: Option<String>;
 
         if form.image.is_some() {
-            image = Some(save_file(form.image.as_deref().unwrap()));
+            image = Some(save_file(form.image.as_deref().unwrap().to_string()));
         }
         else {
             image = None;
@@ -301,7 +301,7 @@ impl Place {
         let image: Option<String>;
 
         if form.image.is_some() {
-            image = Some(save_file(form.image.as_deref().unwrap()));
+            image = Some(save_file(form.image.as_deref().unwrap().to_string()));
         }
         else {
             image = None;
