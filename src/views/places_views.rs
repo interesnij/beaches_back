@@ -39,7 +39,7 @@ pub fn places_routes(config: &mut web::ServiceConfig) {
     //config.route("/hide_place/{id}/", web::post().to(hide_place));
     //config.route("/publish_place/{id}/", web::post().to(publish_place));
 }  
-
+ 
 pub async fn get_places(req: HttpRequest) -> Json<Vec<Place>> {
     return Place::get_all();
 }
@@ -150,7 +150,7 @@ pub struct Info {
     pub status: String,
 }
 
-pub async fn edit_place_img(payload: &mut Multipart, req: HttpRequest, id: web::Path<String>) -> Json<Info> {
+pub async fn edit_place_img(payload: mut Multipart, req: HttpRequest, id: web::Path<String>) -> Json<Info> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
 
