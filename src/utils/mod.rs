@@ -39,6 +39,7 @@ pub fn save_file(data: String) -> String {
     }
     //f.write_all(data.as_bytes()).expect("Unable to write data");
     println!("f: {:?}", f);
+    f.set_len(file_data.size);
     println!("metadata: {:?}", f.metadata());
     return path.replace("/beaches_front", "");
 } 
