@@ -32,13 +32,7 @@ async fn main() -> std::io::Result<()> {
     let secret_key = Key::generate();
 
     HttpServer::new(move || {
-        let cors = Cors::default() 
-            .allowed_origin("https://my-demo.ru")
-            .allowed_origin_fn(|origin, _req_head| {
-                origin.as_bytes().ends_with(b".my-demo.ru")
-            })
-            .allowed_methods(vec!["GET", "POST"])
-            .max_age(3600);
+        let cors = Cors::permissive();
         App::new() 
             .wrap(Compress::default())
             .wrap(cors)
