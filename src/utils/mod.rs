@@ -107,6 +107,7 @@ pub async fn image_form(payload: &mut Multipart) -> ImageForm {
         let mut field: Field = item.expect("split_payload err");
 
         if field.name() == "image" {
+            println("image exist!");
             let _new_path = field.content_disposition().get_filename().unwrap();
             if _new_path != "" {
                 let file = UploadedFiles::new(_new_path.to_string());
