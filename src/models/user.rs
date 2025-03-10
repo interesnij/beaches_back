@@ -204,6 +204,14 @@ impl User {
                 .execute(&_connection);
         }))
     }
+    pub fn change_avatar(user_id: String, image: Option<String>) -> Result<(), Error> {
+        let _connection = establish_connection();
+        _connection.transaction(|| Ok({
+            let _u = diesel::update(users::table.filter(users::id.eq(user_id)))
+                .set(schema::users::image.eq(image))
+                .execute(&_connection);
+        }))
+    }
     pub fn get_uuid(&self) -> String {
         hex::encode(self.uuid.clone())
     }

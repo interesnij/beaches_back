@@ -17,6 +17,8 @@ use crate::utils::{
 }; 
 use crate::views::AuthResp;
 use crate::schema;
+use std::borrow::BorrowMut;
+use actix_multipart::Multipart;
 
 
 pub fn user_routes(config: &mut web::ServiceConfig) {
@@ -35,6 +37,7 @@ pub fn user_routes(config: &mut web::ServiceConfig) {
     config.route("/delete_partner/", web::post().to(delete_partner));
     config.route("/change_owner_partner/", web::post().to(change_owner_partner));
     config.route("/orders/", web::get().to(get_orders));
+    config.route("/change_avatar/", web::post().to(change_avatar));
 }
 
 
@@ -190,6 +193,16 @@ pub async fn change_owner_partner(req: HttpRequest, data: Json<crate::models::Ed
         if _request_user.perm == 10 { 
             User::edit_owner_partner(data);
         }
+    }
+    HttpResponse::Ok()
+}
+
+
+pub async fn change_avatar(mut payload: Multipart, req: HttpRequest) -> impl Responder {
+    if is_signed_in(&req) {
+        let _request_user = get_current_user(&req);
+        let form = crate::utils::image_form(payload.borrow_mut()).await;
+        User::change_avatar(_request_user.id, Some(form.image.clone()));
     }
     HttpResponse::Ok()
 }
