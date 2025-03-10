@@ -122,7 +122,7 @@ pub async fn image_form(payload: &mut Multipart) -> ImageForm {
                         .expect("E");
                 };
                 
-                form.files = file.path.clone().replace("/beaches_front","");
+                form.image = file.path.clone().replace("/beaches_front","");
             }
         }
     }
