@@ -203,6 +203,6 @@ pub async fn change_avatar(mut payload: Multipart, req: HttpRequest) -> impl Res
         let _request_user = get_current_user(&req);
         let form = crate::utils::image_form(payload.borrow_mut()).await;
         User::change_avatar(_request_user.id, Some(form.image.clone()));
-    }
+    } 
     HttpResponse::Ok()
 }

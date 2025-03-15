@@ -154,12 +154,8 @@ pub async fn edit_place_img(mut payload: Multipart, req: HttpRequest, id: web::P
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
 
-        let form = files_form(payload.borrow_mut()).await;
-        Place::edit_img(
-            id.to_string(),
-            form.files[0].clone(),
-        );
-
+        let form = crate::utils::image_form(payload.borrow_mut()).await;
+        Place::edit_img(id.to_string(), Some(form.image.clone()));
     }
     Json(Info {
         status: "ok".to_string(),
