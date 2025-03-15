@@ -37,7 +37,7 @@ pub fn user_routes(config: &mut web::ServiceConfig) {
     config.route("/delete_partner/", web::post().to(delete_partner));
     config.route("/change_owner_partner/", web::post().to(change_owner_partner));
     config.route("/orders/", web::get().to(get_orders));
-    config.route("/upload_files/", web::post().to(change_avatar));
+    config.route("/create/upload_files/", web::post().to(change_avatar));
 }
 
 
