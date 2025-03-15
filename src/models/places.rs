@@ -314,8 +314,8 @@ impl Place {
         return 1;
     }
     pub fn edit_img (
-        id:      String, 
-        image:   String,
+        id:    String, 
+        image: Option<String>,
     ) -> i16 { 
         let _connection = establish_connection();
         let _place = schema::places::table
