@@ -223,7 +223,7 @@ pub async fn change_avatar(mut payload: Multipart, req: HttpRequest) -> impl Res
             else {
                 object_id = "".to_string();
             }
-        }
+        } 
 
         let form = crate::utils::image_form(payload.borrow_mut()).await;
         if types == "user_avatar".to_string() {
@@ -235,5 +235,5 @@ pub async fn change_avatar(mut payload: Multipart, req: HttpRequest) -> impl Res
             return Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body("place_avatar"));
         }
     }
-    HttpResponse::Ok()
+    Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body(""));
 }
