@@ -241,4 +241,5 @@ pub async fn change_avatar(mut payload: Multipart, req: HttpRequest) -> impl Res
     else {
         Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body(""));
     }
+    Ok(())
 }
