@@ -201,6 +201,7 @@ pub async fn change_owner_partner(req: HttpRequest, data: Json<crate::models::Ed
 pub async fn change_avatar(mut payload: Multipart, req: HttpRequest) -> impl Responder {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
+        println!("req.head: {:?}", req.head());
         let form = crate::utils::image_form(payload.borrow_mut()).await;
         User::change_avatar(_request_user.id, Some(form.image.clone()));
     } 
