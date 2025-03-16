@@ -313,20 +313,13 @@ impl Place {
             .expect("E");
         return 1;
     }
-    pub fn edit_img (
-        id:    String, 
-        image: Option<String>,
-    ) -> i16 { 
+    pub fn change_avatar(place_id: String, image: Option<String>) -> Result<(), Error> {
         let _connection = establish_connection();
-        let _place = schema::places::table
-            .filter(schema::places::id.eq(id))
-            .first::<Place>(&_connection)
-            .expect("E."); 
-        diesel::update(&_place) 
-            .set(schema::places::image.eq(image))
-            .execute(&_connection)
-            .expect("E");
-        return 1;
+        _connection.transaction(|| Ok({
+            let _u = diesel::update(places::table.filter(places::id.eq(place_id)))
+                .set(schema::places::image.eq(image))
+                .execute(&_connection);
+        }))
     }
     pub fn delete(id: String) -> i16 {
         let _connection = establish_connection();

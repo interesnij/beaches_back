@@ -198,12 +198,42 @@ pub async fn change_owner_partner(req: HttpRequest, data: Json<crate::models::Ed
 }
 
 
+#[derive(Debug, Deserialize)]
+struct ImageParams {
+    pub types:     Option<String>,
+    pub object_id: Option<String>,
+}
 pub async fn change_avatar(mut payload: Multipart, req: HttpRequest) -> impl Responder {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
-        println!("req.head: {:?}", req.head());
+        let params_some = web::Query::<ImageParams>::from_query(&req.query_string());
+        let types: String;
+        let object_id: String;
+        if params_some.is_ok() {
+            let params = params_some.unwrap();
+            if params.types.is_some() {
+                types = params.types.as_deref().unwrap().to_string();
+            }
+            else {
+                types = "".to_string();
+            }
+            if params.object_id.is_some() {
+                object_id = params.object_id.as_deref().unwrap().to_string();
+            }
+            else {
+                object_id = "".to_string();
+            }
+        }
+
         let form = crate::utils::image_form(payload.borrow_mut()).await;
-        User::change_avatar(_request_user.id, Some(form.image.clone()));
-    } 
+        if types == "user_avatar".to_string() {
+            User::change_avatar(_request_user.id, Some(form.image.clone()));
+            return Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body("user_avatar"));
+        }
+        else if types == "place_avatar".to_string() {
+            Place::change_avatar(object_id, Some(form.image.clone()));
+            return Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body("place_avatar"));
+        }
+    }
     HttpResponse::Ok()
 }

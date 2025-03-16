@@ -33,7 +33,6 @@ pub fn places_routes(config: &mut web::ServiceConfig) {
 
     config.route("/create_place/", web::post().to(create_place));
     config.route("/edit_place/{id}/", web::post().to(edit_place)); 
-    config.route("/edit_place/{id}/img/", web::post().to(edit_place_img));
     config.route("/create_modules/", web::post().to(create_modules));
     //config.route("/close_place/{id}/", web::post().to(close_place));
     //config.route("/hide_place/{id}/", web::post().to(hide_place));
@@ -143,23 +142,6 @@ pub async fn edit_place(req: HttpRequest, data: Json<PlaceJson>, id: web::Path<S
         ); 
     }
     HttpResponse::Ok()
-}
-
-#[derive(Deserialize, Serialize, Debug)]
-pub struct Info {
-    pub status: String,
-}
-
-pub async fn edit_place_img(mut payload: Multipart, req: HttpRequest, id: web::Path<String>) -> Json<Info> {
-    if is_signed_in(&req) {
-        let _request_user = get_current_user(&req);
-
-        let form = crate::utils::image_form(payload.borrow_mut()).await;
-        Place::edit_img(id.to_string(), Some(form.image.clone()));
-    }
-    Json(Info {
-        status: "ok".to_string(),
-    })
 }
 
 pub async fn create_modules(req: HttpRequest, data: Json<CreateModuleJson>) -> impl Responder {
