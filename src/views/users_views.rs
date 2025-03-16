@@ -203,11 +203,11 @@ struct ImageParams {
     pub types:     Option<String>,
     pub object_id: Option<String>,
 }
-pub async fn change_avatar(mut payload: Multipart, req: HttpRequest) -> impl Responder {
+pub async fn change_avatar(mut payload: Multipart, req: HttpRequest) -> actix_web::Result<HttpResponse> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         let params_some = web::Query::<ImageParams>::from_query(&req.query_string());
-        let types: String;
+        let types: String; 
         let object_id: String;
         if params_some.is_ok() {
             let params = params_some.unwrap();
