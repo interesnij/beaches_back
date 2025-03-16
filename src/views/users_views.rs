@@ -223,7 +223,11 @@ pub async fn change_avatar(mut payload: Multipart, req: HttpRequest) -> actix_we
             else {
                 object_id = "".to_string();
             }
-        } 
+        }
+        else {
+            types = "".to_string();
+            object_id = "".to_string();
+        }
 
         let form = crate::utils::image_form(payload.borrow_mut()).await;
         if types == "user_avatar".to_string() {
