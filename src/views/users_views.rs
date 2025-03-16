@@ -238,8 +238,5 @@ pub async fn change_avatar(mut payload: Multipart, req: HttpRequest) -> impl Res
             return Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body(""));
         }
     }
-    else {
-        Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body(""));
-    }
-    Ok(())
+    Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body(""))
 }
