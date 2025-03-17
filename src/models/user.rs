@@ -63,6 +63,7 @@ pub struct OrderListJson {
 }
 #[derive(Serialize)]
 pub struct PlaceListJson {
+    pub id:    String,
     pub title: String,
     pub image: Option<String>,
     pub cord:  Option<String>,
@@ -71,7 +72,7 @@ pub struct PlaceListJson {
 pub struct RespOrderJson2 {
     pub order:  OrderListJson,
     pub place:  PlaceListJson,
-}
+}  
 
 impl User {
     pub fn is_superuser(&self) -> bool {
@@ -86,16 +87,30 @@ impl User {
     pub fn is_manager(&self) -> bool {
         return self.perm == 2;
     }
-    pub fn get_orders(&self) -> Json<Vec<RespOrderJson2>> {
+    pub fn get_objects(&self) -> Vec<PlaceListJson> {
+        let _connection = establish_connection();
+        return Json(schema::places::table
+            .filter(schema::places::user_id.eq(self.id.clone()))
+            .select((
+                schema::places::id,
+                schema::places::title,
+                schema::places::image,
+                schema::places::cord,
+            ))
+            .load::<PlaceListJson>(&_connection)
+            .expect("E"));
+    } 
+    pub fn get_orders(&self) -> Vec<RespOrderJson2> {
         let _connection = establish_connection();
         let list = schema::orders::table
             .filter(schema::orders::user_id.eq(self.id.clone()))
             .load::<crate::models::Order>(&_connection)
-            .expect("E");
+            .expect("E"); 
         let mut stack = Vec::new();
         for i in list {
             let _place = crate::models::Place::get_place(i.place_id.clone());
             let _place_item = PlaceListJson {
+                id:    _place.id.clone(),
                 title: _place.title.clone(),
                 image: _place.image.clone(),
                 cord:  _place.cord.clone(),
@@ -112,7 +127,7 @@ impl User {
                 place:  _place_item,
             });
         }
-        return Json(stack);
+        return stack;
     }
     pub fn create_manager(&self, form: Json<crate::models::PlaceManagerJson>) -> i16 {
         let _connection = establish_connection();

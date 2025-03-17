@@ -22,6 +22,7 @@ use actix_multipart::Multipart;
 
 
 pub fn user_routes(config: &mut web::ServiceConfig) {
+    config.route("/profile/", web::get().to(get_profile));
     config.route("/admins/", web::get().to(get_admins));
     config.route("/users/", web::get().to(get_users)); 
     config.route("/partners/", web::get().to(get_partners));
@@ -40,11 +41,31 @@ pub fn user_routes(config: &mut web::ServiceConfig) {
     config.route("/create/upload_files/", web::post().to(change_avatar));
 }
 
+#[derive(Serialize)]
+pub struct ProfileJson {
+    pub orders:  crate::models::OrderListJson,
+    pub places:  crate::models::PlaceListJson,
+} 
 
+pub async fn get_profile(req: HttpRequest) -> Json<Vec<crate::models::ProfileJson>> {
+    if is_signed_in(&req) {
+        let _request_user = get_current_user(&req);
+        return Json( ProfileJson {
+            orders: _request_user.get_orders(),
+            places: _request_user.get_objects(),
+        });
+    }
+    else {
+        Json( ProfileJson {
+            orders: Vec::new(),
+            places: Vec::new(),
+        });
+    }
+}
 pub async fn get_orders(req: HttpRequest) -> Json<Vec<crate::models::RespOrderJson2>> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
-        return _request_user.get_orders();
+        return Json(_request_user.get_orders());
     }
     else {
         Json(Vec::new())
