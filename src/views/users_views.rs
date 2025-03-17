@@ -47,7 +47,7 @@ pub struct ProfileJson {
     pub places:  Vec<crate::models::PlaceListJson>,
 } 
 
-pub async fn get_profile(req: HttpRequest) -> Json<Vec<ProfileJson>> {
+pub async fn get_profile(req: HttpRequest) -> Json<ProfileJson> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         return Json( ProfileJson {
