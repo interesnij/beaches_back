@@ -187,6 +187,12 @@ impl User {
             .filter(schema::users::email.eq(email))
             .first::<User>(&_connection)?);
     }
+    pub fn get_user_with_id(id: &String) -> Result<User, Error> {
+        let _connection = establish_connection();
+        return Ok(schema::users::table
+            .filter(schema::users::id.eq(id))
+            .first::<User>(&_connection)?);
+    }
 
     pub fn create_user_block(user_id: String) -> Result<(), Error> {
         let _connection = establish_connection();
