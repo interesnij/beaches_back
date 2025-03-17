@@ -89,9 +89,10 @@ impl User {
     }
     pub fn get_objects(&self) -> Vec<PlaceListJson> {
         let _connection = establish_connection();
+        let uuid = hex::encode(self.uuid.clone());
         return schema::places::table
             .filter(schema::places::user_id.eq(self.id.clone()))
-            .or_filter(schema::places::user_id.eq(self.uuid.clone()))
+            .or_filter(schema::places::user_id.eq(uuid))
             .select((
                 schema::places::id,
                 schema::places::title,
@@ -103,11 +104,13 @@ impl User {
     } 
     pub fn get_orders(&self) -> Vec<RespOrderJson2> {
         let _connection = establish_connection();
+        let uuid = hex::encode(self.uuid.clone());
+
         let list = schema::orders::table
             .filter(schema::orders::user_id.eq(self.id.clone()))
-            .or_filter(schema::orders::user_id.eq(self.uuid.clone()))
+            .or_filter(schema::orders::user_id.eq(uuid))
             .load::<crate::models::Order>(&_connection)
-            .expect("E"); 
+            .expect("E");
         let mut stack = Vec::new();
         for i in list {
             let _place = crate::models::Place::get_place(i.place_id.clone());
