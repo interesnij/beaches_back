@@ -91,6 +91,7 @@ impl User {
         let _connection = establish_connection();
         return schema::places::table
             .filter(schema::places::user_id.eq(self.id.clone()))
+            .or_filter(schema::places::user_id.eq(self.uuid.clone()))
             .select((
                 schema::places::id,
                 schema::places::title,
@@ -104,6 +105,7 @@ impl User {
         let _connection = establish_connection();
         let list = schema::orders::table
             .filter(schema::orders::user_id.eq(self.id.clone()))
+            .or_filter(schema::orders::user_id.eq(self.uuid.clone()))
             .load::<crate::models::Order>(&_connection)
             .expect("E"); 
         let mut stack = Vec::new();
@@ -172,7 +174,7 @@ impl User {
         _connection.transaction(|| Ok({
             let _u = diesel::update(users::table.filter(users::id.eq(user_id)))
                 .set(schema::users::perm.eq(10))
-                .execute(&_connection);
+                .execute(&_connection); 
         }))
     }
     pub fn edit_owner_partner(form: Json<crate::models::EditOwnerPartnerJson>) -> i16 {

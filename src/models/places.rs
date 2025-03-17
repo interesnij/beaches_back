@@ -272,7 +272,7 @@ impl Place {
     pub fn create(
         title:   String,
         user_id: String,
-        type_id: String,
+        type_id: String, 
         cord:    Option<String>
     ) -> i16 {
         let _connection = establish_connection();
