@@ -61,7 +61,7 @@ pub struct OrderListJson {
     pub time_start: String,
     pub time_end:   String,
 }
-#[derive(Serialize)]
+#[derive(Serialize, Queryable)]
 pub struct PlaceListJson {
     pub id:    String,
     pub title: String,
@@ -89,16 +89,16 @@ impl User {
     }
     pub fn get_objects(&self) -> Vec<PlaceListJson> {
         let _connection = establish_connection();
-        return Json(schema::places::table
+        return schema::places::table
             .filter(schema::places::user_id.eq(self.id.clone()))
             .select((
                 schema::places::id,
                 schema::places::title,
                 schema::places::image,
                 schema::places::cord,
-            ))
+            )) 
             .load::<PlaceListJson>(&_connection)
-            .expect("E"));
+            .expect("E");
     } 
     pub fn get_orders(&self) -> Vec<RespOrderJson2> {
         let _connection = establish_connection();

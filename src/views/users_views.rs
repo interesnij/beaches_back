@@ -43,11 +43,11 @@ pub fn user_routes(config: &mut web::ServiceConfig) {
 
 #[derive(Serialize)]
 pub struct ProfileJson {
-    pub orders:  crate::models::OrderListJson,
-    pub places:  crate::models::PlaceListJson,
+    pub orders:  Vec<crate::models::OrderListJson>,
+    pub places:  Vec<crate::models::PlaceListJson>,
 } 
 
-pub async fn get_profile(req: HttpRequest) -> Json<Vec<crate::models::ProfileJson>> {
+pub async fn get_profile(req: HttpRequest) -> Json<Vec<ProfileJson>> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         return Json( ProfileJson {
