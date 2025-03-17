@@ -269,6 +269,7 @@ impl User {
         return _new_user;
     }
     pub fn edit(&self, form: Json<EditUserJson>) -> i16 {
+        let _connection = establish_connection();
         diesel::update(self)
                 .set((
                     schema::users::first_name.eq(&form.first_name.clone()),

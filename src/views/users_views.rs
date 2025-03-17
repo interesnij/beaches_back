@@ -202,7 +202,7 @@ pub async fn delete_partner(req: HttpRequest, data: Json<ItemId>) -> impl Respon
     HttpResponse::Ok()
 }
 
-pub async fn edit_user(req: HttpRequest, data: Json<EditUserJson>) -> impl Responder {
+pub async fn edit_user(req: HttpRequest, data: Json<crate::models::EditUserJson>) -> impl Responder {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         _request_user.edit(data);
