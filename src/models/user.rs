@@ -268,13 +268,8 @@ impl User {
         }
         return _new_user;
     }
-    pub fn edit(id: String, form: Json<EditUserJson>) -> i16 {
-        let _connection = establish_connection();
-        let _user = schema::users::table
-            .filter(schema::users::id.eq(id))
-            .first::<User>(&_connection)
-            .expect("E.");
-        diesel::update(&_user)
+    pub fn edit(&self, form: Json<EditUserJson>) -> i16 {
+        diesel::update(self)
                 .set((
                     schema::users::first_name.eq(&form.first_name.clone()),
                     schema::users::last_name.eq(form.last_name.clone()),
