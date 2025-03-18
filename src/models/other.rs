@@ -77,11 +77,10 @@ pub struct OrderJson {
     pub title:      String,
     pub place_id:   String,
     pub object_id:  String,
-    pub user_id:    String,
     pub price:      i32,
     pub time_start: String,
     pub time_end:   String, 
-}
+} 
 
 impl Order {
     pub fn get_client(&self) -> UserJson {
@@ -106,7 +105,7 @@ impl Order {
             .load::<Order>(&_connection)
             .expect("E"));
     } 
-    pub fn create(form: Vec<OrderJson>) -> i16 {
+    pub fn create(user_id: String, form: Vec<OrderJson>) -> i16 {
         let _connection = establish_connection();
 
         for i in form.iter() {
@@ -160,7 +159,7 @@ impl Order {
                 place_id:   i.place_id.clone(),
                 object_id:  i.object_id.clone(),
                 created:    chrono::Local::now().naive_utc(),
-                user_id:    i.user_id.clone(),
+                user_id:    user_id.clone(),
                 price:      i.price,
                 time_start: time_start,
                 time_end:   time_end, 

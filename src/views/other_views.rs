@@ -6,7 +6,7 @@ use actix_web::{
     web::Json,
 };
 use serde::{Deserialize, Serialize};
-use crate::models::Order;
+use crate::models::{Order, OrderJson};
 
 use crate::utils::{
     is_signed_in,
