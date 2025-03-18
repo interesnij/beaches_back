@@ -112,8 +112,8 @@ impl Order {
         for i in form.iter() {
             let time_start: String;
             let time_end: String;
-            let format_start = chrono::NaiveDateTime::parse_from_str(i.time_start, "%Y-%m-%d %H:%M:%S").unwrap();
-            let format_end = chrono::NaiveDateTime::parse_from_str(i.time_end, "%Y-%m-%d %H:%M:%S").unwrap();
+            let format_start = chrono::NaiveDateTime::parse_from_str(&i.time_start, "%Y-%m-%d %H:%M:%S").unwrap();
+            let format_end = chrono::NaiveDateTime::parse_from_str(&i.time_end, "%Y-%m-%d %H:%M:%S").unwrap();
 
             if schema::times::table
                 .filter(schema::times::time.eq(format_start))
