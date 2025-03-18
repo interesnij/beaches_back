@@ -173,12 +173,12 @@ impl Order {
     }
 
 
-    pub fn delete(user_id: String, ids: Vec<String>) -> i16 {
+    pub fn delete(user_id: String, data: crate::views::OrderIdsJson) -> i16 {
         let _connection = establish_connection();
         diesel::delete (
             schema::orders::table
                 .filter(schema::orders::user_id.eq(user_id))
-                .filter(schema::orders::id.eq_any(ids))
+                .filter(schema::orders::id.eq_any(data.ids))
         )
         .execute(&_connection)
         .expect("E");

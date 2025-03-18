@@ -18,7 +18,7 @@ use crate::utils::{
 pub fn other_routes(config: &mut web::ServiceConfig) {
     config.route("/create_order/", web::get().to(create_order));
     config.route("/delete_order/", web::get().to(delete_order));
-}
+} 
 
 pub async fn create_order(req: HttpRequest, data: Json<Vec<OrderJson>>) -> impl Responder {
     if is_signed_in(&req) {
@@ -40,7 +40,7 @@ pub async fn delete_order(req: HttpRequest, data: Json<Vec<OrderIdsJson>>) -> im
         let _request_user = get_current_user(&req);
         Order::delete(
             _request_user.id.clone(),
-            data.ids.clone()
+            data
         ); 
     }
     HttpResponse::Ok()
