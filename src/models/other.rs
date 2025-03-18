@@ -173,7 +173,7 @@ impl Order {
     }
 
 
-    pub fn delete(user_id: String, data: crate::views::OrderIdsJson) -> i16 {
+    pub fn delete(user_id: String, data: Json<crate::views::OrderIdsJson>) -> i16 {
         let _connection = establish_connection();
         diesel::delete (
             schema::orders::table
