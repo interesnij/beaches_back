@@ -105,7 +105,7 @@ impl Order {
             .load::<Order>(&_connection)
             .expect("E"));
     } 
-    pub fn create(user_id: String, form: Vec<OrderJson>) -> i16 {
+    pub fn create(user_id: String, form: Json<Vec<OrderJson>>) -> i16 {
         let _connection = establish_connection();
 
         for i in form.iter() {
