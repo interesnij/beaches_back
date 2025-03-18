@@ -73,7 +73,7 @@ pub struct Order {
     pub time_end:   String,
 }
 #[derive(Deserialize)]
-pub struct OrderJson {
+pub struct OrderJson { 
     pub title:      String,
     pub place_id:   String,
     pub object_id:  String,
@@ -105,77 +105,81 @@ impl Order {
             .filter(schema::orders::place_id.eq(id))
             .load::<Order>(&_connection)
             .expect("E"));
-    }
-    pub fn create(form: OrderJson) -> i16 {
+    } 
+    pub fn create(form: Vec<OrderJson>) -> i16 {
         let _connection = establish_connection();
 
-        let time_start: String;
-        let time_end: String;
-        let format_start = chrono::NaiveDateTime::parse_from_str(&form.time_start, "%Y-%m-%d %H:%M:%S").unwrap();
-        let format_end = chrono::NaiveDateTime::parse_from_str(&form.time_end, "%Y-%m-%d %H:%M:%S").unwrap();
+        for i in form.iter() {
+            let time_start: String;
+            let time_end: String;
+            let format_start = chrono::NaiveDateTime::parse_from_str(i.time_start, "%Y-%m-%d %H:%M:%S").unwrap();
+            let format_end = chrono::NaiveDateTime::parse_from_str(i.time_end, "%Y-%m-%d %H:%M:%S").unwrap();
 
-        if schema::times::table
-            .filter(schema::times::time.eq(format_start))
-            .select(schema::times::id)
-            .first::<String>(&_connection)
-            .is_ok() {
-                time_start = form.time_start.clone();
-        }
-        else {
-            let new = Time {
-                id:   uuid::Uuid::new_v4().to_string(),
-                time: format_start,
+            if schema::times::table
+                .filter(schema::times::time.eq(format_start))
+                .select(schema::times::id)
+                .first::<String>(&_connection)
+                .is_ok() {
+                    time_start = i.time_start.clone();
+            }
+            else {
+                let new = Time {
+                    id:   uuid::Uuid::new_v4().to_string(),
+                    time: format_start,
+                }; 
+                let _new_time = diesel::insert_into(schema::times::table)
+                    .values(&new)
+                    .execute(&_connection)
+                    .expect("E.");
+                time_start = i.time_start.clone();
+            }
+
+            if schema::times::table
+                .filter(schema::times::time.eq(format_end))
+                .select(schema::times::id)
+                .first::<String>(&_connection)
+                .is_ok() {
+                    time_end = i.time_end.clone();
+            }
+            else {
+                let new = Time {
+                    id:   uuid::Uuid::new_v4().to_string(),
+                    time: format_end,
+                }; 
+                let _new_time = diesel::insert_into(schema::times::table)
+                    .values(&new)
+                    .execute(&_connection)
+                    .expect("E.");
+                time_end = i.time_end.clone();
+            }
+
+            let new_order = Order {
+                id:         uuid::Uuid::new_v4().to_string(),
+                title:      i.title.clone(),
+                types:      1,
+                place_id:   i.place_id.clone(),
+                object_id:  i.object_id.clone(),
+                created:    chrono::Local::now().naive_utc(),
+                user_id:    i.user_id.clone(),
+                price:      i.price,
+                time_start: time_start,
+                time_end:   time_end, 
             }; 
-            let _new_time = diesel::insert_into(schema::times::table)
-                .values(&new)
+            let _new_order = diesel::insert_into(schema::orders::table)
+                .values(&new_order)
                 .execute(&_connection)
                 .expect("E.");
-            time_start = form.time_start.clone();
         }
-
-        if schema::times::table
-            .filter(schema::times::time.eq(format_end))
-            .select(schema::times::id)
-            .first::<String>(&_connection)
-            .is_ok() {
-                time_end = form.time_end.clone();
-        }
-        else {
-            let new = Time {
-                id:   uuid::Uuid::new_v4().to_string(),
-                time: format_end,
-            }; 
-            let _new_time = diesel::insert_into(schema::times::table)
-                .values(&new)
-                .execute(&_connection)
-                .expect("E.");
-            time_end = form.time_end.clone();
-        }
-
-        let new_order = Order {
-            id:         uuid::Uuid::new_v4().to_string(),
-            title:      form.title.clone(),
-            types:      1,
-            place_id:   form.place_id.clone(),
-            object_id:  form.object_id.clone(),
-            created:    chrono::Local::now().naive_utc(),
-            user_id:    form.user_id.clone(),
-            price:      form.price,
-            time_start: time_start,
-            time_end:   time_end, 
-        }; 
-        let _new_order = diesel::insert_into(schema::orders::table)
-            .values(&new_order)
-            .execute(&_connection)
-            .expect("E.");
         return 1;
     }
 
-    pub fn delete(id: String) -> i16 {
+
+    pub fn delete(user_id: String, ids: Vec<String>) -> i16 {
         let _connection = establish_connection();
         diesel::delete (
             schema::orders::table
-                .filter(schema::orders::id.eq(&id))
+                .filter(schema::orders::user_id.eq(user_id))
+                .filter(schema::orders::id.eq_any(ids))
         )
         .execute(&_connection)
         .expect("E");

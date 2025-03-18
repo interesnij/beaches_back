@@ -1,25 +1,47 @@
 use actix_web::{
     HttpRequest,
+    HttpResponse,
+    Responder,
     web,
     web::Json,
 };
-
-use crate::models::{Order, Feedback, Log, Time};
 use serde::{Deserialize, Serialize};
+use crate::models::Order;
 
 use crate::utils::{
-    get_request_user, UserResp,
+    is_signed_in,
+    get_current_user,
+    establish_connection,
 };
-use crate::errors::Error;
 
 
 pub fn other_routes(config: &mut web::ServiceConfig) {
-    config.route("/search", web::get().to(empty_search_page));
-    config.route("/search", web::get().to(search_page));
-    config.route("/search_blogs", web::get().to(search_blogs_page));
-    config.route("/search_services", web::get().to(search_services_page));
-    config.route("/search_stores", web::get().to(search_stores_page));
-    config.route("/search_wikis", web::get().to(search_wikis_page));
-    config.route("/search_works", web::get().to(search_works_page));
-    config.route("/search_help", web::get().to(search_helps_page));
+    config.route("/create_order/", web::get().to(create_order));
+    config.route("/delete_order/", web::get().to(delete_order));
+}
+
+pub async fn create_order(req: HttpRequest, data: Json<Vec<OrderJson>>) -> impl Responder {
+    if is_signed_in(&req) {
+        let _request_user = get_current_user(&req);
+        Order::create(
+            _request_user.id.clone(),
+            data
+        ); 
+    }
+    HttpResponse::Ok()
+}
+
+#[derive(Deserialize)]
+pub struct OrderIdsJson { 
+    pub ids: Vec<String>,
+}
+pub async fn delete_order(req: HttpRequest, data: Json<Vec<OrderIdsJson>>) -> impl Responder {
+    if is_signed_in(&req) {
+        let _request_user = get_current_user(&req);
+        Order::delete(
+            _request_user.id.clone(),
+            data.ids.clone()
+        ); 
+    }
+    HttpResponse::Ok()
 }
