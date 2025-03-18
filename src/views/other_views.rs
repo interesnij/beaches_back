@@ -35,7 +35,7 @@ pub async fn create_order(req: HttpRequest, data: Json<Vec<OrderJson>>) -> impl 
 pub struct OrderIdsJson { 
     pub ids: Vec<String>,
 }
-pub async fn delete_order(req: HttpRequest, data: Json<Vec<OrderIdsJson>>) -> impl Responder {
+pub async fn delete_order(req: HttpRequest, data: Json<OrderIdsJson>) -> impl Responder {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         Order::delete(
