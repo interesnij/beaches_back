@@ -178,7 +178,7 @@ impl Order {
         diesel::delete (
             schema::orders::table
                 .filter(schema::orders::user_id.eq(user_id))
-                .filter(schema::orders::id.eq_any(data.ids))
+                .filter(schema::orders::id.eq_any(data.ids.clone()))
         )
         .execute(&_connection)
         .expect("E");
