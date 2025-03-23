@@ -32,7 +32,7 @@ pub async fn create_order(req: HttpRequest, data: Json<Vec<OrderJson>>) -> impl 
 }
 
 #[derive(Deserialize)]
-pub struct OrderIdsJson { 
+pub struct OrderIdsJson {  
     pub ids: Vec<String>,
 }
 pub async fn delete_order(req: HttpRequest, data: Json<OrderIdsJson>) -> impl Responder {
