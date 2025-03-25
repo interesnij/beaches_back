@@ -184,6 +184,7 @@ pub struct EditPlaceJson {
     pub cord:    Option<String>,
 }
 
+#[derive(Serialize, Deserialize, Debug)]
 pub struct RespOrderJson {
     pub title:      String,
     pub place_id:   String,
