@@ -86,7 +86,7 @@ impl Order {
     pub fn get_client(&self) -> UserJson {
         let _connection = establish_connection();
         return schema::users::table
-            .filter(schema::users::id.eq(self.id.clone()))
+            .filter(schema::users::id.eq(self.user_id.clone()))
             .select((
                 schema::users::id,
                 schema::users::first_name,
