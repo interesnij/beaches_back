@@ -214,7 +214,7 @@ impl Place {
                 price:      i.price,
                 time_start: i.time_start.clone(),
                 time_end:   i.time_end.clone(),
-                time_start: i.created,
+                created:    i.created,
             });
         }
         return stack;
