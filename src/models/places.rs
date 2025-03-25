@@ -184,15 +184,16 @@ pub struct EditPlaceJson {
     pub cord:    Option<String>,
 }
 
-#[derive(Deserialize, Serialize, Debug)]
 pub struct RespOrderJson {
     pub title:      String,
     pub place_id:   String,
     pub object_id:  String,
+    pub module_id:  String,  
     pub user:       UserJson,
     pub price:      i32,
     pub time_start: String,
     pub time_end:   String,
+    pub created:    String,
 }
 
 impl Place {
@@ -201,7 +202,7 @@ impl Place {
         let list = schema::orders::table
             .filter(schema::orders::place_id.eq(self.id.clone()))
             .load::<Order>(&_connection)
-            .expect("E");
+            .expect("E"); 
         let mut stack = Vec::new();
         for i in list {
             stack.push(RespOrderJson{
@@ -212,6 +213,7 @@ impl Place {
                 price:      i.price,
                 time_start: i.time_start.clone(),
                 time_end:   i.time_end.clone(),
+                time_start: i.created,
             });
         }
         return stack;
