@@ -189,7 +189,6 @@ pub struct RespOrderJson {
     pub title:      String,
     pub place_id:   String,
     pub object_id:  String,
-    pub module_id:  String,  
     pub user:       UserJson,
     pub price:      i32,
     pub time_start: String,
