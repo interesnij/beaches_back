@@ -214,7 +214,7 @@ impl Place {
                 price:      i.price,
                 time_start: i.time_start.clone(),
                 time_end:   i.time_end.clone(),
-                created:    i.created,
+                created:    i.created.format("%Y-%m-%d %H:%M:%S").to_string(), 
             });
         }
         return stack;
