@@ -124,7 +124,7 @@ impl Order {
             else {
                 let new = Time {
                     id:   uuid::Uuid::new_v4().to_string(),
-                    time: format_start,
+                    time: format_start + chrono::Duration::hours(3),
                 }; 
                 let _new_time = diesel::insert_into(schema::times::table)
                     .values(&new)
@@ -143,7 +143,7 @@ impl Order {
             else {
                 let new = Time {
                     id:   uuid::Uuid::new_v4().to_string(),
-                    time: format_end,
+                    time: format_end + chrono::Duration::hours(3),
                 }; 
                 let _new_time = diesel::insert_into(schema::times::table)
                     .values(&new)
@@ -220,7 +220,7 @@ impl Log {
             text:     form.text.clone(),
             order_id: form.order_id.clone(),
             place_id: form.user_id.clone(),
-            created:  chrono::Local::now().naive_utc(),
+            created:  chrono::Local::now().naive_utc() + chrono::Duration::hours(3),
         }; 
         let _new_log = diesel::insert_into(schema::logs::table)
             .values(&new_log)

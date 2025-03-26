@@ -282,7 +282,7 @@ impl Place {
             id:      uuid::Uuid::new_v4().to_string(),
             title:   title,
             types:   1,
-            created: chrono::Local::now().naive_utc(),
+            created: chrono::Local::now().naive_utc() + chrono::Duration::hours(3),
             user_id: user_id,
             type_id: type_id,
             image:   None, 
