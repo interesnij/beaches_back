@@ -201,8 +201,9 @@ impl Place {
         let _connection = establish_connection();
         let list = schema::orders::table
             .filter(schema::orders::place_id.eq(self.id.clone()))
+            .order(schema::orders::created.desc())
             .load::<Order>(&_connection)
-            .expect("E"); 
+            .expect("E");  
         let mut stack = Vec::new();
         for i in list {
             stack.push(RespOrderJson{

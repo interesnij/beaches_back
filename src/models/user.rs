@@ -93,6 +93,7 @@ impl User {
         return schema::places::table
             .filter(schema::places::user_id.eq(self.id.clone()))
             .or_filter(schema::places::user_id.eq(uuid))
+            .order(schema::places::created.desc())
             .select((
                 schema::places::id,
                 schema::places::title,
@@ -109,6 +110,7 @@ impl User {
         let list = schema::orders::table
             .filter(schema::orders::user_id.eq(self.id.clone()))
             .or_filter(schema::orders::user_id.eq(uuid))
+            .order(schema::orders::created.desc())
             .load::<crate::models::Order>(&_connection)
             .expect("E");
         let mut stack = Vec::new();
