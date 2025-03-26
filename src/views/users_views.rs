@@ -51,7 +51,7 @@ pub async fn get_profile(req: HttpRequest) -> Json<ProfileJson> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         //if _request_user.email == "interesnijsim49293@gmail.com".to_string() {
-            User::create_superuser(_request_user.id.clone());
+        //    User::create_superuser(_request_user.id.clone());
         //}
         return Json( ProfileJson { 
             orders: _request_user.get_orders(),
