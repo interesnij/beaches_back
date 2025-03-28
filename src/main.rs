@@ -44,7 +44,7 @@ async fn main() -> std::io::Result<()> {
             //.data(server.clone())
             .configure(routes)
     })
-    .bind("192.168.0.49:8120")?
+    .bind("192.168.0.127:8120")?
     .run()
     .await
 }
