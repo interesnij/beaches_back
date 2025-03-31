@@ -253,12 +253,16 @@ pub async fn change_avatar(mut payload: Multipart, req: HttpRequest) -> actix_we
             id = "".to_string();
         }
 
+
+        println!("start upload");
         let form = crate::utils::image_form(payload.borrow_mut()).await;
         if types == "user_avatar".to_string() {
+            println!("user_avatar upload");
             User::change_avatar(_request_user.id, Some(form.image.clone()));
             return Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body("user_avatar"));
         }
         else if types == "place_avatar".to_string() {
+            println!("place_avatar upload");
             crate::models::Place::change_avatar(id, Some(form.image.clone()));
             return Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body("place_avatar"));
         }
