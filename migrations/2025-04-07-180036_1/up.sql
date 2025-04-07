@@ -55,16 +55,17 @@ types
 2 редактирование
 3 закрыто
 */
-CREATE TABLE places (
+CREATE TABLE places ( 
     id       TEXT PRIMARY KEY,
     title    VARCHAR(100) NOT NULL,
     types    SMALLINT NOT NULL,
     created  TIMESTAMP NOT NULL,
     user_id  VARCHAR(100) NOT NULL,
+    city_id  INT NOT NULL,
     type_id  SMALLINT NOT NULL DEFAULT 1,
-    image    VARCHAR(500),
+    image    VARCHAR(500), 
     cord     VARCHAR(100)
-);
+); 
 
 /* */
 CREATE TABLE place_managers (
