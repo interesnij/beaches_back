@@ -163,6 +163,7 @@ pub struct Place {
     pub types:   i16,
     pub created: chrono::NaiveDateTime,
     pub user_id: String,
+    pub city_id: i32,
     pub type_id: i16,
     pub image:   Option<String>,
     pub cord:    Option<String>,
@@ -172,6 +173,7 @@ pub struct Place {
 pub struct PlaceJson {
     pub title:   String,
     pub user_id: String,
+    pub city_id: i32,
     pub type_id: i16,
     pub image:   Option<String>,
     pub cord:    Option<String>,
@@ -283,6 +285,7 @@ impl Place {
     pub fn create(
         title:   String,
         user_id: String,
+        city_id: i32,
         type_id: i16, 
         cord:    Option<String>
     ) -> i16 {
@@ -293,6 +296,7 @@ impl Place {
             types:   1,
             created: chrono::Local::now().naive_utc() + chrono::Duration::hours(3),
             user_id: user_id,
+            city_id: city_id,
             type_id: type_id,
             image:   None, 
             cord:    cord,

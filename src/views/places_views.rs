@@ -40,6 +40,7 @@ pub fn places_routes(config: &mut web::ServiceConfig) {
     //config.route("/publish_place/{id}/", web::post().to(publish_place));
 
     config.route("/regions/", web::post().to(regions));
+    config.route("/cities/", web::post().to(cities));
     config.route("/region/{id}/", web::get().to(get_region));
     config.route("/create_region/", web::post().to(create_region));
     config.route("/edit_region/{id}/", web::post().to(edit_region));
@@ -56,6 +57,9 @@ pub async fn get_places(type_id: web::Path<i16>) -> Json<Vec<Place>> {
 
 pub async fn regions() -> Json<Vec<Region>> {
     return Json(Region::get_all());
+}
+pub async fn cities() -> Json<Vec<Citie>> {
+    return Json(Citie::get_all());
 }
 
 #[derive(Deserialize, Serialize, Debug)]
@@ -148,6 +152,7 @@ pub async fn create_place(req: HttpRequest, data: Json<PlaceJson>) -> impl Respo
         Place::create(
             data.title.clone(),
             data.user_id.clone(),
+            data.city_id,
             data.type_id,
             data.cord.clone(),
         ); 
