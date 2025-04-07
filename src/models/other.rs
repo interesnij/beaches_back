@@ -450,3 +450,13 @@ impl Citie {
         return 1;
     }
 }
+
+#[derive(Deserialize, Insertable)]
+#[table_name="cities"]
+pub struct NewCitie { 
+    pub name:       String,
+    pub geo_id:     Option<i32>,
+    pub region_id:  Option<i32>,
+    pub country_id: i32,
+    pub cord:       Option<String>,
+}

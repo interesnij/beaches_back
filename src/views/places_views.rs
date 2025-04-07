@@ -49,7 +49,7 @@ pub fn places_routes(config: &mut web::ServiceConfig) {
 } 
  
 pub async fn get_places(type_id: web::Path<i16>) -> Json<Vec<Place>> {
-    return Place::get_all(type_id);
+    return Place::get_all(*type_id);
 }
 
 pub async fn regions() -> Json<Vec<Region>> {
