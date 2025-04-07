@@ -300,6 +300,13 @@ impl Region {
             .load::<Region>(&_connection)
             .expect("E");
     }
+    pub fn get(id: i32) -> Region {
+        let _connection = establish_connection();
+        return schema::regions::table
+            .filter(schema::regions::id.eq(id))
+            .first::<Region>(&_connection)
+            .expect("E");
+    }
     pub fn create (
         //country_id: i32,
         name:       String,
@@ -378,6 +385,13 @@ impl Citie {
         let _connection = establish_connection();
         return schema::cities::table
             .load::<Citie>(&_connection)
+            .expect("E");
+    }
+    pub fn get(id: i32) -> Citie {
+        let _connection = establish_connection();
+        return schema::cities::table
+            .filter(schema::cities::id.eq(id))
+            .first::<Citie>(&_connection)
             .expect("E");
     }
     pub fn get_region_all(id: i32) -> Vec<Citie> {

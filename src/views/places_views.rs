@@ -40,9 +40,11 @@ pub fn places_routes(config: &mut web::ServiceConfig) {
     //config.route("/publish_place/{id}/", web::post().to(publish_place));
 
     config.route("/regions/", web::post().to(regions));
+    config.route("/region/{id}/", web::get().to(get_region));
     config.route("/create_region/", web::post().to(create_region));
     config.route("/edit_region/{id}/", web::post().to(edit_region));
     config.route("/delete_region/{id}/", web::post().to(delete_region));
+    config.route("/city/{id}/", web::get().to(get_city));
     config.route("/create_city/", web::post().to(create_city));
     config.route("/edit_city/{id}/", web::post().to(edit_city));
     config.route("/delete_city/{id}/", web::post().to(delete_city));
@@ -70,6 +72,14 @@ pub async fn get_place(req: HttpRequest, id: web::Path<String>) -> Json<PlaceDat
         orders:  place.get_orders(),
         place:   place, 
     });
+}
+pub async fn get_region(req: HttpRequest, id: web::Path<i32>) -> Json<Region> {
+    let _region = Region::get(*id);
+    return Json(_region);
+}
+pub async fn get_city(req: HttpRequest, id: web::Path<i32>) -> Json<Citie> {
+    let _city = Citie::get(*id);
+    return Json(_city);
 }
 
 pub async fn get_place_managers(req: HttpRequest, id: web::Path<String>) -> Json<Vec<UserJson>> {
