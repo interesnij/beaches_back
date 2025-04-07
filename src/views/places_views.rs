@@ -8,7 +8,7 @@ use actix_web::{
 use crate::models::{
     User, Place, PlaceJson, UserJson, ModuleJson, 
     RespOrderJson, CreateModuleJson, Module,
-    Region, Citie,
+    Region, NewRegion, Citie, NewCitie,
 };
 use serde::{Deserialize, Serialize};
 use actix_multipart::{Field, Multipart};
@@ -185,7 +185,7 @@ pub async fn edit_region(req: HttpRequest, data: Json<CreateRegionJson>, id: web
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         if _request_user.is_superuser() {
-            Region::create(id, data.name.clone(), data.cord.clone());
+            Region::edit(*id, data.name.clone(), data.cord.clone());
         }
     }
     HttpResponse::Ok()
@@ -222,7 +222,7 @@ pub async fn edit_city(req: HttpRequest, data: Json<CreateCityJson>, id: web::Pa
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         if _request_user.is_superuser() {
-            Citie::edit(id, data.region_id, data.name.clone(), data.cord.clone());
+            Citie::edit(*id, data.region_id, data.name.clone(), data.cord.clone());
         }
     }
     HttpResponse::Ok()
