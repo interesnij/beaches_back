@@ -4,6 +4,8 @@ use crate::schema::{
     feedbacks,
     logs,
     times,
+    regions,
+    cities,
 };
 use crate::diesel::{
     Queryable,
@@ -269,6 +271,182 @@ impl Time {
             .values(&new_time)
             .execute(&_connection)
             .expect("E.");
+        return 1;
+    }
+}
+
+
+
+#[derive(Queryable, Serialize, Deserialize, Identifiable)]
+pub struct Region { 
+    pub id:          i32,
+    pub name:        String,
+    pub geo_id:      Option<i32>,
+    pub country_id:  i32,
+    pub timezone_id: Option<i32>,
+    pub cord:        Option<String>,
+}
+impl Region { 
+    pub fn get_country_all(id: i32) -> Vec<Region> {
+        let _connection = establish_connection();
+        return schema::regions::table
+            .filter(schema::regions::country_id.eq(id))
+            .load::<Region>(&_connection)
+            .expect("E");
+    }
+    pub fn get_all() -> Vec<Region> {
+        let _connection = establish_connection();
+        return schema::regions::table
+            .load::<Region>(&_connection)
+            .expect("E");
+    }
+    pub fn create (
+        //country_id: i32,
+        name:       String,
+        cord:       Option<String>,
+    ) -> i16 {
+        let _connection = establish_connection();
+        let new_form = NewRegion {
+            name:         name,
+            geo_id:       None,
+            country_id:   1,
+            timezone_id:  None,
+            cord:         cord,
+        };
+        let _new = diesel::insert_into(schema::regions::table)
+            .values(&new_form)
+            .execute(&_connection)
+            .expect("Error.");
+        
+        return 1;
+    }
+    pub fn edit ( 
+        id:   i32,
+        //country_id: i32,
+        name: String,
+        cord: Option<String>,
+    ) -> i16 {
+        let _connection = establish_connection();
+        let _region = schema::regions::table
+            .filter(schema::regions::id.eq(id))
+            .first::<Region>(&_connection)
+            .expect("E.");
+        diesel::update(&_region)
+            .set((
+                schema::regions::name.eq(name),
+                //schema::regions::country_id.eq(country_id),
+                schema::regions::cord.eq(cord),
+            ))
+            .execute(&_connection)
+            .expect("Error.");
+        
+        return 1;
+    }
+    pub fn delete(id: i32) -> i16 {
+        let _connection = establish_connection();
+        diesel::delete (
+            schema::regions::table
+                .filter(schema::regions::id.eq(&id))
+        )
+        .execute(&_connection)
+        .expect("E");
+        return 1;
+    }
+}
+
+#[derive(Deserialize, Insertable)]
+#[table_name="regions"]
+pub struct NewRegion { 
+    pub name:        String,
+    pub geo_id:      Option<i32>,
+    pub country_id:  i32,
+    pub timezone_id: Option<i32>,
+    pub cord:        Option<String>,
+}
+
+#[derive(Queryable, Serialize, Deserialize, Identifiable)]
+pub struct Citie { 
+    pub id:         i32,
+    pub name:       String,
+    pub geo_id:     Option<i32>,
+    pub region_id:  Option<i32>,
+    pub country_id: i32,
+    pub cord:       Option<String>,
+}
+impl Citie {
+    pub fn get_all() -> Vec<Citie> {
+        let _connection = establish_connection();
+        return schema::cities::table
+            .load::<Citie>(&_connection)
+            .expect("E");
+    }
+    pub fn get_region_all(id: i32) -> Vec<Citie> {
+        let _connection = establish_connection();
+        return schema::cities::table
+            .filter(schema::cities::region_id.eq(id))
+            .load::<Citie>(&_connection)
+            .expect("E");
+    }
+    pub fn get_country_all(id: i32) -> Vec<Citie> {
+        let _connection = establish_connection();
+        return schema::cities::table
+            .filter(schema::cities::country_id.eq(id))
+            .load::<Citie>(&_connection)
+            .expect("E");
+    }
+    pub fn create (
+        region_id:  Option<i32>,
+        //country_id: i32,
+        name:       String,
+        cord:       Option<String>,
+    ) -> i16 {
+        let _connection = establish_connection();
+        let new_form = NewCitie {
+            name:         name,
+            geo_id:       None,
+            region_id:    region_id,
+            country_id:   1,
+            cord:         cord,
+        };
+        let _new = diesel::insert_into(schema::cities::table)
+            .values(&new_form)
+            .execute(&_connection)
+            .expect("Error.");
+        
+        return 1;
+    }
+    pub fn edit ( 
+        id:        i32,
+        region_id: Option<i32>,
+        //country_id: i32,
+        name:      String,
+        cord:      Option<String>,
+    ) -> i16 {
+        let _connection = establish_connection();
+        let _city = schema::cities::table
+            .filter(schema::cities::id.eq(id))
+            .first::<Citie>(&_connection)
+            .expect("E.");
+        diesel::update(&_city)
+            .set((
+                schema::cities::name.eq(name),
+                schema::cities::region_id.eq(region_id),
+                //schema::cities::country_id.eq(country_id),
+                schema::cities::cord.eq(cord),
+            ))
+            .execute(&_connection)
+            .expect("Error.");
+        
+        return 1;
+    }
+    pub fn delete(id: i32) -> i16 {
+        let _connection = establish_connection();
+        diesel::delete (
+            schema::cities::table
+                .filter(schema::cities::id.eq(&id))
+        )
+        .execute(&_connection)
+        .expect("E");
         return 1;
     }
 }

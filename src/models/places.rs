@@ -163,7 +163,7 @@ pub struct Place {
     pub types:   i16,
     pub created: chrono::NaiveDateTime,
     pub user_id: String,
-    pub type_id: String,
+    pub type_id: i16,
     pub image:   Option<String>,
     pub cord:    Option<String>,
 }
@@ -172,14 +172,14 @@ pub struct Place {
 pub struct PlaceJson {
     pub title:   String,
     pub user_id: String,
-    pub type_id: String,
+    pub type_id: i16,
     pub image:   Option<String>,
     pub cord:    Option<String>,
 }
 #[derive(Deserialize)]
 pub struct EditPlaceJson {
     pub title:   String,
-    pub type_id: String,
+    pub type_id: i16,
     pub image:   Option<String>,
     pub cord:    Option<String>,
 }
@@ -228,9 +228,10 @@ impl Place {
             .expect("E");
     }
     
-    pub fn get_all() -> Json<Vec<Place>> {
+    pub fn get_all(type_id: i32) -> Json<Vec<Place>> {
         let _connection = establish_connection();
         return Json(schema::places::table
+            .filter(schema::places::type_id.eq(type_id))
             .filter(schema::places::types.eq(1))
             .load::<Place>(&_connection)
             .expect("E"));
@@ -275,7 +276,7 @@ impl Place {
     pub fn create(
         title:   String,
         user_id: String,
-        type_id: String, 
+        type_id: i16, 
         cord:    Option<String>
     ) -> i16 {
         let _connection = establish_connection();
@@ -298,7 +299,7 @@ impl Place {
     pub fn edit (
         id:      String, 
         title:   String,
-        type_id: String,
+        type_id: i16,
         cord:    Option<String>
     ) -> i16 { 
         let _connection = establish_connection();
