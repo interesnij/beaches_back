@@ -228,10 +228,17 @@ impl Place {
             .expect("E");
     }
     
-    pub fn get_all(type_id: i32) -> Json<Vec<Place>> {
+    pub fn get_all(type_id: i16) -> Json<Vec<Place>> {
         let _connection = establish_connection();
         return Json(schema::places::table
             .filter(schema::places::type_id.eq(type_id))
+            .filter(schema::places::types.eq(1))
+            .load::<Place>(&_connection)
+            .expect("E"));
+    }
+    pub fn all() -> Json<Vec<Place>> {
+        let _connection = establish_connection();
+        return Json(schema::places::table
             .filter(schema::places::types.eq(1))
             .load::<Place>(&_connection)
             .expect("E"));

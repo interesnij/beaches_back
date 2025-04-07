@@ -212,7 +212,7 @@ pub async fn create_city(req: HttpRequest, data: Json<CreateCityJson>) -> impl R
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         if _request_user.is_superuser() {
-            Citie::create(data.name.clone(), data.cord.clone());
+            Citie::create(data.region_id, data.name.clone(), data.cord.clone());
         }
     }
     HttpResponse::Ok()
@@ -222,7 +222,7 @@ pub async fn edit_city(req: HttpRequest, data: Json<CreateCityJson>, id: web::Pa
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         if _request_user.is_superuser() {
-            Citie::create(id, data.name.clone(), data.cord.clone());
+            Citie::edit(id, data.region_id, data.name.clone(), data.cord.clone());
         }
     }
     HttpResponse::Ok()

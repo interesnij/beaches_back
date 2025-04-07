@@ -326,7 +326,7 @@ impl User {
     pub fn get_partner_objects(&self) -> Json<Vec<crate::models::Place>> {
         let _connection = establish_connection();
         if self.perm == 10 {
-            return crate::models::Place::get_all();
+            return crate::models::Place::all();
         }
         else {
             return Json(schema::places::table
