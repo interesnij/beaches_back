@@ -81,13 +81,13 @@ CREATE TABLE place_managers (
 ); 
 
 /* */
-CREATE TABLE events (
+CREATE TABLE events ( 
     id          TEXT PRIMARY KEY,
     user_id     VARCHAR(100) NOT NULL,
     place_id    VARCHAR(100) NOT NULL,
     title       VARCHAR(100) NOT NULL,
     description VARCHAR(500) NOT NULL,
-    types       VARCHAR(100) NOT NULL,  -- статус
+    types       SMALLINT NOT NULL,  -- статус
     created     TIMESTAMP NOT NULL,
     price       INT NOT NULL,
     time_start  VARCHAR(100) NOT NULL,  -- связь на times
