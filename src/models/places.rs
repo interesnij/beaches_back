@@ -19,8 +19,7 @@ use serde::{Serialize, Deserialize};
 use crate::utils::establish_connection;
 use crate::errors::Error;
 use actix_web::web::Json;
-use crate::models::Order;
-use crate::models::UserJson;
+use crate::models::{Order, Time, UserJson};
 
 
 #[derive(Debug, Queryable, Deserialize, Serialize, Identifiable, Insertable)]
@@ -179,7 +178,7 @@ impl ModuleType {
                     schema::module_types::title.eq(title),
                     schema::module_types::description.eq(description),
                     schema::module_types::types.eq(types),
-                    schema::module_types::title.eq(image),
+                    schema::module_types::image.eq(image),
                 ))
                 .execute(&_connection)
                 .expect("E");

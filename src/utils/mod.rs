@@ -133,7 +133,7 @@ pub async fn image_form(payload: &mut Multipart) -> ImageForm {
 pub struct ModuleTypeForm {
     pub place_id:    String,
     pub title:       String,
-    pub description: Option<String>,
+    pub description: String,
     pub types:       String,
     pub image:       Option<String>,
 }
@@ -166,13 +166,13 @@ pub async fn module_type_form(payload: &mut Multipart) -> ModuleTypeForm {
                         .unwrap()
                         .expect("Failed to open hello.txt");
                 }
-                form.image = file.path.clone().replace("/beaches_front","");
+                form.image = Some(file.path.clone().replace("/beaches_front",""));
             }
         }
         else {
             while let Some(chunk) = field.next().await {
                 let data = chunk.expect("split_payload err chunk");
-                if let Ok(s) = str::from_utf8(&data) {
+                if let Ok(s) = std::str::from_utf8(&data) {
                     let data_string = s.to_string();
                     if field.name() == "title" {
                         form.title = data_string
@@ -232,7 +232,7 @@ pub async fn event_form(payload: &mut Multipart) -> EventForm {
                         .unwrap()
                         .expect("Failed to open hello.txt");
                 }
-                form.image = file.path.clone().replace("/beaches_front","");
+                form.image = Some(file.path.clone().replace("/beaches_front",""));
             }
         }
         else if name == "price" {
@@ -247,7 +247,7 @@ pub async fn event_form(payload: &mut Multipart) -> EventForm {
         else {
             while let Some(chunk) = field.next().await {
                 let data = chunk.expect("split_payload err chunk");
-                if let Ok(s) = str::from_utf8(&data) {
+                if let Ok(s) = std::str::from_utf8(&data) {
                     let data_string = s.to_string();
                     if field.name() == "title" {
                         form.title = data_string

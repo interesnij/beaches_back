@@ -275,7 +275,7 @@ pub async fn upload_files(mut payload: Multipart, req: HttpRequest) -> actix_web
                         form.title.clone(),
                         form.description.clone(),
                         form.types.clone()
-                        Some(form.image.clone()),
+                        form.image.clone(),
                     );
                 }
                 return Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body("user_avatar"));
@@ -289,7 +289,7 @@ pub async fn upload_files(mut payload: Multipart, req: HttpRequest) -> actix_web
                         form.title.clone(),
                         form.description.clone(),
                         form.types.clone()
-                        Some(form.image.clone()),
+                        form.image.clone(),
                     );
                 }
                 return Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body("user_avatar"));
@@ -306,8 +306,8 @@ pub async fn upload_files(mut payload: Multipart, req: HttpRequest) -> actix_web
                         form.price,
                         form.time_start.clone(),
                         form.time_end.clone(),
-                        Some(form.image.clone()),
-                    );
+                        form.image.clone(),
+                    ); 
                 }
                 return Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body("user_avatar"));
             },
@@ -322,7 +322,7 @@ pub async fn upload_files(mut payload: Multipart, req: HttpRequest) -> actix_web
                         form.price,
                         form.time_start.clone(),
                         form.time_end.clone(),
-                        Some(form.image.clone()),
+                        form.image.clone(),
                     );
                 }
                 return Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body("user_avatar"));
