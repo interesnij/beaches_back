@@ -552,7 +552,7 @@ impl Partner {
         let _connection = establish_connection();
         diesel::delete (
             schema::partners::table
-                .filter(schema::partners::user_id.eq(&id))
+                .filter(schema::partners::user_id.eq(&user_id))
         )
         .execute(&_connection)
         .expect("E");

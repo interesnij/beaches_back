@@ -649,13 +649,15 @@ impl Event {
  
         let format_start = chrono::NaiveDateTime::parse_from_str(&time_start, "%Y-%m-%d %H:%M:%S").unwrap();
         let format_end = chrono::NaiveDateTime::parse_from_str(&time_end, "%Y-%m-%d %H:%M:%S").unwrap();
+        let new_time_start: String;
+        let new_time_end: String;
 
         if schema::times::table
             .filter(schema::times::time.eq(format_start))
             .select(schema::times::id)
             .first::<String>(&_connection)
             .is_ok() {
-                time_start = time_start.clone();
+                new_time_start = time_start.clone();
         }
         else {
             let new = Time {
@@ -666,7 +668,7 @@ impl Event {
                 .values(&new)
                 .execute(&_connection)
                 .expect("E.");
-            time_start = time_start.clone();
+            new_time_start = time_start.clone();
         }
 
         if schema::times::table
@@ -674,7 +676,7 @@ impl Event {
             .select(schema::times::id)
             .first::<String>(&_connection)
             .is_ok() {
-                time_end = time_end.clone();
+                new_time_end = time_end.clone();
         }
         else {
             let new = Time {
@@ -685,7 +687,7 @@ impl Event {
                 .values(&new)
                 .execute(&_connection)
                 .expect("E.");
-            time_end = time_end.clone();
+            new_time_end = time_end.clone();
         }
 
         let new_event = Event {
@@ -697,8 +699,8 @@ impl Event {
             types:       1,
             created:     chrono::Local::now().naive_utc(),
             price:       price,
-            time_start:  time_start,
-            time_end:    time_end,
+            time_start:  new_time_start,
+            time_end:    new_time_end,
             image:       image,
         }; 
         let _new_event = diesel::insert_into(schema::events::table)
@@ -729,7 +731,7 @@ impl Event {
                 schema::events::title.eq(title),
                 schema::events::description.eq(description),
                 schema::events::price.eq(price),
-                schema::events::time_start.eq(format_start),
+                schema::events::time_start.eq(time_start),
                 schema::events::time_end.eq(time_end),
                 schema::events::image.eq(image),
             ))
