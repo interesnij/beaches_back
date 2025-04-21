@@ -154,7 +154,7 @@ pub async fn module_type_form(payload: &mut Multipart) -> ModuleTypeForm {
         if name == "image" {
             let _new_path = field.content_disposition().get_filename().unwrap();
             if _new_path != "" {
-                let file = UploadedFiles::new(_new_path.to_string(), owner_id);
+                let file = UploadedFiles::new(_new_path.to_string());
                 let file_path = file.path.clone();
                 let mut f = web::block(move || std::fs::File::create(&file_path).expect("Failed to open hello.txt"))
                     .await

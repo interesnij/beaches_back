@@ -261,8 +261,9 @@ pub async fn delete_city(req: HttpRequest, id: web::Path<i32>) -> impl Responder
 pub async fn delete_module_type(req: HttpRequest, id: web::Path<String>) -> impl Responder {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
-        if _request_user.is_can_work_in_object_with_id(&data.place_id) {
-            ModuleType::delete(id.clone());
+        let place_id = id.clone();
+        if _request_user.is_can_work_in_object_with_id(&place_id) {
+            ModuleType::delete(place_id);
         }
     }
     HttpResponse::Ok()
@@ -270,8 +271,9 @@ pub async fn delete_module_type(req: HttpRequest, id: web::Path<String>) -> impl
 pub async fn delete_event(req: HttpRequest, id: web::Path<String>) -> impl Responder {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
-        if _request_user.is_can_work_in_object_with_id(&data.place_id) {
-            crate::models::Event::delete(id.clone());
+        let place_id = id.clone();
+        if _request_user.is_can_work_in_object_with_id(&place_id) {
+            crate::models::Event::delete(place_id);
         }
     }
     HttpResponse::Ok()

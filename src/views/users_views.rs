@@ -296,8 +296,8 @@ pub async fn upload_files(mut payload: Multipart, req: HttpRequest) -> actix_web
             },
             "create_event" => {
                 println!("create_event");
+                let form = crate::utils::event_form(payload.borrow_mut()).await;
                 if _request_user.is_can_work_in_object_with_id(&form.place_id) {
-                    let form = crate::utils::event_form(payload.borrow_mut()).await;
                     crate::models::Event::create (
                         _request_user.id.clone(),
                         form.place_id.clone(),
@@ -313,8 +313,8 @@ pub async fn upload_files(mut payload: Multipart, req: HttpRequest) -> actix_web
             },
             "edit_event" => {
                 println!("create_event");
+                let form = crate::utils::event_form(payload.borrow_mut()).await;
                 if _request_user.is_can_work_in_object_with_id(&form.place_id) {
-                    let form = crate::utils::event_form(payload.borrow_mut()).await;
                     crate::models::Event::edit (
                         id,
                         form.title.clone(),

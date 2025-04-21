@@ -646,9 +646,7 @@ impl Event {
         image:       Option<String>,
     ) -> i16 {
         let _connection = establish_connection();
-
-        let time_start: String;
-        let time_end: String; 
+ 
         let format_start = chrono::NaiveDateTime::parse_from_str(&time_start, "%Y-%m-%d %H:%M:%S").unwrap();
         let format_end = chrono::NaiveDateTime::parse_from_str(&time_end, "%Y-%m-%d %H:%M:%S").unwrap();
 
