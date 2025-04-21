@@ -352,8 +352,8 @@ impl User {
             .is_ok() ||
         schema::place_managers::table
             .filter(schema::place_managers::place_id.eq(place_id))
-            .filter(schema::places::user_id.eq(self.id))
-            .select(schema::places::id)
+            .filter(schema::place_managers::user_id.eq(self.id))
+            .select(schema::place_managers::id)
             .first::<String>(&_connection)
             .is_ok()
     }

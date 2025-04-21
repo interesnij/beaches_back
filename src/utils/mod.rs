@@ -144,7 +144,7 @@ pub async fn module_type_form(payload: &mut Multipart) -> ModuleTypeForm {
         title:       "".to_string(),
         description: "".to_string(),
         types:       "".to_string(),
-        image:       "".to_string(),
+        image:       None,
     };
 
     while let Some(item) = payload.next().await {
@@ -210,7 +210,7 @@ pub async fn event_form(payload: &mut Multipart) -> EventForm {
         price:       0,
         time_start:  "".to_string(),
         time_end:    "".to_string(),
-        image:       "".to_string(),
+        image:       None,
     };
 
     while let Some(item) = payload.next().await {
@@ -238,7 +238,7 @@ pub async fn event_form(payload: &mut Multipart) -> EventForm {
         else if name == "price" {
             while let Some(chunk) = field.next().await {
                 let data = chunk.expect("split_payload err chunk");
-                if let Ok(s) = str::from_utf8(&data) {
+                if let Ok(s) = std::str::from_utf8(&data) {
                     let _int: i32 = s.parse().unwrap();
                     form.price = _int;
                 }

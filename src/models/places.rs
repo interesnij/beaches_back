@@ -177,8 +177,8 @@ impl ModuleType {
         diesel::update(&_type)
                 .set((
                     schema::module_types::title.eq(title),
-                    schema::module_types::title.eq(description),
-                    schema::module_types::title.eq(types),
+                    schema::module_types::description.eq(description),
+                    schema::module_types::types.eq(types),
                     schema::module_types::title.eq(image),
                 ))
                 .execute(&_connection)
@@ -741,11 +741,10 @@ impl Event {
         return 1;
     }
 
-    pub fn delete(user_id: String, id: String) -> i16 {
+    pub fn delete(id: String) -> i16 {
         let _connection = establish_connection();
         diesel::delete (
             schema::orders::table
-                .filter(schema::orders::user_id.eq(user_id))
                 .filter(schema::orders::id.eq(id))
         )
         .execute(&_connection)
