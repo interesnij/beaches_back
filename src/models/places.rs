@@ -5,6 +5,7 @@ use crate::schema::{
     module_types,
     modules,
     place_managers,
+    events,
 };
 use crate::diesel::{
     Queryable,
@@ -89,15 +90,27 @@ impl PlaceType {
 #[derive(Debug, Queryable, Deserialize, Serialize, Identifiable, Insertable)]
 #[table_name="module_types"]
 pub struct ModuleType {
-    pub id:    String,
-    pub title: String,
-    pub types: i16,
-    pub image: Option<String>,
+    pub id:          String,
+    pub place_id:    String,
+    pub title:       String,
+    pub description: String,
+    pub types:       String,
+    pub image:       Option<String>,
 } 
 #[derive(Deserialize)]
 pub struct ModuleTypeJson {
-    pub title: String,
-    pub image: Option<String>,
+    pub place_id:    String,
+    pub title:       String,
+    pub description: String,
+    pub types:       String,
+    pub image:       Option<String>,
+}
+#[derive(Deserialize)]
+pub struct ModuleEditTypeJson {
+    pub title:       String,
+    pub description: String,
+    pub types:       String,
+    pub image:       Option<String>,
 }
 
 impl ModuleType {
@@ -107,22 +120,41 @@ impl ModuleType {
             .load::<ModuleType>(&_connection)
             .expect("E"));
     }
-    pub fn create(form: Json<ModuleTypeJson>) -> i16 {
+    pub fn create (
+        place_id:    String,
+        title:       String,
+        description: String,
+        types:       String,
+        image:       Option<String>,
+    ) -> i16 {
         let _connection = establish_connection();
 
         if schema::module_types::table
-            .filter(schema::module_types::title.eq(form.title.clone()))
+            .filter(schema::module_types::place_id.eq(&place_id))
+            .filter(schema::module_types::title.eq(&title))
             .select(schema::module_types::id)
             .first::<String>(&_connection)
             .is_ok() {
                 return 0;
         }
 
+        if &types == "Place" {
+            diesel::delete (
+                schema::module_types::table
+                    .filter(schema::module_types::place_id.eq(&place_id))
+                    .filter(schema::module_types::types.eq("Place"))
+            )
+            .execute(&_connection)
+            .expect("E");
+        }
+
         let new_place_type = ModuleType {
-            id:    uuid::Uuid::new_v4().to_string(),
-            title: form.title.clone(),
-            types: 1,
-            image: form.image.clone(),
+            id:          uuid::Uuid::new_v4().to_string(),
+            place_id:    place_id,
+            title:       title,
+            description: description,
+            types:       types,
+            image:       image,
         }; 
         let _place_type = diesel::insert_into(schema::module_types::table)
             .values(&new_place_type)
@@ -130,14 +162,25 @@ impl ModuleType {
             .expect("E.");
         return 1;
     }
-    pub fn edit(id: String, form: ModuleTypeJson) -> i16 {
+    pub fn edit (
+        id:          String, 
+        title:       String,
+        description: String,
+        types:       String,
+        image:       Option<String>,
+    ) -> i16 {
         let _connection = establish_connection();
         let _type = schema::module_types::table
             .filter(schema::module_types::id.eq(id))
             .first::<ModuleType>(&_connection)
             .expect("E.");
         diesel::update(&_type)
-                .set(schema::module_types::title.eq(&form.title.clone()))
+                .set((
+                    schema::module_types::title.eq(title),
+                    schema::module_types::title.eq(description),
+                    schema::module_types::title.eq(types),
+                    schema::module_types::title.eq(image),
+                ))
                 .execute(&_connection)
                 .expect("E");
         return 1;
@@ -417,10 +460,12 @@ impl PlaceManager {
 pub struct Module {
     pub id:         String,
     pub title:      String,
+    pub label:      String,
     pub types:      i16,
     pub place_id:   String,
     pub type_id:    String,
     pub price:      i32,
+    pub z_index:    i32,
     pub _width:     i16,
     pub _height:    i16,
     pub _left:      f64,
@@ -436,8 +481,10 @@ pub struct Module {
 pub struct ModuleJson { 
     pub id:         String,
     pub title:      String,
+    pub label:      String,
     pub type_id:    String,
     pub price:      i32,
+    pub z_index:    i32,
     pub width:      i16,
     pub height:     i16,
     pub left:       f64,
@@ -495,8 +542,10 @@ impl Module {
                 diesel::update(&_module) 
                 .set((
                     schema::modules::title.eq(&i.title),
+                    schema::modules::label.eq(&i.label),
                     schema::modules::type_id.eq(&i.type_id),
                     schema::modules::price.eq(&i.price),
+                    schema::modules::z_index.eq(&i.z_index),
                     schema::modules::_width.eq(&i.width),
                     schema::modules::_height.eq(&i.height),
                     schema::modules::_left.eq(&i.left),
@@ -515,10 +564,12 @@ impl Module {
                 let new_module = Module {
                     id:         i.id.clone(),
                     title:      i.title.clone(),
+                    label:      i.label.clone(),
                     types:      1, 
                     place_id:   place_id.clone(),
                     type_id:    i.type_id.clone(),
                     price:      i.price,
+                    z_index:    i.z_index,
                     _width:     i.width,
                     _height:    i.height,
                     _left:      i.left,
@@ -559,3 +610,151 @@ impl Module {
         return 1;
     }
 }
+
+
+#[derive(Debug, Queryable, Deserialize, Serialize, Identifiable, Insertable)]
+#[table_name="events"]
+pub struct Event {
+    pub id:          String,
+    pub user_id:     String,
+    pub place_id:    String,
+    pub title:       String,
+    pub description: String,
+    pub types:       i16, 
+    pub created:     chrono::NaiveDateTime,
+    pub price:       i32,
+    pub time_start:  String,
+    pub time_end:    String,
+    pub image:       Option<String>,
+} 
+
+impl Event {
+    pub fn get_for_place(id: String) -> Json<Vec<Event>> {
+        let _connection = establish_connection();
+        return Json(schema::events::table
+            .filter(schema::events::place_id.eq(id))
+            .load::<Event>(&_connection)
+            .expect("E"));
+    }
+    pub fn create (
+        user_id:     String,
+        place_id:    String,
+        title:       String,
+        description: String,
+        price:       i32,
+        time_start:  String,
+        time_end:    String,
+        image:       Option<String>,
+    ) -> i16 {
+        let _connection = establish_connection();
+
+        let time_start: String;
+        let time_end: String; 
+        let format_start = chrono::NaiveDateTime::parse_from_str(&time_start, "%Y-%m-%d %H:%M:%S").unwrap();
+        let format_end = chrono::NaiveDateTime::parse_from_str(&time_end, "%Y-%m-%d %H:%M:%S").unwrap();
+
+        if schema::times::table
+            .filter(schema::times::time.eq(format_start))
+            .select(schema::times::id)
+            .first::<String>(&_connection)
+            .is_ok() {
+                time_start = time_start.clone();
+        }
+        else {
+            let new = Time {
+                id:   uuid::Uuid::new_v4().to_string(),
+                time: format_start + chrono::Duration::hours(3),
+            }; 
+            let _new_time = diesel::insert_into(schema::times::table)
+                .values(&new)
+                .execute(&_connection)
+                .expect("E.");
+            time_start = time_start.clone();
+        }
+
+        if schema::times::table
+            .filter(schema::times::time.eq(format_end))
+            .select(schema::times::id)
+            .first::<String>(&_connection)
+            .is_ok() {
+                time_end = time_end.clone();
+        }
+        else {
+            let new = Time {
+                id:   uuid::Uuid::new_v4().to_string(),
+                time: format_end + chrono::Duration::hours(3),
+            }; 
+            let _new_time = diesel::insert_into(schema::times::table)
+                .values(&new)
+                .execute(&_connection)
+                .expect("E.");
+            time_end = time_end.clone();
+        }
+
+        let new_event = Event {
+            id:          uuid::Uuid::new_v4().to_string(),
+            user_id:     user_id,
+            place_id:    place_id,
+            title:       title,
+            description: description,
+            types:       1,
+            created:     chrono::Local::now().naive_utc(),
+            price:       price,
+            time_start:  time_start,
+            time_end:    time_end,
+            image:       image,
+        }; 
+        let _new_event = diesel::insert_into(schema::events::table)
+            .values(&new_event)
+            .execute(&_connection)
+            .expect("E.");
+        return 1;
+    }
+
+    pub fn edit (
+        id:          String,
+        title:       String,
+        description: String,
+        price:       i32,
+        time_start:  String,
+        time_end:    String,
+        image:       Option<String>,
+    ) -> i16 { 
+        let _connection = establish_connection();
+
+        let format_start = chrono::NaiveDateTime::parse_from_str(&time_start, "%Y-%m-%d %H:%M:%S").unwrap();
+        let format_end = chrono::NaiveDateTime::parse_from_str(&time_end, "%Y-%m-%d %H:%M:%S").unwrap();
+
+        let _event = schema::events::table
+            .filter(schema::events::id.eq(id))
+            .first::<Event>(&_connection)
+            .expect("E.");
+
+        diesel::update(&_event) 
+            .set((
+                schema::events::title.eq(title),
+                schema::events::description.eq(description),
+                schema::events::price.eq(price),
+                schema::events::time_start.eq(format_start),
+                schema::events::time_end.eq(format_end),
+                schema::events::image.eq(image),
+            ))
+            .execute(&_connection)
+            .expect("E");
+        return 1;
+    }
+
+    pub fn delete(user_id: String, id: String) -> i16 {
+        let _connection = establish_connection();
+        diesel::delete (
+            schema::orders::table
+                .filter(schema::orders::user_id.eq(user_id))
+                .filter(schema::orders::id.eq(id))
+        )
+        .execute(&_connection)
+        .expect("E");
+        return 1;
+    }
+
+}
+

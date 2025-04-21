@@ -22,6 +22,12 @@ CREATE TABLE users (
     UNIQUE(email)
 );
 
+/*
+types
+0 предложен
+1 подтвержден
+2 закрыт
+*/
 CREATE TABLE partners (
     id       TEXT PRIMARY KEY,
     title    VARCHAR(100) NOT NULL,
@@ -72,6 +78,20 @@ CREATE TABLE place_managers (
     place_id  VARCHAR(100) NOT NULL
 ); 
 
+/* */
+CREATE TABLE events (
+    id          TEXT PRIMARY KEY,
+    user_id     VARCHAR(100) NOT NULL,
+    place_id    VARCHAR(100) NOT NULL,
+    title       VARCHAR(100) NOT NULL,
+    description VARCHAR(500) NOT NULL,
+    types       VARCHAR(100) NOT NULL,  -- статус
+    created     TIMESTAMP NOT NULL,
+    price       INT NOT NULL,
+    time_start  VARCHAR(100) NOT NULL,  -- связь на times
+    time_end    VARCHAR(100) NOT NULL,  -- связь на times
+    image       VARCHAR(500)
+); 
 
 /*
 типы модуля
@@ -79,12 +99,14 @@ types
 1 открыто
 2 редактирование
 3 закрыто
-*/
+*/ 
 CREATE TABLE module_types (
-    id       TEXT PRIMARY KEY,
-    title    VARCHAR(100) NOT NULL,
-    types    SMALLINT NOT NULL,     -- 1 открыто, 2 редактирование, 3 закрыто
-    image    VARCHAR(500)
+    id          TEXT PRIMARY KEY,
+    place_id    VARCHAR(100) NOT NULL,
+    title       VARCHAR(100) NOT NULL,
+    description VARCHAR(500) NOT NULL,
+    types       VARCHAR(100) NOT NULL,     -- Place, Module, Closed
+    image       VARCHAR(500)
 );
 
 -- временная метка
@@ -94,13 +116,15 @@ CREATE TABLE times (
 );
 
 -- модули для конструктора
-CREATE TABLE modules (
+CREATE TABLE modules ( 
     id          TEXT PRIMARY KEY,
     title       VARCHAR(100) NOT NULL,
+    label       VARCHAR(100) NOT NULL,
     types       SMALLINT NOT NULL,
     place_id    VARCHAR(100) NOT NULL,
     type_id     VARCHAR(100) NOT NULL,
     price       INT NOT NULL,
+    z_index     INT NOT NULL,
     _width      SMALLINT NOT NULL,
     _height     SMALLINT NOT NULL,
     _left       FLOAT NOT NULL,
@@ -119,6 +143,7 @@ CREATE TABLE orders (
     types      SMALLINT NOT NULL,    -- 1 услуга, 2 товар, 3 работа
     place_id   VARCHAR(100) NOT NULL,
     object_id  VARCHAR(100) NOT NULL,
+    event_id   VARCHAR(100),
     created    TIMESTAMP NOT NULL,
     user_id    VARCHAR(100) NOT NULL,
     price      INT NOT NULL,

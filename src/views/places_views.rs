@@ -9,6 +9,8 @@ use crate::models::{
     User, Place, PlaceJson, UserJson, ModuleJson, 
     RespOrderJson, CreateModuleJson, Module,
     Region, NewRegion, Citie, NewCitie,
+    ModuleType, 
+
 };
 use serde::{Deserialize, Serialize};
 use actix_multipart::{Field, Multipart};
@@ -49,7 +51,10 @@ pub fn places_routes(config: &mut web::ServiceConfig) {
     config.route("/create_city/", web::post().to(create_city));
     config.route("/edit_city/{id}/", web::post().to(edit_city));
     config.route("/delete_city/{id}/", web::post().to(delete_city));
-} 
+
+    config.route("/delete_module_type/{id}/", web::post().to(delete_module_type));
+    config.route("/delete_event/{id}/", web::post().to(delete_event));
+}
  
 pub async fn get_places(type_id: web::Path<i16>) -> Json<Vec<Place>> {
     return Place::get_all(*type_id);
@@ -248,6 +253,25 @@ pub async fn delete_city(req: HttpRequest, id: web::Path<i32>) -> impl Responder
         let _request_user = get_current_user(&req);
         if _request_user.is_superuser() {
             Citie::delete(*id);
+        }
+    }
+    HttpResponse::Ok()
+}
+
+pub async fn delete_module_type(req: HttpRequest, id: web::Path<String>) -> impl Responder {
+    if is_signed_in(&req) {
+        let _request_user = get_current_user(&req);
+        if _request_user.is_can_work_in_object_with_id(&data.place_id) {
+            ModuleType::delete(id.clone());
+        }
+    }
+    HttpResponse::Ok()
+}
+pub async fn delete_event(req: HttpRequest, id: web::Path<String>) -> impl Responder {
+    if is_signed_in(&req) {
+        let _request_user = get_current_user(&req);
+        if _request_user.is_can_work_in_object_with_id(&data.place_id) {
+            crate::models::Event::delete(id.clone());
         }
     }
     HttpResponse::Ok()

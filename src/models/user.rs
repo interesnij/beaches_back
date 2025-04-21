@@ -84,6 +84,23 @@ impl User {
     pub fn is_partner(&self) -> bool {
         return self.perm == 4;
     }
+    pub fn is_partner_of_place_with_id(&self, place_id: &String) -> bool {
+        let _connection = establish_connection();
+        return schema::places::table
+            .filter(schema::places::id.eq(place_id))
+            .select(schema::places::id)
+            .first::<String>(&_connection)
+            .is_ok();
+    }
+    pub fn is_manager_of_place_with_id(&self, place_id: &String) -> bool {
+        let _connection = establish_connection();
+        return schema::place_managers::table
+            .filter(schema::place_managers::place_id.eq(place_id))
+            .filter(schema::place_managers::user_id.eq(self.id.clone()))
+            .select(schema::place_managers::id)
+            .load::<String>(&_connection)
+            .is_ok();
+    }
     pub fn is_manager(&self) -> bool {
         return self.perm == 2;
     }
@@ -323,6 +340,24 @@ impl User {
             return Json(Vec::new());
         }
     }
+
+    pub fn is_can_work_in_object_with_id(&self, place_id: &String) -> bool {
+        let _connection = establish_connection();
+
+        schema::places::table
+            .filter(schema::places::id.eq(place_id))
+            .filter(schema::places::user_id.eq(self.id))
+            .select(schema::places::id)
+            .first::<String>(&_connection)
+            .is_ok() ||
+        schema::place_managers::table
+            .filter(schema::place_managers::place_id.eq(place_id))
+            .filter(schema::places::user_id.eq(self.id))
+            .select(schema::places::id)
+            .first::<String>(&_connection)
+            .is_ok()
+    }
+
     pub fn get_partner_objects(&self) -> Json<Vec<crate::models::Place>> {
         let _connection = establish_connection();
         if self.perm == 10 {
@@ -513,11 +548,11 @@ impl Partner {
             .expect("E");
         return 1;
     }
-    pub fn delete(id: String) -> i16 {
+    pub fn delete(user_id: String) -> i16 {
         let _connection = establish_connection();
         diesel::delete (
             schema::partners::table
-                .filter(schema::partners::id.eq(&id))
+                .filter(schema::partners::user_id.eq(&id))
         )
         .execute(&_connection)
         .expect("E");

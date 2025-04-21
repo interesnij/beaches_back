@@ -129,6 +129,146 @@ pub async fn image_form(payload: &mut Multipart) -> ImageForm {
     form
 }
 
+#[derive(Deserialize, Serialize, Debug)]
+pub struct ModuleTypeForm {
+    pub place_id:    String,
+    pub title:       String,
+    pub description: Option<String>,
+    pub types:       String,
+    pub image:       Option<String>,
+}
+
+pub async fn module_type_form(payload: &mut Multipart) -> ModuleTypeForm {
+    let mut form: ModuleTypeForm = ModuleTypeForm {
+        place_id:    "".to_string(),
+        title:       "".to_string(),
+        description: "".to_string(),
+        types:       "".to_string(),
+        image:       "".to_string(),
+    };
+
+    while let Some(item) = payload.next().await {
+        let mut field: Field = item.expect("split_payload err");
+        let name = field.name();
+
+        if name == "image" {
+            let _new_path = field.content_disposition().get_filename().unwrap();
+            if _new_path != "" {
+                let file = UploadedFiles::new(_new_path.to_string(), owner_id);
+                let file_path = file.path.clone();
+                let mut f = web::block(move || std::fs::File::create(&file_path).expect("Failed to open hello.txt"))
+                    .await
+                    .unwrap();
+                while let Some(chunk) = field.next().await {
+                    let data = chunk.unwrap();
+                    f = web::block(move || f.write_all(&data).map(|_| f))
+                        .await
+                        .unwrap()
+                        .expect("Failed to open hello.txt");
+                }
+                form.image = file.path.clone().replace("/beaches_front","");
+            }
+        }
+        else {
+            while let Some(chunk) = field.next().await {
+                let data = chunk.expect("split_payload err chunk");
+                if let Ok(s) = str::from_utf8(&data) {
+                    let data_string = s.to_string();
+                    if field.name() == "title" {
+                        form.title = data_string
+                    } else if field.name() == "description" {
+                        form.description = data_string
+                    } else if field.name() == "place_id" {
+                        form.place_id = data_string
+                    }
+                    else if field.name() == "types" {
+                        form.types = data_string
+                    }
+                }
+            }
+        }
+    }
+    form
+}
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct EventForm {
+    pub place_id:    String,
+    pub title:       String,
+    pub description: String,
+    pub price:       i32,
+    pub time_start:  String,
+    pub time_end:    String,
+    pub image:       Option<String>,
+}
+
+pub async fn event_form(payload: &mut Multipart) -> EventForm {
+    let mut form: EventForm = EventForm {
+        place_id:    "".to_string(),
+        title:       "".to_string(),
+        description: "".to_string(),
+        price:       0,
+        time_start:  "".to_string(),
+        time_end:    "".to_string(),
+        image:       "".to_string(),
+    };
+
+    while let Some(item) = payload.next().await {
+        let mut field: Field = item.expect("split_payload err");
+        let name = field.name();
+
+        if name == "image" {
+            let _new_path = field.content_disposition().get_filename().unwrap();
+            if _new_path != "" {
+                let file = UploadedFiles::new(_new_path.to_string(), owner_id);
+                let file_path = file.path.clone();
+                let mut f = web::block(move || std::fs::File::create(&file_path).expect("Failed to open hello.txt"))
+                    .await
+                    .unwrap();
+                while let Some(chunk) = field.next().await {
+                    let data = chunk.unwrap();
+                    f = web::block(move || f.write_all(&data).map(|_| f))
+                        .await
+                        .unwrap()
+                        .expect("Failed to open hello.txt");
+                }
+                form.image = file.path.clone().replace("/beaches_front","");
+            }
+        }
+        else if name == "price" {
+            while let Some(chunk) = field.next().await {
+                let data = chunk.expect("split_payload err chunk");
+                if let Ok(s) = str::from_utf8(&data) {
+                    let _int: i32 = s.parse().unwrap();
+                    form.price = _int;
+                }
+            }
+        }
+        else {
+            while let Some(chunk) = field.next().await {
+                let data = chunk.expect("split_payload err chunk");
+                if let Ok(s) = str::from_utf8(&data) {
+                    let data_string = s.to_string();
+                    if field.name() == "title" {
+                        form.title = data_string
+                    } else if field.name() == "description" {
+                        form.description = data_string
+                    } else if field.name() == "place_id" {
+                        form.place_id = data_string
+                    }
+                    else if field.name() == "time_start" {
+                        form.time_start = data_string
+                    }
+                    else if field.name() == "time_end" {
+                        form.time_end = data_string
+                    }
+                }
+            }
+        }
+    }
+    form
+}
+
 pub async fn save_file(data: String) -> String {
     let file_data: FileForm = serde_json::from_str(&data).unwrap();
     let path = "/beaches_front/media/".to_owned() + &file_data.name;
