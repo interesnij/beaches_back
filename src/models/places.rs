@@ -722,9 +722,6 @@ impl Event {
     ) -> i16 { 
         let _connection = establish_connection();
 
-        let format_start = chrono::NaiveDateTime::parse_from_str(&time_start, "%Y-%m-%d %H:%M:%S").unwrap();
-        let format_end = chrono::NaiveDateTime::parse_from_str(&time_end, "%Y-%m-%d %H:%M:%S").unwrap();
-
         let _event = schema::events::table
             .filter(schema::events::id.eq(id))
             .first::<Event>(&_connection)
@@ -736,7 +733,7 @@ impl Event {
                 schema::events::description.eq(description),
                 schema::events::price.eq(price),
                 schema::events::time_start.eq(format_start),
-                schema::events::time_end.eq(format_end),
+                schema::events::time_end.eq(time_end),
                 schema::events::image.eq(image),
             ))
             .execute(&_connection)
