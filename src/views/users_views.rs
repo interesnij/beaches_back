@@ -289,9 +289,9 @@ pub async fn upload_files(mut payload: Multipart, req: HttpRequest) -> actix_web
             },
             "edit_module_type" => {
                 println!("edit_module_type");
+                let form = crate::utils::module_type_form(payload.borrow_mut()).await;
                 if _request_user.is_can_work_in_object_with_id(&form.place_id) {
-                    let form = crate::utils::module_type_form(payload.borrow_mut()).await;
-                    crate::models::ModuleType::edit (
+                    crate::models::ModuleType::edit ( 
                         id,
                         form.title.clone(),
                         form.description.clone(),
