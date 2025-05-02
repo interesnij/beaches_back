@@ -62,15 +62,16 @@ types
 3 закрыто
 */
 CREATE TABLE places ( 
-    id       TEXT PRIMARY KEY,
-    title    VARCHAR(100) NOT NULL,
-    types    SMALLINT NOT NULL,
-    created  TIMESTAMP NOT NULL,
-    user_id  VARCHAR(100) NOT NULL,
-    city_id  INT NOT NULL,
-    type_id  SMALLINT NOT NULL DEFAULT 1,
-    image    VARCHAR(500), 
-    cord     VARCHAR(100)
+    id         TEXT PRIMARY KEY,
+    title      VARCHAR(100) NOT NULL,
+    types      SMALLINT NOT NULL,
+    created    TIMESTAMP NOT NULL,
+    user_id    VARCHAR(100) NOT NULL,
+    city_id    INT NOT NULL,
+    type_id    SMALLINT NOT NULL DEFAULT 1,
+    image      VARCHAR(500),
+    background VARCHAR(500), 
+    cord       VARCHAR(100)
 ); 
 
 /* */
@@ -107,8 +108,9 @@ CREATE TABLE module_types (
     place_id    VARCHAR(100) NOT NULL,
     title       VARCHAR(100) NOT NULL,
     description VARCHAR(500) NOT NULL,
-    types       VARCHAR(100) NOT NULL,     -- Place, Module, Closed
-    image       VARCHAR(500)
+    types       VARCHAR(100) NOT NULL,     -- Place, Module, Closed, Technical
+    image       VARCHAR(500),
+    price       INT NOT NULL
 );
 
 -- временная метка
@@ -135,7 +137,8 @@ CREATE TABLE modules (
     font_color  VARCHAR(10) NOT NULL,
     font_size   VARCHAR(10) NOT NULL,
     back_color  VARCHAR(10) NOT NULL,
-    image       VARCHAR(500)
+    image       VARCHAR(500),
+    event_id    VARCHAR(100)
 );
 
 -- заказы / бронирование
