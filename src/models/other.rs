@@ -420,7 +420,7 @@ impl Citie {
         let _connection = establish_connection();
         let _id: Option<i32>;
         if region_id.is_some() {
-            _id: Option<i32> = region_id.as_deref().unwrap().parse();
+            _id = region_id.as_deref().unwrap().parse();
         }
         else {
             _id = None;
@@ -450,7 +450,7 @@ impl Citie {
 
         let _id: Option<i32>;
         if region_id.is_some() {
-            _id: Option<i32> = region_id.as_deref().unwrap().parse();
+            _id = region_id.as_deref().unwrap().parse();
         }
         else {
             _id = None;
