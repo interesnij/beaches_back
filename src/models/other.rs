@@ -412,16 +412,23 @@ impl Citie {
             .expect("E");
     }
     pub fn create (
-        region_id:  Option<i32>,
+        region_id:  Option<String>,
         //country_id: i32,
         name:       String,
         cord:       Option<String>,
     ) -> i16 {
         let _connection = establish_connection();
+        let _id: Option<i32>;
+        if region_id.is_some() {
+            _id: Option<i32> = region_id.as_deref().unwrap().parse();
+        }
+        else {
+            _id = None;
+        }
         let new_form = NewCitie {
             name:         name,
             geo_id:       None,
-            region_id:    region_id,
+            region_id:    _id,
             country_id:   1,
             cord:         cord,
         };
@@ -434,12 +441,21 @@ impl Citie {
     }
     pub fn edit ( 
         id:        i32,
-        region_id: Option<i32>,
+        region_id: Option<String>,
         //country_id: i32,
         name:      String,
         cord:      Option<String>,
     ) -> i16 {
         let _connection = establish_connection();
+
+        let _id: Option<i32>;
+        if region_id.is_some() {
+            _id: Option<i32> = region_id.as_deref().unwrap().parse();
+        }
+        else {
+            _id = None;
+        }
+
         let _city = schema::cities::table
             .filter(schema::cities::id.eq(id))
             .first::<Citie>(&_connection)
@@ -447,7 +463,7 @@ impl Citie {
         diesel::update(&_city)
             .set((
                 schema::cities::name.eq(name),
-                schema::cities::region_id.eq(region_id),
+                schema::cities::region_id.eq(_id),
                 //schema::cities::country_id.eq(country_id),
                 schema::cities::cord.eq(cord),
             ))
