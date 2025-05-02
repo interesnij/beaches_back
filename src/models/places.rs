@@ -221,15 +221,15 @@ pub struct Place {
 pub struct PlaceJson {
     pub title:   String,
     pub user_id: String,
-    pub city_id: i32,
-    pub type_id: i16,
+    pub city_id: String,
+    pub type_id: String,
     pub image:   Option<String>,
     pub cord:    Option<String>,
 }
 #[derive(Deserialize)]
 pub struct EditPlaceJson {
     pub title:   String,
-    pub type_id: i16,
+    pub type_id: String,
     pub image:   Option<String>,
     pub cord:    Option<String>,
 }
@@ -333,8 +333,8 @@ impl Place {
     pub fn create(
         title:   String,
         user_id: String,
-        city_id: i32,
-        type_id: i16, 
+        city_id: String,
+        type_id: String, 
         cord:    Option<String>
     ) -> i16 {
         let _connection = establish_connection();
@@ -344,8 +344,8 @@ impl Place {
             types:      1,
             created:    chrono::Local::now().naive_utc() + chrono::Duration::hours(3),
             user_id:    user_id,
-            city_id:    city_id,
-            type_id:    type_id,
+            city_id:    city_id.parse().unwrap(),
+            type_id:    type_id.parse().unwrap(),
             image:      None,
             background: None, 
             cord:       cord,
@@ -359,7 +359,7 @@ impl Place {
     pub fn edit (
         id:      String, 
         title:   String,
-        type_id: i16,
+        type_id: String,
         cord:    Option<String>
     ) -> i16 { 
         let _connection = establish_connection();
@@ -370,7 +370,7 @@ impl Place {
         diesel::update(&_place) 
             .set((
                 schema::places::title.eq(title),
-                schema::places::type_id.eq(type_id),
+                schema::places::type_id.eq(type_id.parse().unwrap()),
                 schema::places::cord.eq(cord),
             ))
             .execute(&_connection)

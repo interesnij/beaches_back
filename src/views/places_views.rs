@@ -198,8 +198,8 @@ pub async fn create_place(req: HttpRequest, data: Json<PlaceJson>) -> impl Respo
         Place::create(
             data.title.clone(),
             data.user_id.clone(),
-            data.city_id,
-            data.type_id,
+            data.city_id.clone(),
+            data.type_id.clone(),
             data.cord.clone(),
         ); 
     }
@@ -211,7 +211,7 @@ pub async fn edit_place(req: HttpRequest, data: Json<PlaceJson>, id: web::Path<S
         Place::edit(
             id.to_string(),
             data.title.clone(),
-            data.type_id,
+            data.type_id.clone(),
             data.cord.clone(),
         ); 
     }
