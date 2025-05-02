@@ -266,6 +266,12 @@ pub async fn upload_files(mut payload: Multipart, req: HttpRequest) -> actix_web
                 crate::models::Place::change_avatar(id, Some(form.image.clone()));
                 return Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body("place_avatar"));
             },
+            "place_background" => {
+                println!("place_background upload");
+                let form = crate::utils::image_form(payload.borrow_mut()).await;
+                crate::models::Place::change_background(id, Some(form.image.clone()));
+                return Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body("place_background"));
+            },
             "create_module_type" => {
                 println!("create_module_type");
                 let form = crate::utils::module_type_form(payload.borrow_mut()).await;
@@ -276,13 +282,14 @@ pub async fn upload_files(mut payload: Multipart, req: HttpRequest) -> actix_web
                         form.description.clone(),
                         form.types.clone(),
                         form.image.clone(),
+                        form.price,
                     );
                 }
                 return Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body("user_avatar"));
             },
             "edit_module_type" => {
                 println!("edit_module_type");
-                if _request_user.is_can_work_in_object_with_id(&id) {
+                if _request_user.is_can_work_in_object_with_id(&form.place_id) {
                     let form = crate::utils::module_type_form(payload.borrow_mut()).await;
                     crate::models::ModuleType::edit (
                         id,
@@ -290,6 +297,7 @@ pub async fn upload_files(mut payload: Multipart, req: HttpRequest) -> actix_web
                         form.description.clone(),
                         form.types.clone(),
                         form.image.clone(),
+                        form.price,
                     );
                 }
                 return Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body("user_avatar"));
@@ -314,7 +322,7 @@ pub async fn upload_files(mut payload: Multipart, req: HttpRequest) -> actix_web
             "edit_event" => {
                 println!("create_event");
                 let form = crate::utils::event_form(payload.borrow_mut()).await;
-                if _request_user.is_can_work_in_object_with_id(&id) {
+                if _request_user.is_can_work_in_object_with_id(&form.place_id) {
                     crate::models::Event::edit (
                         id,
                         form.title.clone(),

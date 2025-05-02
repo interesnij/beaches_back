@@ -95,6 +95,7 @@ pub struct ModuleType {
     pub description: String,
     pub types:       String,
     pub image:       Option<String>,
+    pub price:       i32,
 } 
 #[derive(Deserialize)]
 pub struct ModuleTypeJson {
@@ -103,6 +104,7 @@ pub struct ModuleTypeJson {
     pub description: String,
     pub types:       String,
     pub image:       Option<String>,
+    pub price:       i32,
 }
 #[derive(Deserialize)]
 pub struct ModuleEditTypeJson {
@@ -110,12 +112,21 @@ pub struct ModuleEditTypeJson {
     pub description: String,
     pub types:       String,
     pub image:       Option<String>,
+    pub price:       i32,
 }
 
 impl ModuleType {
-    pub fn get_all() -> Json<Vec<ModuleType>> {
+    pub fn get(id: String) -> ModuleType {
+        let _connection = establish_connection();
+        return schema::module_types::table
+            .filter(schema::module_types::id.eq(id))
+            .first::<ModuleType>(&_connection)
+            .expect("E");
+    }
+    pub fn get_all_for_place(place_id: String) -> Json<Vec<ModuleType>> {
         let _connection = establish_connection();
         return Json(schema::module_types::table
+            .filter(schema::module_types::place_id.eq(&place_id))
             .load::<ModuleType>(&_connection)
             .expect("E"));
     }
@@ -125,6 +136,7 @@ impl ModuleType {
         description: String,
         types:       String,
         image:       Option<String>,
+        price:       i32,
     ) -> i16 {
         let _connection = establish_connection();
 
@@ -137,16 +149,6 @@ impl ModuleType {
                 return 0;
         }
 
-        if &types == "Place" {
-            diesel::delete (
-                schema::module_types::table
-                    .filter(schema::module_types::place_id.eq(&place_id))
-                    .filter(schema::module_types::types.eq("Place"))
-            )
-            .execute(&_connection)
-            .expect("E");
-        }
-
         let new_place_type = ModuleType {
             id:          uuid::Uuid::new_v4().to_string(),
             place_id:    place_id,
@@ -154,6 +156,7 @@ impl ModuleType {
             description: description,
             types:       types,
             image:       image,
+            price:       price,
         }; 
         let _place_type = diesel::insert_into(schema::module_types::table)
             .values(&new_place_type)
@@ -167,6 +170,7 @@ impl ModuleType {
         description: String,
         types:       String,
         image:       Option<String>,
+        price:       i32,
     ) -> i16 {
         let _connection = establish_connection();
         let _type = schema::module_types::table
@@ -179,6 +183,7 @@ impl ModuleType {
                     schema::module_types::description.eq(description),
                     schema::module_types::types.eq(types),
                     schema::module_types::image.eq(image),
+                    schema::module_types::price.eq(price),
                 ))
                 .execute(&_connection)
                 .expect("E");
@@ -200,15 +205,16 @@ impl ModuleType {
 #[derive(Debug, Queryable, Deserialize, Serialize, Identifiable, Insertable)]
 #[table_name="places"]
 pub struct Place {
-    pub id:      String,
-    pub title:   String, 
-    pub types:   i16,
-    pub created: chrono::NaiveDateTime,
-    pub user_id: String,
-    pub city_id: i32,
-    pub type_id: i16,
-    pub image:   Option<String>,
-    pub cord:    Option<String>,
+    pub id:         String,
+    pub title:      String, 
+    pub types:      i16,
+    pub created:    chrono::NaiveDateTime,
+    pub user_id:    String,
+    pub city_id:    i32,
+    pub type_id:    i16,
+    pub image:      Option<String>,
+    pub background: Option<String>,
+    pub cord:       Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -333,15 +339,16 @@ impl Place {
     ) -> i16 {
         let _connection = establish_connection();
         let new_place = Place {
-            id:      uuid::Uuid::new_v4().to_string(),
-            title:   title,
-            types:   1,
-            created: chrono::Local::now().naive_utc() + chrono::Duration::hours(3),
-            user_id: user_id,
-            city_id: city_id,
-            type_id: type_id,
-            image:   None, 
-            cord:    cord,
+            id:         uuid::Uuid::new_v4().to_string(),
+            title:      title,
+            types:      1,
+            created:    chrono::Local::now().naive_utc() + chrono::Duration::hours(3),
+            user_id:    user_id,
+            city_id:    city_id,
+            type_id:    type_id,
+            image:      None,
+            background: None, 
+            cord:       cord,
         };
         let _place = diesel::insert_into(schema::places::table)
             .values(&new_place)
@@ -375,6 +382,14 @@ impl Place {
         _connection.transaction(|| Ok({
             let _u = diesel::update(places::table.filter(places::id.eq(place_id)))
                 .set(schema::places::image.eq(image))
+                .execute(&_connection);
+        }))
+    }
+    pub fn change_background(place_id: String, background: Option<String>) -> Result<(), Error> {
+        let _connection = establish_connection();
+        _connection.transaction(|| Ok({
+            let _u = diesel::update(places::table.filter(places::id.eq(place_id)))
+                .set(schema::places::background.eq(background))
                 .execute(&_connection);
         }))
     }
@@ -474,6 +489,7 @@ pub struct Module {
     pub font_size:  String,
     pub back_color: String,
     pub image:      Option<String>,
+    pub event_id:   Option<String>,
 
 }
 #[derive(Serialize, Deserialize, Debug)]
@@ -493,6 +509,7 @@ pub struct ModuleJson {
     pub font_size:  String,
     pub back_color: String,
     pub image:      Option<String>,
+    pub event_id:   Option<String>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -554,6 +571,7 @@ impl Module {
                     schema::modules::font_size.eq(&i.font_size),
                     schema::modules::back_color.eq(&i.back_color),
                     schema::modules::image.eq(&i.image),
+                    schema::modules::event_id.eq(&i.event_id),
                 ))
                 .execute(&_connection)
                 .expect("E");
@@ -578,6 +596,7 @@ impl Module {
                     font_size:  i.font_size.clone(),
                     back_color: i.back_color.clone(),
                     image:      i.image.clone(),
+                    event_id:   i.event_id.clone(),
                 };  
                 let _module = diesel::insert_into(schema::modules::table)
                     .values(&new_module)
@@ -628,7 +647,14 @@ pub struct Event {
 } 
 
 impl Event {
-    pub fn get_for_place(id: String) -> Json<Vec<Event>> {
+    pub fn get(id: String) -> Event {
+        let _connection = establish_connection();
+        return schema::events::table
+            .filter(schema::events::id.eq(id))
+            .first::<Event>(&_connection)
+            .expect("E");
+    }
+    pub fn get_all_for_place(id: String) -> Json<Vec<Event>> {
         let _connection = establish_connection();
         return Json(schema::events::table
             .filter(schema::events::place_id.eq(id))

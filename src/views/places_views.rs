@@ -9,7 +9,7 @@ use crate::models::{
     User, Place, PlaceJson, UserJson, ModuleJson, 
     RespOrderJson, CreateModuleJson, Module,
     Region, NewRegion, Citie, NewCitie,
-    ModuleType, 
+    ModuleType, Event, ModuleType,
 
 };
 use serde::{Deserialize, Serialize};
@@ -31,22 +31,27 @@ pub fn places_routes(config: &mut web::ServiceConfig) {
     config.route("/place/{id}/", web::get().to(get_place));
     config.route("/place/{id}/managers/", web::get().to(get_place_managers));
     config.route("/place/{id}/orders/", web::get().to(get_place_orders));
+    config.route("/place/{id}/events/", web::get().to(get_place_events));
+    config.route("/place/{id}/module_types/", web::get().to(get_place_module_types));
     config.route("/suggest_places/", web::get().to(get_suggest_places));
     config.route("/closed_places/", web::get().to(get_closed_places));
 
     config.route("/create_place/", web::post().to(create_place));
     config.route("/edit_place/{id}/", web::post().to(edit_place)); 
-    config.route("/create_modules/", web::post().to(create_modules));
+    config.route("/create_modules/", web::post().to(create_modules)); 
     //config.route("/close_place/{id}/", web::post().to(close_place));
     //config.route("/hide_place/{id}/", web::post().to(hide_place));
     //config.route("/publish_place/{id}/", web::post().to(publish_place));
 
-    config.route("/regions/", web::post().to(regions));
-    config.route("/cities/", web::post().to(cities));
+    config.route("/regions/", web::get().to(regions));
+    config.route("/cities/", web::get().to(cities)); 
     config.route("/region/{id}/", web::get().to(get_region));
     config.route("/create_region/", web::post().to(create_region));
     config.route("/edit_region/{id}/", web::post().to(edit_region));
     config.route("/delete_region/{id}/", web::post().to(delete_region));
+    config.route("/city/{id}/", web::get().to(get_city));
+    config.route("/module_type/{id}/", web::get().to(get_module_type));
+    config.route("/event/{id}/", web::get().to(get_event)); 
     config.route("/city/{id}/", web::get().to(get_city));
     config.route("/create_city/", web::post().to(create_city));
     config.route("/edit_city/{id}/", web::post().to(edit_city));
@@ -90,12 +95,20 @@ pub async fn get_city(req: HttpRequest, id: web::Path<i32>) -> Json<Citie> {
     let _city = Citie::get(*id);
     return Json(_city);
 }
+pub async fn get_module_type(req: HttpRequest, id: web::Path<String>) -> Json<ModuleType> {
+    let _module_type = ModuleType::get(id.clone());
+    return Json(_module_type);
+}
+pub async fn get_event(req: HttpRequest, id: web::Path<String>) -> Json<Event> {
+    let _event = Event::get(id.clone());
+    return Json(_event);
+}
 
 pub async fn get_place_managers(req: HttpRequest, id: web::Path<String>) -> Json<Vec<UserJson>> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         let _place = Place::get(id.clone());
-        if _place.user_id.clone() == _request_user.id {
+        if _request_user.is_can_work_in_object_with_id(&id) {
             return _place.get_managers();
         } 
         else {
@@ -110,8 +123,36 @@ pub async fn get_place_orders(req: HttpRequest, id: web::Path<String>) -> Json<V
     if is_signed_in(&req) { 
         let _request_user = get_current_user(&req);
         let _place = Place::get_place(id.clone());
-        if _place.user_id.clone() == _request_user.id {
+        if _request_user.is_can_work_in_object_with_id(&id) {
             return Json(_place.get_orders());
+        }
+        else {
+            return Json(Vec::new());
+        }
+    }
+    else {
+        Json(Vec::new())
+    }
+} 
+pub async fn get_place_module_types(req: HttpRequest, id: web::Path<String>) -> Json<Vec<crate::models::ModuleType>> {
+    if is_signed_in(&req) { 
+        let _request_user = get_current_user(&req);
+        if _request_user.is_can_work_in_object_with_id(&id) {
+            return Json(crate::models::ModuleType::get_all_for_place(id));
+        }
+        else {
+            return Json(Vec::new());
+        }
+    }
+    else {
+        Json(Vec::new())
+    }
+}
+pub async fn get_place_events(req: HttpRequest, id: web::Path<String>) -> Json<Vec<crate::models::Event>> {
+    if is_signed_in(&req) { 
+        let _request_user = get_current_user(&req);
+        if _request_user.is_can_work_in_object_with_id(&id) {
+            return Json(crate::models::Event::get_all_for_place(id));
         }
         else {
             return Json(Vec::new());

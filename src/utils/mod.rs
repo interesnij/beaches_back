@@ -136,7 +136,8 @@ pub struct ModuleTypeForm {
     pub description: String,
     pub types:       String,
     pub image:       Option<String>,
-}
+    pub price:       i32,
+} 
 
 pub async fn module_type_form(payload: &mut Multipart) -> ModuleTypeForm {
     let mut form: ModuleTypeForm = ModuleTypeForm {
@@ -145,6 +146,7 @@ pub async fn module_type_form(payload: &mut Multipart) -> ModuleTypeForm {
         description: "".to_string(),
         types:       "".to_string(),
         image:       None,
+        price:       0,
     };
 
     while let Some(item) = payload.next().await {
@@ -167,6 +169,15 @@ pub async fn module_type_form(payload: &mut Multipart) -> ModuleTypeForm {
                         .expect("Failed to open hello.txt");
                 }
                 form.image = Some(file.path.clone().replace("/beaches_front",""));
+            }
+        }
+        else if name == "price" {
+            while let Some(chunk) = field.next().await {
+                let data = chunk.expect("split_payload err chunk");
+                if let Ok(s) = std::str::from_utf8(&data) {
+                    let _int: i32 = s.parse().unwrap();
+                    form.price = _int;
+                }
             }
         }
         else {
@@ -211,7 +222,7 @@ pub async fn event_form(payload: &mut Multipart) -> EventForm {
         time_start:  "".to_string(),
         time_end:    "".to_string(),
         image:       None,
-    };
+    }; 
 
     while let Some(item) = payload.next().await {
         let mut field: Field = item.expect("split_payload err");
