@@ -338,14 +338,16 @@ impl Place {
         cord:    Option<String>
     ) -> i16 {
         let _connection = establish_connection();
+        let _city_id: i32 = city_id.parse().unwrap();
+        let _type_id: i16 = type_id.parse().unwrap();
         let new_place = Place {
             id:         uuid::Uuid::new_v4().to_string(),
             title:      title,
             types:      1,
             created:    chrono::Local::now().naive_utc() + chrono::Duration::hours(3),
             user_id:    user_id,
-            city_id:    city_id.parse().unwrap(),
-            type_id:    type_id.parse().unwrap(),
+            city_id:    _city_id,
+            type_id:    _type_id,
             image:      None,
             background: None, 
             cord:       cord,
@@ -363,6 +365,7 @@ impl Place {
         cord:    Option<String>
     ) -> i16 { 
         let _connection = establish_connection();
+        let _type_id: i16 = type_id.parse().unwrap();
         let _place = schema::places::table
             .filter(schema::places::id.eq(id))
             .first::<Place>(&_connection)
@@ -370,7 +373,7 @@ impl Place {
         diesel::update(&_place) 
             .set((
                 schema::places::title.eq(title),
-                schema::places::type_id.eq(type_id.parse().unwrap()),
+                schema::places::type_id.eq(_type_id),
                 schema::places::cord.eq(cord),
             ))
             .execute(&_connection)
