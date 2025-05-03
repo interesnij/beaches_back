@@ -241,8 +241,9 @@ pub async fn create_module_type(req: HttpRequest, data: Json<CreateModuleType>) 
             data.types.clone(),
             data.price,
         ); 
+        return Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body(uuid));
     }
-    Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body(uuid))
+    Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body("error!"))
 }
 #[derive(Deserialize, Serialize, Debug)]
 pub struct EditModuleType {
@@ -261,8 +262,9 @@ pub async fn edit_module_type(req: HttpRequest, data: Json<EditModuleType>, id: 
             data.types.clone(),
             data.price,
         ); 
+        return Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body(uuid));
     }
-    Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body(uuid))
+    Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body("error!"))
 }
 
 #[derive(Deserialize, Serialize, Debug)]
@@ -286,15 +288,17 @@ pub async fn create_event(req: HttpRequest, data: Json<CreateEvent>) -> actix_we
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         let uuid = crate::models::Event::create(
+            _request_user.id,
             data.place_id.clone(),
             data.title.clone(),
             data.description.clone(),
             data.price,
             data.time_start.clone(),
             data.time_end.clone(),
-        );
+        ); 
+        return Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body(uuid));
     }
-    Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body(uuid))
+    Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body("error!"))
 }
 pub async fn edit_event(req: HttpRequest, data: Json<EditEvent>, id: web::Path<String>) -> actix_web::Result<HttpResponse> {
     if is_signed_in(&req) {
@@ -307,8 +311,9 @@ pub async fn edit_event(req: HttpRequest, data: Json<EditEvent>, id: web::Path<S
             data.time_start.clone(),
             data.time_end.clone(),
         );
+        return Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body(uuid));
     }
-    Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body(uuid))
+    Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body("error!"))
 }
 
 pub async fn create_modules(req: HttpRequest, data: Json<CreateModuleJson>) -> impl Responder {
