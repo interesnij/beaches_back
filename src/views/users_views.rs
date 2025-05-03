@@ -272,67 +272,16 @@ pub async fn upload_files(mut payload: Multipart, req: HttpRequest) -> actix_web
                 crate::models::Place::change_background(id, Some(form.image.clone()));
                 return Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body("place_background"));
             },
-            "create_module_type" => {
-                println!("create_module_type");
-                let form = crate::utils::module_type_form(payload.borrow_mut()).await;
-                if _request_user.is_can_work_in_object_with_id(&form.place_id) {
-                    crate::models::ModuleType::create (
-                        form.place_id.clone(),
-                        form.title.clone(),
-                        form.description.clone(),
-                        form.types.clone(),
-                        form.image.clone(),
-                        form.price,
-                    );
-                }
+            "module_type_avatar" => {
+                println!("module_type_avatar upload");
+                let form = crate::utils::image_form(payload.borrow_mut()).await;
+                crate::models::ModuleType::change_image(id, Some(form.image.clone()));
                 return Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body("user_avatar"));
             },
-            "edit_module_type" => {
-                println!("edit_module_type");
-                let form = crate::utils::module_type_form(payload.borrow_mut()).await;
-                if _request_user.is_can_work_in_object_with_id(&form.place_id) {
-                    crate::models::ModuleType::edit ( 
-                        id,
-                        form.title.clone(),
-                        form.description.clone(),
-                        form.types.clone(),
-                        form.image.clone(),
-                        form.price,
-                    );
-                }
-                return Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body("user_avatar"));
-            },
-            "create_event" => {
-                println!("create_event");
-                let form = crate::utils::event_form(payload.borrow_mut()).await;
-                if _request_user.is_can_work_in_object_with_id(&form.place_id) {
-                    crate::models::Event::create (
-                        _request_user.id.clone(),
-                        form.place_id.clone(),
-                        form.title.clone(),
-                        form.description.clone(),
-                        form.price,
-                        form.time_start.clone(),
-                        form.time_end.clone(),
-                        form.image.clone(),
-                    ); 
-                }
-                return Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body("user_avatar"));
-            },
-            "edit_event" => {
-                println!("create_event");
-                let form = crate::utils::event_form(payload.borrow_mut()).await;
-                if _request_user.is_can_work_in_object_with_id(&form.place_id) {
-                    crate::models::Event::edit (
-                        id,
-                        form.title.clone(),
-                        form.description.clone(),
-                        form.price,
-                        form.time_start.clone(),
-                        form.time_end.clone(),
-                        form.image.clone(),
-                    );
-                }
+            "event_avatar" => {
+                println!("event_avatar upload");
+                let form = crate::utils::image_form(payload.borrow_mut()).await;
+                crate::models::Event::change_image(id, Some(form.image.clone()));
                 return Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body("user_avatar"));
             },
             _ => return Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body("")),

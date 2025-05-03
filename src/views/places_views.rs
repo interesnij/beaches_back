@@ -43,6 +43,11 @@ pub fn places_routes(config: &mut web::ServiceConfig) {
     //config.route("/hide_place/{id}/", web::post().to(hide_place));
     //config.route("/publish_place/{id}/", web::post().to(publish_place));
 
+    config.route("/create_module_type/", web::post().to(create_module_type));
+    config.route("/edit_module_type/{id}/", web::post().to(edit_module_type));
+    config.route("/create_event/", web::post().to(create_event));
+    config.route("/edit_event/{id}/", web::post().to(edit_event));
+
     config.route("/regions/", web::get().to(regions));
     config.route("/cities/", web::get().to(cities)); 
     config.route("/region/{id}/", web::get().to(get_region));
@@ -216,6 +221,94 @@ pub async fn edit_place(req: HttpRequest, data: Json<PlaceJson>, id: web::Path<S
         ); 
     }
     HttpResponse::Ok()
+}
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct CreateModuleType {
+    pub place_id:    String,
+    pub title:       String,
+    pub description: String,
+    pub types:       String,
+    pub price:       i32,
+} 
+pub async fn create_module_type(req: HttpRequest, data: Json<CreateModuleType>) -> impl Responder {
+    if is_signed_in(&req) {
+        let _request_user = get_current_user(&req);
+        let uuid = crate::models::ModuleType::create(
+            data.place_id.clone(),
+            data.title.clone(),
+            data.description.clone(),
+            data.types.clone(),
+            data.price,
+        ); 
+    }
+    HttpResponse::Ok(uuid)
+}
+#[derive(Deserialize, Serialize, Debug)]
+pub struct EditModuleType {
+    pub title:       String,
+    pub description: String,
+    pub types:       String,
+    pub price:       i32,
+} 
+pub async fn edit_module_type(req: HttpRequest, data: Json<EditModuleType>, id: web::Path<String>) -> impl Responder {
+    if is_signed_in(&req) {
+        let _request_user = get_current_user(&req);
+        let uuid = crate::models::ModuleType::edit(
+            id.to_string(),
+            data.title.clone(),
+            data.description.clone(),
+            data.types.clone(),
+            data.price,
+        ); 
+    }
+    HttpResponse::Ok(uuid)
+}
+
+#[derive(Deserialize, Serialize, Debug)]
+pub struct CreateEvent {
+    pub place_id:    String,
+    pub title:       String,
+    pub description: String,
+    pub price:       i32,
+    pub time_start:  String,
+    pub time_end:    String,
+}
+#[derive(Deserialize, Serialize, Debug)]
+pub struct EditEvent {
+    pub title:       String,
+    pub description: String,
+    pub price:       i32,
+    pub time_start:  String,
+    pub time_end:    String,
+}
+pub async fn create_event(req: HttpRequest, data: Json<CreateEvent>) -> impl Responder {
+    if is_signed_in(&req) {
+        let _request_user = get_current_user(&req);
+        let uuid = crate::models::Event::create(
+            data.place_id.clone(),
+            data.title.clone(),
+            data.description.clone(),
+            data.price,
+            data.time_start.clone(),
+            data.time_end.clone(),
+        ); 
+    }
+    HttpResponse::Ok(uuid)
+}
+pub async fn edit_event(req: HttpRequest, data: Json<EditEvent>, id: web::Path<String>) -> impl Responder {
+    if is_signed_in(&req) {
+        let _request_user = get_current_user(&req);
+        let uuid = crate::models::ModuleType::edit(
+            id.to_string(),
+            data.title.clone(),
+            data.description.clone(),
+            data.price,
+            data.time_start.clone(),
+            data.time_end.clone(),
+        );
+    }
+    HttpResponse::Ok(uuid)
 }
 
 pub async fn create_modules(req: HttpRequest, data: Json<CreateModuleJson>) -> impl Responder {
