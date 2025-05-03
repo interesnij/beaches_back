@@ -283,7 +283,7 @@ pub struct EditEvent {
     pub price:       String,
     pub time_start:  String,
     pub time_end:    String,
-}
+} 
 pub async fn create_event(req: HttpRequest, data: Json<CreateEvent>) -> actix_web::Result<HttpResponse> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
@@ -296,6 +296,7 @@ pub async fn create_event(req: HttpRequest, data: Json<CreateEvent>) -> actix_we
             data.time_start.clone(),
             data.time_end.clone(),
         ); 
+        println!("uuid: {:?}", uuid);
         return Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body(uuid));
     }
     Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body("error!"))
