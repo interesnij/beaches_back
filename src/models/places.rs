@@ -194,7 +194,7 @@ impl ModuleType {
                 ))
                 .execute(&_connection)
                 .expect("E");
-        return _type.uuid;
+        return _type.id;
     }
     pub fn delete(id: String) -> i16 {
         let _connection = establish_connection();

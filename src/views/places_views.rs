@@ -231,7 +231,7 @@ pub struct CreateModuleType {
     pub types:       String,
     pub price:       i32,
 } 
-pub async fn create_module_type(req: HttpRequest, data: Json<CreateModuleType>) -> impl Responder {
+pub async fn create_module_type(req: HttpRequest, data: Json<CreateModuleType>) -> actix_web::Result<HttpResponse> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         let uuid = crate::models::ModuleType::create(
@@ -242,7 +242,7 @@ pub async fn create_module_type(req: HttpRequest, data: Json<CreateModuleType>) 
             data.price,
         ); 
     }
-    HttpResponse::Ok(uuid)
+    Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body(uuid))
 }
 #[derive(Deserialize, Serialize, Debug)]
 pub struct EditModuleType {
@@ -251,7 +251,7 @@ pub struct EditModuleType {
     pub types:       String,
     pub price:       i32,
 } 
-pub async fn edit_module_type(req: HttpRequest, data: Json<EditModuleType>, id: web::Path<String>) -> impl Responder {
+pub async fn edit_module_type(req: HttpRequest, data: Json<EditModuleType>, id: web::Path<String>) -> actix_web::Result<HttpResponse> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         let uuid = crate::models::ModuleType::edit(
@@ -262,7 +262,7 @@ pub async fn edit_module_type(req: HttpRequest, data: Json<EditModuleType>, id: 
             data.price,
         ); 
     }
-    HttpResponse::Ok(uuid)
+    Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body(uuid))
 }
 
 #[derive(Deserialize, Serialize, Debug)]
@@ -282,7 +282,7 @@ pub struct EditEvent {
     pub time_start:  String,
     pub time_end:    String,
 }
-pub async fn create_event(req: HttpRequest, data: Json<CreateEvent>) -> impl Responder {
+pub async fn create_event(req: HttpRequest, data: Json<CreateEvent>) -> actix_web::Result<HttpResponse> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         let uuid = crate::models::Event::create(
@@ -292,15 +292,15 @@ pub async fn create_event(req: HttpRequest, data: Json<CreateEvent>) -> impl Res
             data.price,
             data.time_start.clone(),
             data.time_end.clone(),
-        ); 
+        );
     }
-    HttpResponse::Ok(uuid)
+    Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body(uuid))
 }
-pub async fn edit_event(req: HttpRequest, data: Json<EditEvent>, id: web::Path<String>) -> impl Responder {
+pub async fn edit_event(req: HttpRequest, data: Json<EditEvent>, id: web::Path<String>) -> actix_web::Result<HttpResponse> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
-        let uuid = crate::models::ModuleType::edit(
-            id.to_string(),
+        let uuid = crate::models::Event::edit(
+            id.to_string(), 
             data.title.clone(),
             data.description.clone(),
             data.price,
@@ -308,7 +308,7 @@ pub async fn edit_event(req: HttpRequest, data: Json<EditEvent>, id: web::Path<S
             data.time_end.clone(),
         );
     }
-    HttpResponse::Ok(uuid)
+    Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body(uuid))
 }
 
 pub async fn create_modules(req: HttpRequest, data: Json<CreateModuleJson>) -> impl Responder {
