@@ -154,18 +154,7 @@ pub async fn get_place_module_types(req: HttpRequest, id: web::Path<String>) -> 
     }
 }
 pub async fn get_place_events(req: HttpRequest, id: web::Path<String>) -> Json<Vec<crate::models::Event>> {
-    if is_signed_in(&req) { 
-        let _request_user = get_current_user(&req);
-        if _request_user.is_can_work_in_object_with_id(&id) {
-            return crate::models::Event::get_all_for_place(id.to_string());
-        }
-        else {
-            return Json(Vec::new());
-        }
-    }
-    else {
-        Json(Vec::new())
-    }
+    return crate::models::Event::get_all_for_place(id.to_string());
 }
 
 pub async fn get_suggest_places(req: HttpRequest) -> Json<Vec<Place>> {
