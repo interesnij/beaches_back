@@ -355,7 +355,8 @@ impl User {
             .filter(schema::place_managers::user_id.eq(&self.id))
             .select(schema::place_managers::id)
             .first::<String>(&_connection)
-            .is_ok()
+            .is_ok() || 
+        self.is_superuser()
     }
 
     pub fn get_partner_objects(&self) -> Json<Vec<crate::models::Place>> {
