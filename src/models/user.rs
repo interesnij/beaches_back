@@ -349,14 +349,12 @@ impl User {
             .filter(schema::places::user_id.eq(&self.id))
             .select(schema::places::id)
             .first::<String>(&_connection)
-            .is_ok() ||
-        schema::place_managers::table
+            .is_ok() || schema::place_managers::table
             .filter(schema::place_managers::place_id.eq(place_id))
             .filter(schema::place_managers::user_id.eq(&self.id))
             .select(schema::place_managers::id)
             .first::<String>(&_connection)
-            .is_ok() || 
-        self.is_superuser()
+            .is_ok() || self.is_superuser()
     }
 
     pub fn get_partner_objects(&self) -> Json<Vec<crate::models::Place>> {
