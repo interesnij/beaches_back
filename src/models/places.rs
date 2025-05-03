@@ -684,7 +684,7 @@ impl Event {
         place_id:    String,
         title:       String,
         description: String,
-        price:       i32,
+        price:       String,
         time_start:  String,
         time_end:    String,
     ) -> String {
@@ -733,6 +733,7 @@ impl Event {
             new_time_end = time_end.clone();
         }
         let uuid = uuid::Uuid::new_v4().to_string();
+        let _price: i32 = price.parse().unwrap();
 
         let new_event = Event {
             id:          uuid.clone(),
@@ -742,7 +743,7 @@ impl Event {
             description: description,
             types:       1,
             created:     chrono::Local::now().naive_utc(),
-            price:       price,
+            price:       _price,
             time_start:  new_time_start,
             time_end:    new_time_end,
             image:       None,
@@ -758,11 +759,12 @@ impl Event {
         id:          String,
         title:       String,
         description: String,
-        price:       i32,
+        price:       String,
         time_start:  String,
         time_end:    String,
     ) -> String { 
         let _connection = establish_connection();
+        let _price: i32 = price.parse().unwrap();
 
         let _event = schema::events::table
             .filter(schema::events::id.eq(id))
@@ -773,7 +775,7 @@ impl Event {
             .set((
                 schema::events::title.eq(title),
                 schema::events::description.eq(description),
-                schema::events::price.eq(price),
+                schema::events::price.eq(_price),
                 schema::events::time_start.eq(time_start),
                 schema::events::time_end.eq(time_end),
             ))

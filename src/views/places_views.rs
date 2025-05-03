@@ -272,7 +272,7 @@ pub struct CreateEvent {
     pub place_id:    String,
     pub title:       String,
     pub description: String,
-    pub price:       i32,
+    pub price:       String,
     pub time_start:  String,
     pub time_end:    String,
 }
@@ -280,7 +280,7 @@ pub struct CreateEvent {
 pub struct EditEvent {
     pub title:       String,
     pub description: String,
-    pub price:       i32,
+    pub price:       String,
     pub time_start:  String,
     pub time_end:    String,
 }
@@ -292,7 +292,7 @@ pub async fn create_event(req: HttpRequest, data: Json<CreateEvent>) -> actix_we
             data.place_id.clone(),
             data.title.clone(),
             data.description.clone(),
-            data.price,
+            data.price.clone(),
             data.time_start.clone(),
             data.time_end.clone(),
         ); 
@@ -307,7 +307,7 @@ pub async fn edit_event(req: HttpRequest, data: Json<EditEvent>, id: web::Path<S
             id.to_string(), 
             data.title.clone(),
             data.description.clone(),
-            data.price,
+            data.price.clone(),
             data.time_start.clone(),
             data.time_end.clone(),
         );
