@@ -229,7 +229,7 @@ pub struct CreateModuleType {
     pub title:       String,
     pub description: String,
     pub types:       String,
-    pub price:       i32,
+    pub price:       String,
 } 
 pub async fn create_module_type(req: HttpRequest, data: Json<CreateModuleType>) -> actix_web::Result<HttpResponse> {
     if is_signed_in(&req) {
@@ -250,7 +250,7 @@ pub struct EditModuleType {
     pub title:       String,
     pub description: String,
     pub types:       String,
-    pub price:       i32,
+    pub price:       String,
 } 
 pub async fn edit_module_type(req: HttpRequest, data: Json<EditModuleType>, id: web::Path<String>) -> actix_web::Result<HttpResponse> {
     if is_signed_in(&req) {
@@ -290,7 +290,7 @@ pub async fn create_event(req: HttpRequest, data: Json<CreateEvent>) -> actix_we
         let uuid = crate::models::Event::create(
             _request_user.id,
             data.place_id.clone(),
-            data.title.clone(),
+            data.title.clone(), 
             data.description.clone(),
             data.price.clone(),
             data.time_start.clone(),

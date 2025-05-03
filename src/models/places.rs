@@ -143,7 +143,7 @@ impl ModuleType {
         title:       String,
         description: String,
         types:       String,
-        price:       i32,
+        price:       String,
     ) -> String {
         let _connection = establish_connection();
 
@@ -157,6 +157,7 @@ impl ModuleType {
         }
 
         let uuid = uuid::Uuid::new_v4().to_string();
+        let _price: i32 = price.parse().unwrap();
 
         let new_place_type = ModuleType {
             id:          uuid.clone(),
@@ -165,7 +166,7 @@ impl ModuleType {
             description: description,
             types:       types,
             image:       None,
-            price:       price,
+            price:       _price,
         }; 
         let _place_type = diesel::insert_into(schema::module_types::table)
             .values(&new_place_type)
@@ -178,19 +179,20 @@ impl ModuleType {
         title:       String,
         description: String,
         types:       String,
-        price:       i32,
+        price:       String,
     ) -> String {
         let _connection = establish_connection();
         let _type = schema::module_types::table
             .filter(schema::module_types::id.eq(id))
             .first::<ModuleType>(&_connection)
             .expect("E.");
+        let _price: i32 = price.parse().unwrap();
         diesel::update(&_type)
                 .set((
                     schema::module_types::title.eq(title),
                     schema::module_types::description.eq(description),
                     schema::module_types::types.eq(types),
-                    schema::module_types::price.eq(price),
+                    schema::module_types::price.eq(_price),
                 ))
                 .execute(&_connection)
                 .expect("E");
