@@ -239,7 +239,7 @@ pub async fn create_module_type(req: HttpRequest, data: Json<CreateModuleType>) 
             data.title.clone(),
             data.description.clone(),
             data.types.clone(),
-            data.price,
+            data.price.clone(),
         ); 
         return Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body(uuid));
     }
@@ -260,7 +260,7 @@ pub async fn edit_module_type(req: HttpRequest, data: Json<EditModuleType>, id: 
             data.title.clone(),
             data.description.clone(),
             data.types.clone(),
-            data.price,
+            data.price.clone(),
         ); 
         return Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body(uuid));
     }
