@@ -140,18 +140,18 @@ pub async fn get_place_orders(req: HttpRequest, id: web::Path<String>) -> Json<V
     }
 } 
 pub async fn get_place_module_types(req: HttpRequest, id: web::Path<String>) -> Json<Vec<crate::models::ModuleType>> {
-    if is_signed_in(&req) { 
-        let _request_user = get_current_user(&req);
-        if _request_user.is_can_work_in_object_with_id(&id) {
+    //if is_signed_in(&req) { 
+    //    let _request_user = get_current_user(&req);
+    //    if _request_user.is_can_work_in_object_with_id(&id) {
             return crate::models::ModuleType::get_all_for_place(id.to_string());
-        }
-        else {
-            return Json(Vec::new());
-        }
-    }
-    else {
-        Json(Vec::new())
-    }
+    //    }
+    //    else {
+    //        return Json(Vec::new());
+    //    }
+    //}
+    //else {
+    //    Json(Vec::new())
+    //}
 }
 pub async fn get_place_events(req: HttpRequest, id: web::Path<String>) -> Json<Vec<crate::models::Event>> {
     return crate::models::Event::get_all_for_place(id.to_string());
