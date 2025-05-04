@@ -201,7 +201,7 @@ impl ModuleType {
                 .execute(&_connection)
                 .expect("E");
         return Info {
-            text: _tepe.id,
+            text: _type.id,
         };
     }
     pub fn delete(id: String) -> i16 {
@@ -792,7 +792,7 @@ impl Event {
             .execute(&_connection)
             .expect("E");
         return Info {
-            text: uuid,
+            text: _event.id,
         };
     }
 

@@ -234,9 +234,9 @@ pub async fn create_module_type(req: HttpRequest, data: Json<CreateModuleType>) 
         return Json(uuid);
     }
     else {
-        return crate::utils::Info {
+        return Json(crate::utils::Info {
             text: "".to_string(),
-        };
+        });
     }
 }
 #[derive(Deserialize, Serialize, Debug)]
@@ -259,9 +259,9 @@ pub async fn edit_module_type(req: HttpRequest, data: Json<EditModuleType>, id: 
         return Json(uuid);
     }
     else {
-        return crate::utils::Info {
+        return Json(crate::utils::Info {
             text: "".to_string(),
-        };
+        });
     }
 }
 
@@ -298,9 +298,9 @@ pub async fn create_event(req: HttpRequest, data: Json<CreateEvent>) -> Json<cra
         return Json(uuid);
     }
     else {
-        return crate::utils::Info {
+        return Json(crate::utils::Info {
             text: "".to_string(),
-        };
+        });
     }
 }
 pub async fn edit_event(req: HttpRequest, data: Json<EditEvent>, id: web::Path<String>) -> Json<crate::utils::Info> {
@@ -317,9 +317,9 @@ pub async fn edit_event(req: HttpRequest, data: Json<EditEvent>, id: web::Path<S
         return Json(uuid);
     }
     else {
-        return crate::utils::Info {
+        return Json(crate::utils::Info {
             text: "".to_string(),
-        };
+        });
     }
 }
 
