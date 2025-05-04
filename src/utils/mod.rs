@@ -25,6 +25,11 @@ use std::io::{Write,BufWriter};
 use std::fs::create_dir_all;
 
 
+#[derive(Deserialize, Serialize, Debug)]
+pub struct Info {
+    pub text: String,
+}
+
 #[derive(Deserialize)]
 pub struct FileForm {
     pub name: String,

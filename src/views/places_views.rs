@@ -20,6 +20,7 @@ use crate::utils::{
     get_current_user,
     establish_connection,
     files_form,
+    Info,
 }; 
 use crate::views::{AuthResp2, AuthResp, ItemId};
 use crate::schema;

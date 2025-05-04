@@ -16,7 +16,7 @@ use crate::diesel::{
     Connection,
 };
 use serde::{Serialize, Deserialize};
-use crate::utils::establish_connection;
+use crate::utils::{establish_connection, Info};
 use crate::errors::Error;
 use actix_web::web::Json;
 use crate::models::{Order, Time, UserJson};
@@ -144,7 +144,7 @@ impl ModuleType {
         description: String,
         types:       String,
         price:       String,
-    ) -> String {
+    ) -> Info {
         let _connection = establish_connection();
 
         if schema::module_types::table
@@ -172,7 +172,9 @@ impl ModuleType {
             .values(&new_place_type)
             .execute(&_connection)
             .expect("E.");
-        return uuid;
+        return Info {
+            text: uuid,
+        };
     }
     pub fn edit (
         id:          String, 
@@ -180,7 +182,7 @@ impl ModuleType {
         description: String,
         types:       String,
         price:       String,
-    ) -> String {
+    ) -> Info {
         let _connection = establish_connection();
         let _type = schema::module_types::table
             .filter(schema::module_types::id.eq(id))
@@ -196,7 +198,9 @@ impl ModuleType {
                 ))
                 .execute(&_connection)
                 .expect("E");
-        return _type.id;
+        return Info {
+            text: _tepe.id,
+        };
     }
     pub fn delete(id: String) -> i16 {
         let _connection = establish_connection();
@@ -689,7 +693,7 @@ impl Event {
         price:       String,
         time_start:  String,
         time_end:    String,
-    ) -> String {
+    ) -> Info {
         let _connection = establish_connection();
  
         let format_start = chrono::NaiveDateTime::parse_from_str(&time_start, "%Y-%m-%d %H:%M:%S").unwrap();
@@ -754,7 +758,9 @@ impl Event {
             .values(&new_event)
             .execute(&_connection)
             .expect("E.");
-        return uuid;
+        return Info {
+            text: uuid,
+        };
     }
 
     pub fn edit (
@@ -764,7 +770,7 @@ impl Event {
         price:       String,
         time_start:  String,
         time_end:    String,
-    ) -> String { 
+    ) -> Info { 
         let _connection = establish_connection();
         let _price: i32 = price.parse().unwrap();
 
@@ -783,7 +789,9 @@ impl Event {
             ))
             .execute(&_connection)
             .expect("E");
-        return _event.id;
+        return Info {
+            text: uuid,
+        };
     }
 
     pub fn delete(id: String) -> i16 {
