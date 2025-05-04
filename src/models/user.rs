@@ -548,7 +548,7 @@ impl Partner {
         let _connection = establish_connection();
         
         let _partner = schema::partners::table
-            .filter(schema::partners::user_id.eq(user_id))
+            .filter(schema::partners::user_id.eq(&user_id))
             .filter(schema::partners::types.eq(0))
             .first::<Partner>(&_connection)
             .expect("E.");
