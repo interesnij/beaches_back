@@ -153,7 +153,9 @@ impl ModuleType {
             .select(schema::module_types::id)
             .first::<String>(&_connection)
             .is_ok() {
-                return "".to_string();
+                return Info {
+                    text: "".to_string(),
+                };
         }
 
         let uuid = uuid::Uuid::new_v4().to_string();

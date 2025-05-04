@@ -221,7 +221,7 @@ pub struct CreateModuleType {
     pub types:       String,
     pub price:       String,
 } 
-pub async fn create_module_type(req: HttpRequest, data: Json<CreateModuleType>) -> actix_web::Result<HttpResponse> {
+pub async fn create_module_type(req: HttpRequest, data: Json<CreateModuleType>) -> Json<crate::utils::Info> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         let uuid = crate::models::ModuleType::create(
@@ -230,10 +230,14 @@ pub async fn create_module_type(req: HttpRequest, data: Json<CreateModuleType>) 
             data.description.clone(),
             data.types.clone(),
             data.price.clone(),
-        ); 
-        return Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body(uuid));
+        );  
+        return Json(uuid);
     }
-    Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body("error!"))
+    else {
+        return crate::utils::Info {
+            text: "".to_string(),
+        };
+    }
 }
 #[derive(Deserialize, Serialize, Debug)]
 pub struct EditModuleType {
@@ -242,7 +246,7 @@ pub struct EditModuleType {
     pub types:       String,
     pub price:       String,
 } 
-pub async fn edit_module_type(req: HttpRequest, data: Json<EditModuleType>, id: web::Path<String>) -> actix_web::Result<HttpResponse> {
+pub async fn edit_module_type(req: HttpRequest, data: Json<EditModuleType>, id: web::Path<String>) -> Json<crate::utils::Info> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         let uuid = crate::models::ModuleType::edit(
@@ -252,9 +256,13 @@ pub async fn edit_module_type(req: HttpRequest, data: Json<EditModuleType>, id: 
             data.types.clone(),
             data.price.clone(),
         ); 
-        return Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body(uuid));
+        return Json(uuid);
     }
-    Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body("error!"))
+    else {
+        return crate::utils::Info {
+            text: "".to_string(),
+        };
+    }
 }
 
 #[derive(Deserialize, Serialize, Debug)]
@@ -274,7 +282,7 @@ pub struct EditEvent {
     pub time_start:  String,
     pub time_end:    String,
 } 
-pub async fn create_event(req: HttpRequest, data: Json<CreateEvent>) -> actix_web::Result<HttpResponse> {
+pub async fn create_event(req: HttpRequest, data: Json<CreateEvent>) -> Json<crate::utils::Info> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         let uuid = crate::models::Event::create(
@@ -287,11 +295,15 @@ pub async fn create_event(req: HttpRequest, data: Json<CreateEvent>) -> actix_we
             data.time_end.clone(),
         ); 
         println!("uuid: {:?}", uuid);
-        return Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body(uuid));
+        return Json(uuid);
     }
-    Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body("error!"))
+    else {
+        return crate::utils::Info {
+            text: "".to_string(),
+        };
+    }
 }
-pub async fn edit_event(req: HttpRequest, data: Json<EditEvent>, id: web::Path<String>) -> actix_web::Result<HttpResponse> {
+pub async fn edit_event(req: HttpRequest, data: Json<EditEvent>, id: web::Path<String>) -> Json<crate::utils::Info> {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         let uuid = crate::models::Event::edit(
@@ -302,9 +314,13 @@ pub async fn edit_event(req: HttpRequest, data: Json<EditEvent>, id: web::Path<S
             data.time_start.clone(),
             data.time_end.clone(),
         );
-        return Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body(uuid));
+        return Json(uuid);
     }
-    Ok(HttpResponse::Ok().content_type("text/html; charset=utf-8").body("error!"))
+    else {
+        return crate::utils::Info {
+            text: "".to_string(),
+        };
+    }
 }
 
 pub async fn create_modules(req: HttpRequest, data: Json<CreateModuleJson>) -> impl Responder {
