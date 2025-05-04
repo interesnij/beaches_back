@@ -434,6 +434,11 @@ pub struct SessionUser {
 }
 
 
+/*
+types
+0 suggest
+1 active
+*/
 #[derive(Debug, Queryable, Deserialize, Serialize, Identifiable, Insertable)]
 #[table_name="partners"]
 pub struct Partner {
@@ -514,21 +519,52 @@ impl Partner {
         }
         return Json(stack);
     }
-    pub fn create(form: Json<PartnerJson>) -> i16 {
+    pub fn suggest_partner(form: Json<PartnerJson>) -> i16 {
         let _connection = establish_connection();
         
         let new = Partner {
             id:      uuid::Uuid::new_v4().to_string(),
             title:   form.title.clone(),
             inn:     form.inn.clone(),
-            types:   1,
+            types:   0,
             created: chrono::Local::now().naive_utc(),
             user_id: form.user_id.clone(),
-        }; 
+        };
         let _partner = diesel::insert_into(schema::partners::table)
             .values(&new)
             .execute(&_connection)
             .expect("E.");
+        let _user = schema::users::table
+            .filter(schema::partners::id.eq(form.user_id.clone()))
+            .first::<User>(&_connection)
+            .expect("E.");
+        diesel::update(&_user)
+            .set(schema::partners::perm.eq(3))
+            .execute(&_connection)
+            .expect("E");
+        return 1;
+    }
+    pub fn create_partner(user_id: String) -> i16 {
+        let _connection = establish_connection();
+        
+        let _partner = schema::partners::table
+            .filter(schema::partners::user_id.eq(user_id))
+            .filter(schema::partners::types.eq(0))
+            .first::<Partner>(&_connection)
+            .expect("E.");
+        let _user = schema::users::table
+            .filter(schema::partners::id.eq(user_id))
+            .first::<User>(&_connection)
+            .expect("E.");
+
+        diesel::update(&_partner)
+            .set(schema::partners::types.eq(1))
+            .execute(&_connection)
+            .expect("E");
+        diesel::update(&_user)
+            .set(schema::partners::perm.eq(4))
+            .execute(&_connection)
+            .expect("E");
         return 1;
     }
 

@@ -34,7 +34,8 @@ pub fn user_routes(config: &mut web::ServiceConfig) {
     config.route("/create_manager/", web::post().to(create_manager));
     config.route("/delete_manager/", web::post().to(delete_manager));
     config.route("/edit_user/", web::post().to(edit_user));
-    config.route("/create_partner/", web::post().to(create_partner));
+    config.route("/create_partner/{user_id}/", web::post().to(create_partner));
+    config.route("/suggest_partner/", web::post().to(suggest_partner));
     config.route("/delete_partner/", web::post().to(delete_partner));
     config.route("/change_owner_partner/", web::post().to(change_owner_partner));
     config.route("/orders/", web::get().to(get_orders));
@@ -183,15 +184,25 @@ pub async fn delete_manager(req: HttpRequest, data: Json<crate::models::PlaceMan
     HttpResponse::Ok()
 } 
 
-pub async fn create_partner(req: HttpRequest, data: Json<crate::models::PartnerJson>) -> impl Responder {
+pub async fn create_suggest(req: HttpRequest, data: Json<crate::models::PartnerJson>) -> impl Responder {
     if is_signed_in(&req) { 
         let _request_user = get_current_user(&req);
         if _request_user.perm == 10 {
-            Partner::create(data);
+            Partner::suggest_partner(data);
         }
     }
     HttpResponse::Ok()
 }
+pub async fn create_partner(req: HttpRequest, user_id: web::Path<String>) -> impl Responder {
+    if is_signed_in(&req) { 
+        let _request_user = get_current_user(&req);
+        if _request_user.perm == 10 {
+            Partner::create_partner(user_id.to_string());
+        }
+    }
+    HttpResponse::Ok()
+}
+
 pub async fn delete_partner(req: HttpRequest, data: Json<ItemId>) -> impl Responder {
     if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
