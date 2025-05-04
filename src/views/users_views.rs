@@ -184,7 +184,7 @@ pub async fn delete_manager(req: HttpRequest, data: Json<crate::models::PlaceMan
     HttpResponse::Ok()
 } 
 
-pub async fn create_suggest(req: HttpRequest, data: Json<crate::models::PartnerJson>) -> impl Responder {
+pub async fn suggest_partner(req: HttpRequest, data: Json<crate::models::PartnerJson>) -> impl Responder {
     if is_signed_in(&req) { 
         let _request_user = get_current_user(&req);
         if _request_user.perm == 10 {

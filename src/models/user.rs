@@ -535,11 +535,11 @@ impl Partner {
             .execute(&_connection)
             .expect("E.");
         let _user = schema::users::table
-            .filter(schema::partners::id.eq(form.user_id.clone()))
+            .filter(schema::users::id.eq(form.user_id.clone()))
             .first::<User>(&_connection)
             .expect("E.");
         diesel::update(&_user)
-            .set(schema::partners::perm.eq(3))
+            .set(schema::users::perm.eq(3))
             .execute(&_connection)
             .expect("E");
         return 1;
@@ -553,7 +553,7 @@ impl Partner {
             .first::<Partner>(&_connection)
             .expect("E.");
         let _user = schema::users::table
-            .filter(schema::partners::id.eq(user_id))
+            .filter(schema::users::id.eq(user_id))
             .first::<User>(&_connection)
             .expect("E.");
 
@@ -562,7 +562,7 @@ impl Partner {
             .execute(&_connection)
             .expect("E");
         diesel::update(&_user)
-            .set(schema::partners::perm.eq(4))
+            .set(schema::users::perm.eq(4))
             .execute(&_connection)
             .expect("E");
         return 1;
