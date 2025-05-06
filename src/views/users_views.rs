@@ -26,6 +26,7 @@ pub fn user_routes(config: &mut web::ServiceConfig) {
     config.route("/admins/", web::get().to(get_admins));
     config.route("/users/", web::get().to(get_users)); 
     config.route("/partners/", web::get().to(get_partners));
+    config.route("/suggest/", web::get().to(get_suggest));
     config.route("/moderators/", web::get().to(get_moderators));
     config.route("/banned_users/", web::get().to(get_banned_users));
 
@@ -108,9 +109,23 @@ pub async fn get_users(req: HttpRequest) -> Json<Vec<crate::models::UserJson>> {
 
 pub async fn get_partners(req: HttpRequest) -> Json<Vec<crate::models::RespPartnerJson>> {
     if is_signed_in(&req) {
+        let _request_user = get_current_user(&req); 
+        if _request_user.is_superuser() {
+            return crate::models::Partner::get_partners();
+        } 
+        else {
+            return Json(Vec::new());
+        }
+    }
+    else {
+        Json(Vec::new())
+    }
+}
+pub async fn get_suggest(req: HttpRequest) -> Json<Vec<crate::models::RespPartnerJson>> {
+    if is_signed_in(&req) {
         let _request_user = get_current_user(&req);
         if _request_user.is_superuser() {
-            return crate::models::Partner::all();
+            return crate::models::Partner::get_suggest();
         } 
         else {
             return Json(Vec::new());

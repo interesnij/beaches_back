@@ -39,7 +39,7 @@ pub struct UserJson {
     pub first_name: String,
     pub last_name:  String,
     pub email:      String,
-    pub level:      i16,
+    pub perm:       i16,
     pub image:      Option<String>,
 }  
 #[derive(Deserialize)]
@@ -381,7 +381,7 @@ impl User {
                     schema::users::first_name,
                     schema::users::last_name,
                     schema::users::email,
-                    schema::users::level,
+                    schema::users::perm,
                     schema::users::image,
                 ))
                 .load::<UserJson>(&_connection)
@@ -451,6 +451,7 @@ pub struct Partner {
 }
 #[derive(Deserialize, Serialize)]
 pub struct RespPartnerJson {
+    pub id:      String,
     pub title:   String,
     pub inn:     String,
     pub types:   i16,
@@ -494,6 +495,7 @@ impl Partner {
             .expect("E"); 
         
         return Json(RespPartnerJson {
+            id:      item.id.clone(),
             title:   item.title.clone(),
             inn:     item.inn.clone(),
             types:   item.types,
@@ -501,7 +503,7 @@ impl Partner {
             user:    item.get_owner(),
         });
     }
-    pub fn all() -> Json<Vec<RespPartnerJson>> {
+    pub fn get_partners() -> Json<Vec<RespPartnerJson>> {
         let _connection = establish_connection();
         let mut stack = Vec::new();
         let items = schema::partners::table
@@ -510,6 +512,26 @@ impl Partner {
             .expect("E"); 
         for i in items {
             stack.push (RespPartnerJson {
+                id:      i.id.clone(),
+                title:   i.title.clone(),
+                inn:     i.inn.clone(),
+                types:   i.types,
+                created: i.created,
+                user:    i.get_owner(),
+            }); 
+        }
+        return Json(stack);
+    }
+    pub fn get_suggest() -> Json<Vec<RespPartnerJson>> {
+        let _connection = establish_connection();
+        let mut stack = Vec::new();
+        let items = schema::partners::table
+            .filter(schema::partners::types.eq(0))
+            .load::<Partner>(&_connection)
+            .expect("E"); 
+        for i in items {
+            stack.push (RespPartnerJson {
+                id:      i.id.clone(),
                 title:   i.title.clone(),
                 inn:     i.inn.clone(),
                 types:   i.types,
