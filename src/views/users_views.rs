@@ -202,9 +202,9 @@ pub async fn delete_manager(req: HttpRequest, data: Json<crate::models::PlaceMan
 pub async fn suggest_partner(req: HttpRequest, data: Json<crate::models::PartnerJson>) -> impl Responder {
     if is_signed_in(&req) { 
         let _request_user = get_current_user(&req);
-        if _request_user.perm == 10 {
+        //if _request_user.perm == 10 {
             Partner::suggest_partner(data);
-        }
+        //} 
     }
     HttpResponse::Ok()
 }
