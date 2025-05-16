@@ -58,8 +58,8 @@ pub struct EditOwnerPartnerJson {
 pub struct OrderListJson {
     pub object_id:  String,
     pub price:      i32,
-    pub time_start: String,
-    pub time_end:   String,
+    pub time_start: chrono::NaiveDateTime,
+    pub time_end:   chrono::NaiveDateTime,
 }
 #[derive(Serialize, Queryable)]
 pub struct PlaceListJson {
@@ -132,6 +132,12 @@ impl User {
             .expect("E");
         let mut stack = Vec::new();
         for i in list {
+            let _time_start = chrono::NaiveDateTime::parse_from_str(&i.time_start, "%Y-%m-%d %H:%M:%S").unwrap();
+            let _time_end = chrono::NaiveDateTime::parse_from_str(&i._time_end, "%Y-%m-%d %H:%M:%S").unwrap();
+            let new = chrono::Local::now().naive_utc() + chrono::Duration::hours(3);
+            if _time_end < new {
+                continue;
+            }
             let _place = crate::models::Place::get_place(i.place_id.clone());
             let _place_item = PlaceListJson {
                 id:    _place.id.clone(),
@@ -142,8 +148,8 @@ impl User {
             let _order_item = OrderListJson {
                 object_id:  i.title.clone(),
                 price:      i.price,
-                time_start: i.time_start,
-                time_end:   i.time_end,
+                time_start: _time_start,
+                time_end:   _time_end,
             };
 
             stack.push(crate::models::RespOrderJson2 {
