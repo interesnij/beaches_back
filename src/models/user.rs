@@ -133,7 +133,7 @@ impl User {
         let mut stack = Vec::new();
         for i in list {
             let _time_start = chrono::NaiveDateTime::parse_from_str(&i.time_start, "%Y-%m-%d %H:%M:%S").unwrap();
-            let _time_end = chrono::NaiveDateTime::parse_from_str(&i._time_end, "%Y-%m-%d %H:%M:%S").unwrap();
+            let _time_end = chrono::NaiveDateTime::parse_from_str(&i.time_end, "%Y-%m-%d %H:%M:%S").unwrap();
             let new = chrono::Local::now().naive_utc() + chrono::Duration::hours(3);
             if _time_end < new {
                 continue;
