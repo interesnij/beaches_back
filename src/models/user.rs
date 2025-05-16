@@ -136,7 +136,7 @@ impl User {
             let _time_end = chrono::NaiveDateTime::parse_from_str(&i.time_end, "%Y-%m-%d %H:%M:%S").unwrap();
             let new = chrono::Local::now().naive_utc() + chrono::Duration::hours(3);
             if _time_end < new {
-                continue;
+                continue; 
             }
             let _place = crate::models::Place::get_place(i.place_id.clone());
             let _place_item = PlaceListJson {
