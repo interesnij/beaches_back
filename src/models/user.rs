@@ -135,7 +135,7 @@ impl User {
             let _time_start = chrono::NaiveDateTime::parse_from_str(&i.time_start, "%Y-%m-%d %H:%M:%S").unwrap();
             let _time_end = chrono::NaiveDateTime::parse_from_str(&i.time_end, "%Y-%m-%d %H:%M:%S").unwrap();
             let new = chrono::Local::now().naive_utc() + chrono::Duration::hours(3);
-            if _time_end < new {
+            if _time_end > new {
                 continue;
             }
             let _place = crate::models::Place::get_place(i.place_id.clone());
